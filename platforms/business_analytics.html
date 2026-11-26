@@ -1,0 +1,3180 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة تحليلات الأعمال | بنك الأسئلة التفاعلي</title>
+    
+    <!-- Google Fonts: Readex Pro & IBM Plex Sans Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Libraries via CDN -->
+    <script src="https://unpkg.com/lucide@0.460.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+/* ==========================================================================
+   COLOR PALETTE & TYPOGRAPHY VARIABLES
+   Palette:
+   1: #8F6B3E (Warm Bronze Gold)
+   2: #BFA17A (Champagne Sand)
+   3: #6F4F2A (Deep Espresso Umber)
+   4: #7E846B (Muted Olive Moss)
+   5: #E6E0D4 (Warm Alabaster Cream)
+   6: #9AA18F (Soft Sage Green)
+   ========================================================================== */
+:root {
+    --color-gold: #8F6B3E;
+    --color-sand: #BFA17A;
+    --color-umber: #6F4F2A;
+    --color-olive: #7E846B;
+    --color-cream: #E6E0D4;
+    --color-sage: #9AA18F;
+
+    --bg-base: #15120F;
+    --glass-bg: rgba(34, 29, 24, 0.58);
+    --glass-bg-hover: rgba(46, 39, 32, 0.72);
+    --glass-border: rgba(230, 224, 212, 0.14);
+    --glass-border-accent: rgba(191, 161, 122, 0.45);
+    --glass-shadow: 0 12px 36px rgba(0, 0, 0, 0.42);
+
+    --font-ui: 'IBM Plex Sans Arabic', sans-serif;
+    --font-display: 'Readex Pro', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html { overflow-x: clip; }
+
+body {
+    background-color: var(--bg-base);
+    color: var(--color-cream);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    line-height: 1.65;
+}
+
+/* Ambient Background Glows */
+.ambient-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: radial-gradient(circle at 20% 15%, #261E16 0%, #14110E 65%, #0E0C0A 100%);
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(95px);
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.orb-1 {
+    width: 420px;
+    height: 420px;
+    background: var(--color-gold);
+    top: -100px;
+    right: -80px;
+}
+
+.orb-2 {
+    width: 380px;
+    height: 380px;
+    background: var(--color-olive);
+    bottom: 5%;
+    left: -90px;
+}
+
+.orb-3 {
+    width: 300px;
+    height: 300px;
+    background: var(--color-umber);
+    top: 45%;
+    right: 35%;
+}
+
+/* Layout Container */
+.container {
+    width: 100%;
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+/* ==========================================================================
+   LIQUID GLASS CORE SURFACES
+   ========================================================================== */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: var(--glass-shadow);
+    transition: transform 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+}
+
+/* Header */
+.glass-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(24, 20, 16, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 0.85rem 0;
+    margin-bottom: 2rem;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    cursor: pointer;
+}
+
+.brand-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--color-gold), var(--color-umber));
+    border: 1px solid var(--color-sand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-cream);
+}
+
+.brand-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-cream);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.badge-year {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(143, 107, 62, 0.28);
+    border: 1px solid var(--color-sand);
+    color: var(--color-sand);
+}
+
+.brand-subtitle {
+    font-size: 0.78rem;
+    color: var(--color-sage);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--color-cream);
+    font-family: var(--font-ui);
+    font-size: 0.92rem;
+    font-weight: 500;
+    padding: 0.5rem 0.9rem;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.25s ease;
+    opacity: 0.8;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    background: rgba(191, 161, 122, 0.16);
+    border-color: var(--glass-border-accent);
+    color: var(--color-sand);
+    opacity: 1;
+}
+
+.nav-btn svg,
+.user-profile-pill svg {
+    width: 17px;
+    height: 17px;
+}
+
+.user-profile-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(126, 132, 107, 0.18);
+    border: 1px solid rgba(154, 161, 143, 0.35);
+    color: var(--color-cream);
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.user-profile-pill:hover {
+    border-color: var(--color-sand);
+    background: rgba(143, 107, 62, 0.25);
+}
+
+.edit-icon {
+    width: 14px !important;
+    height: 14px !important;
+    color: var(--color-sand);
+}
+
+/* ==========================================================================
+   VIEWS & TYPOGRAPHY SPECS
+   ========================================================================== */
+.main-content {
+    flex: 1;
+    padding-bottom: 4rem;
+}
+
+.view-section {
+    display: none;
+    animation: fadeSlideIn 0.35s ease;
+}
+
+.view-section.active {
+    display: block;
+}
+
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--color-cream);
+}
+
+.section-subtitle {
+    font-size: 0.92rem;
+    color: var(--color-sage);
+    margin-top: 0.2rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Hero & Landing */
+.hero-card {
+    padding: 2.5rem;
+    margin-bottom: 1.75rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(126, 132, 107, 0.22);
+    border: 1px solid rgba(154, 161, 143, 0.35);
+    color: var(--color-sage);
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin-bottom: 1.1rem;
+}
+
+.hero-badge svg {
+    width: 16px;
+    height: 16px;
+    color: var(--color-sand);
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 0.85rem;
+}
+
+.hero-title span {
+    color: var(--color-sand);
+}
+
+.hero-desc {
+    max-width: 680px;
+    color: rgba(230, 224, 212, 0.82);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+.modes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+    gap: 1.15rem;
+}
+
+.mode-card {
+    padding: 1.45rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    background: rgba(26, 22, 18, 0.55);
+}
+
+.mode-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-sand);
+    background: rgba(143, 107, 62, 0.16);
+}
+
+.mode-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--glass-border);
+}
+
+.mode-icon.gold { background: rgba(143, 107, 62, 0.25); color: var(--color-sand); }
+.mode-icon.olive { background: rgba(126, 132, 107, 0.25); color: var(--color-sage); }
+.mode-icon.bronze { background: rgba(111, 79, 42, 0.35); color: var(--color-sand); }
+.mode-icon.sage { background: rgba(154, 161, 143, 0.22); color: var(--color-cream); }
+
+.mode-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.12rem;
+    font-weight: 600;
+}
+
+.mode-card p {
+    font-size: 0.86rem;
+    color: rgba(230, 224, 212, 0.75);
+    flex: 1;
+}
+
+.mode-meta {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-sand);
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* KPI Grid & Counters (Readex Pro 28-40px weight 700) */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.15rem;
+    margin-bottom: 1.75rem;
+}
+
+.kpi-card {
+    padding: 1.35rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.kpi-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    background: rgba(143, 107, 62, 0.2);
+    border: 1px solid rgba(191, 161, 122, 0.3);
+    color: var(--color-sand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.kpi-value {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color-cream);
+    line-height: 1.15;
+}
+
+.kpi-label {
+    font-size: 0.85rem;
+    color: var(--color-sage);
+}
+
+/* ==========================================================================
+   QUIZ ENGINE & EXACT TYPOGRAPHY SPECS
+   ========================================================================== */
+.quiz-topbar {
+    padding: 1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.quiz-info-group,
+.quiz-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.badge-mode {
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(143, 107, 62, 0.28);
+    border: 1px solid var(--color-sand);
+    color: var(--color-sand);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+/* Question Number (س 5 من 40): Readex Pro, 14px, weight 600 */
+.q-counter-label {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-cream);
+}
+
+.q-counter-label span {
+    color: var(--color-sand);
+}
+
+/* Timer Counter: Readex Pro, 28px, weight 700 */
+.timer-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 1rem;
+    border-radius: 14px;
+    background: rgba(20, 17, 14, 0.65);
+    border: 1px solid var(--glass-border-accent);
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-sand);
+    line-height: 1.1;
+}
+
+.timer-box svg {
+    width: 22px;
+    height: 22px;
+}
+
+.timer-box.timer-low {
+    border-color: #d97757;
+    color: #f09575;
+    animation: pulseTimer 1s infinite;
+}
+
+@keyframes pulseTimer {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.65; }
+}
+
+.quiz-layout {
+    display: grid;
+    grid-template-columns: 1fr 290px;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 960px) {
+    .quiz-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.question-panel {
+    padding: 2rem;
+}
+
+.progress-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(230, 224, 212, 0.1);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 1.4rem;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-gold), var(--color-sand));
+    transition: width 0.35s ease;
+}
+
+.question-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.chapter-tag {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-sage);
+}
+
+.type-tag {
+    font-size: 0.78rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 8px;
+    background: rgba(126, 132, 107, 0.2);
+    border: 1px solid rgba(154, 161, 143, 0.3);
+    color: var(--color-cream);
+}
+
+/* Question Text: IBM Plex Sans Arabic, 18-20px, weight 500 */
+.question-text {
+    font-family: var(--font-ui);
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--color-cream);
+    line-height: 1.65;
+    margin-bottom: 1.65rem;
+}
+
+/* Options: IBM Plex Sans Arabic, 16-17px, weight 400 */
+.options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.option-card {
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+    padding: 1rem 1.2rem;
+    border-radius: 16px;
+    background: rgba(24, 20, 16, 0.52);
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 16.5px;
+    font-weight: 400;
+    color: var(--color-cream);
+    transition: all 0.22s ease;
+}
+
+.option-card:hover {
+    border-color: var(--color-sand);
+    background: rgba(143, 107, 62, 0.14);
+}
+
+.option-card.selected {
+    border-color: var(--color-sand);
+    background: rgba(143, 107, 62, 0.24);
+}
+
+.option-card.correct-answer {
+    border-color: var(--color-sage) !important;
+    background: rgba(126, 132, 107, 0.32) !important;
+}
+
+.option-card.wrong-answer {
+    border-color: #c96a50 !important;
+    background: rgba(185, 82, 56, 0.24) !important;
+}
+
+.option-letter {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(191, 161, 122, 0.14);
+    border: 1px solid rgba(191, 161, 122, 0.35);
+    color: var(--color-sand);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.question-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* Buttons */
+.btn-glass,
+.btn-primary-glass,
+.btn-danger-glass,
+.btn-glass-sm {
+    font-family: var(--font-ui);
+    font-size: 0.92rem;
+    font-weight: 500;
+    padding: 0.65rem 1.25rem;
+    border-radius: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.25s ease;
+}
+
+.btn-glass,
+.btn-glass-sm {
+    background: rgba(230, 224, 212, 0.08);
+    border: 1px solid var(--glass-border);
+    color: var(--color-cream);
+}
+
+.btn-glass-sm {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.85rem;
+}
+
+.btn-glass:hover,
+.btn-glass-sm:hover {
+    border-color: var(--color-sand);
+    background: rgba(191, 161, 122, 0.16);
+}
+
+.btn-glass.bookmarked-active {
+    background: rgba(143, 107, 62, 0.32);
+    border-color: var(--color-sand);
+    color: var(--color-sand);
+}
+
+.btn-primary-glass {
+    background: linear-gradient(135deg, var(--color-gold), var(--color-umber));
+    border: 1px solid var(--color-sand);
+    color: var(--color-cream);
+    font-weight: 600;
+}
+
+.btn-primary-glass:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+}
+
+.btn-danger-glass {
+    background: rgba(168, 74, 52, 0.22);
+    border: 1px solid rgba(214, 108, 82, 0.45);
+    color: #f3b8a8;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.85rem;
+}
+
+.btn-danger-glass:hover {
+    background: rgba(168, 74, 52, 0.4);
+}
+
+/* Navigator Panel */
+.navigator-panel {
+    padding: 1.35rem;
+}
+
+.nav-panel-title {
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-sand);
+}
+
+.q-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.45rem;
+    max-height: 310px;
+    overflow-y: auto;
+    padding: 0.2rem;
+}
+
+.q-pill {
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(230, 224, 212, 0.06);
+    border: 1px solid var(--glass-border);
+    color: var(--color-cream);
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.q-pill.answered {
+    background: rgba(126, 132, 107, 0.28);
+    border-color: var(--color-sage);
+}
+
+.q-pill.current {
+    border-color: var(--color-sand);
+    background: rgba(143, 107, 62, 0.35);
+    box-shadow: 0 0 0 2px rgba(191, 161, 122, 0.35);
+}
+
+.q-pill .bm-dot {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-sand);
+}
+
+.grid-legend {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--color-sage);
+}
+
+.grid-legend div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.dot.answered { background: var(--color-olive); }
+.dot.unanswered { background: rgba(230, 224, 212, 0.18); }
+.dot.bookmarked { background: var(--color-sand); }
+
+/* ==========================================================================
+   INTERACTIVE STUDY BOT & SPEECH BUBBLE (Explanation: IBM Plex 15-16px, w400)
+   ========================================================================== */
+.study-bot-wrapper {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    max-width: 370px;
+}
+
+.bot-bubble {
+    padding: 1.1rem 1.25rem;
+    border-radius: 20px 20px 20px 4px;
+    background: rgba(28, 24, 20, 0.84);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--glass-border-accent);
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.55);
+    animation: popBubble 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.bot-bubble.hidden {
+    display: none;
+}
+
+.bot-bubble.bubble-correct {
+    border-color: var(--color-sage);
+}
+
+.bot-bubble.bubble-wrong {
+    border-color: #c96a50;
+}
+
+@keyframes popBubble {
+    from { opacity: 0; transform: scale(0.9) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.bubble-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.45rem;
+}
+
+.bot-title {
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--color-sand);
+}
+
+.bubble-correct .bot-title { color: var(--color-sage); }
+.bubble-wrong .bot-title { color: #e8927a; }
+
+.close-bubble {
+    background: transparent;
+    border: none;
+    color: var(--color-cream);
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+.close-bubble:hover { opacity: 1; }
+
+/* Post-answer explanation: IBM Plex Sans Arabic, 15-16px, weight 400 */
+.bot-text {
+    font-family: var(--font-ui);
+    font-size: 15.5px;
+    font-weight: 400;
+    color: var(--color-cream);
+    line-height: 1.6;
+}
+
+.bot-avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: rgba(34, 29, 24, 0.78);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid var(--color-sand);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.48);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: floatBot 3.4s ease-in-out infinite;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.bot-avatar:hover {
+    transform: scale(1.08);
+}
+
+.bot-avatar.state-happy {
+    border-color: var(--color-sage);
+    animation: bounceHappy 0.7s ease;
+}
+
+.bot-avatar.state-thinking {
+    border-color: #c96a50;
+}
+
+.robot-svg {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes floatBot {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+}
+
+@keyframes bounceHappy {
+    0%, 100% { transform: translateY(0) scale(1); }
+    40% { transform: translateY(-12px) scale(1.08); }
+    70% { transform: translateY(-4px) scale(1.03); }
+}
+
+/* ==========================================================================
+   CHARTS, TABLES, RESULTS & STUDY GUIDE
+   ========================================================================== */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 1.35rem;
+    margin-bottom: 1.75rem;
+}
+
+@media (max-width: 900px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart-box,
+.table-card {
+    padding: 1.5rem;
+}
+
+.chart-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-cream);
+    margin-bottom: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.chart-title svg {
+    width: 19px;
+    height: 19px;
+    color: var(--color-sand);
+}
+
+.doughnut-wrapper {
+    height: 210px;
+    position: relative;
+}
+
+.bar-wrapper {
+    height: 250px;
+    position: relative;
+}
+
+.chart-legend-pills {
+    display: flex;
+    justify-content: center;
+    gap: 0.85rem;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.pill-correct {
+    padding: 0.3rem 0.85rem;
+    border-radius: 10px;
+    background: rgba(126, 132, 107, 0.25);
+    border: 1px solid var(--color-sage);
+    color: var(--color-sage);
+}
+
+.pill-wrong {
+    padding: 0.3rem 0.85rem;
+    border-radius: 10px;
+    background: rgba(185, 82, 56, 0.2);
+    border: 1px solid rgba(214, 108, 82, 0.45);
+    color: #f3b8a8;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.glass-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: right;
+}
+
+.glass-table th {
+    padding: 0.85rem 1rem;
+    color: var(--color-sand);
+    font-family: var(--font-display);
+    font-weight: 600;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.glass-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(230, 224, 212, 0.06);
+}
+
+.empty-row {
+    text-align: center;
+    color: var(--color-sage);
+    padding: 1.5rem !important;
+}
+
+/* Results View */
+.result-hero {
+    padding: 2.5rem 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.result-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    background: rgba(126, 132, 107, 0.25);
+    border: 1px solid var(--color-sage);
+    color: var(--color-sage);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.85rem;
+}
+
+.result-donut-box {
+    width: 175px;
+    height: 175px;
+    margin: 1.5rem auto;
+    position: relative;
+}
+
+.donut-center-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Score Display: Readex Pro, 28-40px, weight 700 */
+.big-score {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--color-sand);
+    line-height: 1.1;
+}
+
+.score-sub {
+    font-size: 0.8rem;
+    color: var(--color-sage);
+}
+
+.result-desc {
+    max-width: 540px;
+    margin: 0 auto 1.5rem;
+    color: rgba(230, 224, 212, 0.85);
+}
+
+.result-metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.9rem;
+    max-width: 650px;
+    margin: 0 auto 1.75rem;
+}
+
+.metric-pill {
+    padding: 0.9rem;
+    border-radius: 14px;
+    background: rgba(20, 17, 14, 0.5);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.metric-pill span {
+    font-size: 0.8rem;
+    color: var(--color-sage);
+}
+
+.metric-pill strong {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-cream);
+}
+
+.result-cta {
+    display: flex;
+    justify-content: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-btn {
+    padding: 0.45rem 0.95rem;
+    border-radius: 10px;
+    background: rgba(230, 224, 212, 0.06);
+    border: 1px solid var(--glass-border);
+    color: var(--color-cream);
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.filter-btn.active {
+    background: rgba(143, 107, 62, 0.28);
+    border-color: var(--color-sand);
+    color: var(--color-sand);
+    font-weight: 600;
+}
+
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.review-card {
+    padding: 1.4rem;
+}
+
+.review-card.is-correct { border-right: 4px solid var(--color-sage); }
+.review-card.is-wrong { border-right: 4px solid #c96a50; }
+
+/* Study Guide Accordion */
+.study-header-card {
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.search-box {
+    margin-top: 1.15rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-box svg {
+    position: absolute;
+    right: 1rem;
+    width: 18px;
+    height: 18px;
+    color: var(--color-sand);
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.8rem 2.75rem 0.8rem 1rem;
+    border-radius: 14px;
+    background: rgba(20, 17, 14, 0.6);
+    border: 1px solid var(--glass-border);
+    color: var(--color-cream);
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--color-sand);
+}
+
+.accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.essay-card {
+    overflow: hidden;
+}
+
+.essay-header {
+    padding: 1.15rem 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--color-sand);
+}
+
+.essay-header:hover {
+    background: rgba(191, 161, 122, 0.08);
+}
+
+.essay-body {
+    padding: 0 1.4rem 1.35rem;
+    font-size: 0.95rem;
+    color: var(--color-cream);
+    border-top: 1px solid var(--glass-border);
+    padding-top: 1rem;
+}
+
+.essay-body.hidden {
+    display: none;
+}
+
+.essay-body ul,
+.essay-body ol {
+    padding-right: 1.35rem;
+    margin-top: 0.5rem;
+}
+
+.essay-body li {
+    margin-bottom: 0.35rem;
+}
+
+.essay-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.75rem;
+    font-size: 0.86rem;
+}
+
+.essay-table th,
+.essay-table td {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--glass-border);
+}
+
+.essay-table th {
+    background: rgba(143, 107, 62, 0.22);
+    color: var(--color-sand);
+}
+
+/* Footer */
+.glass-footer {
+    background: rgba(20, 17, 14, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--glass-border);
+    padding: 1.1rem 0;
+    font-size: 0.84rem;
+    color: var(--color-sage);
+}
+
+.footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* SweetAlert2 Liquid Glass Custom Theme */
+.swal2-popup.luxury-glass-swal {
+    background: rgba(30, 25, 20, 0.88) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    border: 1px solid var(--color-sand) !important;
+    border-radius: 22px !important;
+    color: var(--color-cream) !important;
+    font-family: var(--font-ui) !important;
+}
+
+.swal2-title {
+    font-family: var(--font-display) !important;
+    color: var(--color-sand) !important;
+}
+
+.swal2-input.luxury-swal-input {
+    background: rgba(20, 17, 14, 0.75) !important;
+    border: 1px solid var(--glass-border-accent) !important;
+    border-radius: 12px !important;
+    color: var(--color-cream) !important;
+    font-family: var(--font-ui) !important;
+    text-align: center;
+}
+
+@media (max-width: 640px) {
+    .nav-btn span { display: none; }
+    .hero-card { padding: 1.5rem; }
+    .hero-title { font-size: 1.65rem; }
+    .study-bot-wrapper { left: 14px; bottom: 14px; max-width: calc(100vw - 28px); }
+    #view-quiz, #view-results { padding-bottom: 96px; }
+}
+    </style>
+</head>
+<body>
+
+    <!-- Background Ambient Orbs -->
+    <div class="ambient-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Sticky Liquid Glass Header -->
+    <header class="glass-header">
+        <div class="container header-inner">
+            <div class="brand" onclick="switchView('landing')">
+                <div class="brand-icon">
+                    <i data-lucide="bar-chart-3"></i>
+                </div>
+                <div>
+                    <h1 class="brand-title">تحليلات الأعمال <span class="badge-year">2026-2027</span></h1>
+                    <p class="brand-subtitle">منصة التقييم الذكي وبنك الأسئلة الشامل</p>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <button class="nav-btn active" data-view="landing" onclick="switchView('landing')">
+                    <i data-lucide="home"></i>
+                    <span>الرئيسية</span>
+                </button>
+                <button class="nav-btn" data-view="dashboard" onclick="switchView('dashboard')">
+                    <i data-lucide="pie-chart"></i>
+                    <span>لوحة التحكم</span>
+                </button>
+                <button class="nav-btn" data-view="study" onclick="switchView('study')">
+                    <i data-lucide="book-open"></i>
+                    <span>الأسئلة المقالية</span>
+                </button>
+            </nav>
+
+            <div class="user-profile-pill" onclick="promptEditName()" title="تعديل الاسم">
+                <i data-lucide="user-check"></i>
+                <span id="headerUserName">طالب متميز</span>
+                <i data-lucide="edit-3" class="edit-icon"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container main-content">
+
+        <!-- VIEW 1: LANDING -->
+        <section id="view-landing" class="view-section active">
+            <div class="glass-card hero-card">
+                <div class="hero-badge">
+                    <i data-lucide="sparkles"></i>
+                    <span>بنك الأسئلة المحدث: 50 سؤالاً موضوعياً + 10 أسئلة مقالية</span>
+                </div>
+                <h2 class="hero-title">أتقن مادة <span>تحليلات الأعمال</span> بأسلوب تفاعلي ذكي</h2>
+                <p class="hero-desc">
+                    اختبر نفسك في ظروف تحاكي الامتحان الحقيقي: الأسئلة والاختيارات بترتيب مختلف كل مرة، والإجابات الصحيحة مع الشرح بتظهر بعد التسليم فقط، ولوحة تحليلات تقيس مستواك في كل فصل.
+                </p>
+
+                <!-- Quiz Modes Grid -->
+                <div class="modes-grid">
+                    <div class="glass-card mode-card" onclick="startQuiz('full')">
+                        <div class="mode-icon gold"><i data-lucide="layers"></i></div>
+                        <h3>الاختبار الشامل</h3>
+                        <p>50 سؤالاً (اختيار من متعدد + صح وخطأ) لتقييم مستواك الكامل.</p>
+                        <span class="mode-meta">50 دقيقة • 50 سؤال</span>
+                    </div>
+
+                    <div class="glass-card mode-card" onclick="startQuiz('quick')">
+                        <div class="mode-icon olive"><i data-lucide="zap"></i></div>
+                        <h3>اختبار سريع (10)</h3>
+                        <p>10 أسئلة عشوائية منتقاة للمراجعة الخاطفة قبل المحاضرة.</p>
+                        <span class="mode-meta">10 دقائق • 10 أسئلة</span>
+                    </div>
+
+                    <div class="glass-card mode-card" onclick="startQuiz('mcq')">
+                        <div class="mode-icon bronze"><i data-lucide="check-circle-2"></i></div>
+                        <h3>اختيار من متعدد</h3>
+                        <p>30 سؤال اختيارات تغطي كافة مفاهيم ونظريات المقرر.</p>
+                        <span class="mode-meta">30 دقيقة • 30 سؤال</span>
+                    </div>
+
+                    <div class="glass-card mode-card" onclick="startQuiz('tf')">
+                        <div class="mode-icon sage"><i data-lucide="toggle-right"></i></div>
+                        <h3>صح أم خطأ</h3>
+                        <p>20 سؤال صح وخطأ لاختبار دقة استيعابك للتفاصيل.</p>
+                        <span class="mode-meta">20 دقيقة • 20 سؤال</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Overview KPIs -->
+            <div class="kpi-grid">
+                <div class="glass-card kpi-card">
+                    <div class="kpi-icon"><i data-lucide="database"></i></div>
+                    <div>
+                        <div class="kpi-value" id="statTotalQ">50</div>
+                        <div class="kpi-label">إجمالي الأسئلة بالبنك</div>
+                    </div>
+                </div>
+                <div class="glass-card kpi-card">
+                    <div class="kpi-icon"><i data-lucide="award"></i></div>
+                    <div>
+                        <div class="kpi-value" id="statHighScore">0%</div>
+                        <div class="kpi-label">أعلى نسبة محققة</div>
+                    </div>
+                </div>
+                <div class="glass-card kpi-card">
+                    <div class="kpi-icon"><i data-lucide="check-square"></i></div>
+                    <div>
+                        <div class="kpi-value" id="statTotalPassed">0</div>
+                        <div class="kpi-label">محاولات مكتملة</div>
+                    </div>
+                </div>
+                <div class="glass-card kpi-card">
+                    <div class="kpi-icon"><i data-lucide="file-text"></i></div>
+                    <div>
+                        <div class="kpi-value">10</div>
+                        <div class="kpi-label">أسئلة مقالية نموذجية</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: ANALYTICS DASHBOARD -->
+        <section id="view-dashboard" class="view-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">لوحة التحكم وتحليل الأداء</h2>
+                    <p class="section-subtitle">إحصائيات دقيقة لمستوى استيعابك بناءً على محاولاتك المحفوظة</p>
+                </div>
+                <button class="btn-danger-glass" onclick="resetStats()">
+                    <i data-lucide="trash-2"></i>
+                    <span>مسح السجل</span>
+                </button>
+            </div>
+
+            <!-- Dashboard Top KPIs -->
+            <div class="kpi-grid">
+                <div class="glass-card kpi-card">
+                    <div class="kpi-icon"><i data-lucide="help-circle"></i></div>
+                    <div>
+                        <div class="kpi-value" id="dashTotalAnswered">0</div>
+                        <div class="kpi-label">إجمالي الأسئلة المحلولة</div>
+                    </div>
+                </div>
+                <div class="glass-card kpi-card">
+                    <div class="kpi-icon"><i data-lucide="target"></i></div>
+                    <div>
+                        <div class="kpi-value" id="dashAvgAccuracy">0%</div>
+                        <div class="kpi-label">نسبة الدقة العامة</div>
+                    </div>
+                </div>
+                <div class="glass-card kpi-card">
+                    <div class="kpi-icon"><i data-lucide="trophy"></i></div>
+                    <div>
+                        <div class="kpi-value" id="dashBestScore">0%</div>
+                        <div class="kpi-label">أعلى درجة محققة</div>
+                    </div>
+                </div>
+                <div class="glass-card kpi-card">
+                    <div class="kpi-icon"><i data-lucide="repeat"></i></div>
+                    <div>
+                        <div class="kpi-value" id="dashAttemptsCount">0</div>
+                        <div class="kpi-label">عدد المحاولات</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <div class="glass-card chart-box">
+                    <h3 class="chart-title"><i data-lucide="pie-chart"></i> نسبة الإجابات الصحيحة مقابل الخاطئة</h3>
+                    <div class="canvas-wrapper doughnut-wrapper">
+                        <canvas id="accuracyChart"></canvas>
+                    </div>
+                    <div class="chart-legend-pills">
+                        <span class="pill-correct" id="dashCorrectText">صحيحة: 0</span>
+                        <span class="pill-wrong" id="dashWrongText">خاطئة: 0</span>
+                    </div>
+                </div>
+
+                <div class="glass-card chart-box chart-wide">
+                    <h3 class="chart-title"><i data-lucide="bar-chart-2"></i> تحليل الدقة حسب الفصول والمحاور (%)</h3>
+                    <div class="canvas-wrapper bar-wrapper">
+                        <canvas id="chapterChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempt History Table -->
+            <div class="glass-card table-card">
+                <h3 class="chart-title"><i data-lucide="history"></i> سجل المحاولات السابقة</h3>
+                <div class="table-responsive">
+                    <table class="glass-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>نوع الاختبار</th>
+                                <th>الدرجة</th>
+                                <th>النسبة المئوية</th>
+                                <th>الوقت المستغرق</th>
+                                <th>التاريخ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-row">لا توجد محاولات مسجلة حتى الآن.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: INTERACTIVE QUIZ ENGINE -->
+        <section id="view-quiz" class="view-section">
+            <!-- Quiz Status Bar -->
+            <div class="glass-card quiz-topbar">
+                <div class="quiz-info-group">
+                    <span id="quizTypeBadge" class="badge-mode">اختبار شامل</span>
+                    <span class="q-counter-label">س <span id="currentQNum">1</span> من <span id="totalQNum">50</span></span>
+                </div>
+
+                <div id="timerContainer" class="timer-box">
+                    <i data-lucide="clock"></i>
+                    <span id="timerText">50:00</span>
+                </div>
+
+                <div class="quiz-actions-group">
+                    <button id="bookmarkBtn" class="btn-glass-sm" onclick="toggleBookmarkCurrent()">
+                        <i data-lucide="bookmark"></i>
+                        <span>حفظ</span>
+                    </button>
+                    <button class="btn-danger-glass" onclick="confirmExitQuiz()">
+                        <i data-lucide="check-circle"></i>
+                        <span>تسليم الاختبار</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="quiz-layout">
+                <!-- Question Main Panel -->
+                <div class="glass-card question-panel">
+                    <div class="progress-track">
+                        <div id="quizProgressBar" class="progress-fill"></div>
+                    </div>
+
+                    <div class="question-meta">
+                        <span id="questionChapter" class="chapter-tag">الفصل الأول: مفاهيم النظم</span>
+                        <span id="questionTypeLabel" class="type-tag">اختيار من متعدد</span>
+                    </div>
+
+                    <h3 id="questionText" class="question-text">جاري تحميل السؤال...</h3>
+
+                    <div id="optionsContainer" class="options-list">
+                        <!-- Options injected by JS -->
+                    </div>
+
+                    <div class="question-footer">
+                        <button id="prevQBtn" class="btn-glass" onclick="navigateQuestion(-1)">
+                            <i data-lucide="chevron-right"></i>
+                            <span>السابق</span>
+                        </button>
+                        <button id="nextQBtn" class="btn-primary-glass" onclick="navigateQuestion(1)">
+                            <span>التالي</span>
+                            <i data-lucide="chevron-left"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Navigator Sidebar -->
+                <aside class="glass-card navigator-panel">
+                    <h4 class="nav-panel-title"><i data-lucide="grid"></i> خريطة الأسئلة</h4>
+                    <div id="questionGrid" class="q-grid"></div>
+                    <div class="grid-legend">
+                        <div><span class="dot answered"></span> مجاب عنه</div>
+                        <div><span class="dot unanswered"></span> غير مجاب</div>
+                        <div><span class="dot bookmarked"></span> محفوظ للمراجعة</div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- VIEW 4: RESULTS SUMMARY -->
+        <section id="view-results" class="view-section">
+            <div class="glass-card result-hero">
+                <div id="resultBadge" class="result-status-badge">
+                    <i data-lucide="award"></i>
+                    <span>أداء ممتاز</span>
+                </div>
+                <h2 class="section-title">نتيجة الاختبار النهائية</h2>
+
+                <div class="result-donut-box">
+                    <canvas id="resultDonutChart"></canvas>
+                    <div class="donut-center-text">
+                        <span id="resultPercentText" class="big-score">0%</span>
+                        <span class="score-sub">الدقة</span>
+                    </div>
+                </div>
+
+                <p id="resultMessage" class="result-desc"></p>
+
+                <div class="result-metrics-row">
+                    <div class="metric-pill">
+                        <span>الدرجة المحققة</span>
+                        <strong id="resScoreVal">0 / 0</strong>
+                    </div>
+                    <div class="metric-pill">
+                        <span>الوقت المستغرق</span>
+                        <strong id="resTimeVal">00:00</strong>
+                    </div>
+                    <div class="metric-pill">
+                        <span>التقدير العام</span>
+                        <strong id="resGradeVal">ممتاز</strong>
+                    </div>
+                </div>
+
+                <div class="result-cta">
+                    <button class="btn-primary-glass" onclick="switchView('landing')">
+                        <i data-lucide="rotate-ccw"></i>
+                        <span>اختبار جديد</span>
+                    </button>
+                    <button id="retryWrongBtn" class="btn-glass" onclick="retryWrongAnswers()">
+                        <i data-lucide="refresh-cw"></i>
+                        <span id="retryWrongLabel">أعد حل أخطائي</span>
+                    </button>
+                    <button class="btn-glass" onclick="switchView('dashboard')">
+                        <i data-lucide="pie-chart"></i>
+                        <span>لوحة التحليلات</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Detailed Answer Review -->
+            <div class="review-section">
+                <div class="section-header">
+                    <h3 class="section-title">مراجعة الإجابات التفصيلية</h3>
+                    <div class="filter-tabs">
+                        <button class="filter-btn active" onclick="filterResults('all', this)">الكل</button>
+                        <button class="filter-btn" onclick="filterResults('incorrect', this)">الأخطاء فقط</button>
+                        <button class="filter-btn" onclick="filterResults('bookmarked', this)">المحفوظة</button>
+                    </div>
+                </div>
+                <div id="detailedResultsList" class="review-list"></div>
+            </div>
+        </section>
+
+        <!-- VIEW 5: ESSAY STUDY GUIDE -->
+        <section id="view-study" class="view-section">
+            <div class="glass-card study-header-card">
+                <h2 class="section-title">دليل الأسئلة المقالية النموذجية</h2>
+                <p class="section-subtitle">10 أسئلة مقالية شاملة بإجابات نموذجية منظمة لمادة تحليلات الأعمال</p>
+                <div class="search-box">
+                    <i data-lucide="search"></i>
+                    <input type="text" id="essaySearchInput" onkeyup="filterEssayQuestions()" placeholder="ابحث في الأسئلة المقالية (مثال: نظم المعلومات، SWOT، ذكاء الأعمال)...">
+                </div>
+            </div>
+
+            <div id="essayAccordionContainer" class="accordion-list"></div>
+        </section>
+
+    </main>
+
+    <!-- INTERACTIVE STUDY BOT (FLOATING ASSISTANT) -->
+    <div id="studyBotWrapper" class="study-bot-wrapper">
+        <div id="botSpeechBubble" class="glass-card bot-bubble hidden">
+            <div class="bubble-header">
+                <span id="botStatusTitle" class="bot-title">مساعدك الذكي</span>
+                <button class="close-bubble" onclick="hideBotBubble()" aria-label="إغلاق">×</button>
+            </div>
+            <p id="botSpeechText" class="bot-text">أهلاً بك! حل براحتك، والتصحيح والشرح هيظهروا بعد ما تسلّم.</p>
+        </div>
+
+        <button id="botAvatarBtn" class="bot-avatar state-idle" onclick="toggleBotBubble()" title="المساعد الذكي">
+            <svg viewBox="0 0 100 100" class="robot-svg" xmlns="http://www.w3.org/2000/svg">
+                <!-- Antenna -->
+                <line x1="50" y1="10" x2="50" y2="24" stroke="#BFA17A" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="50" cy="8" r="5" fill="#8F6B3E" class="antenna-tip"/>
+                <!-- Ears -->
+                <rect x="14" y="42" width="8" height="20" rx="4" fill="#6F4F2A"/>
+                <rect x="78" y="42" width="8" height="20" rx="4" fill="#6F4F2A"/>
+                <!-- Head -->
+                <rect x="20" y="24" width="60" height="50" rx="16" fill="#231F1B" stroke="#BFA17A" stroke-width="3"/>
+                <!-- Visor Screen -->
+                <rect x="28" y="34" width="44" height="28" rx="9" fill="#141210" stroke="#7E846B" stroke-width="1.5"/>
+                <!-- Eyes (Idle / Happy / Thinking) -->
+                <g class="bot-eyes-idle">
+                    <circle cx="40" cy="47" r="4.5" fill="#E6E0D4"/>
+                    <circle cx="60" cy="47" r="4.5" fill="#E6E0D4"/>
+                </g>
+                <g class="bot-eyes-happy" style="display:none;">
+                    <path d="M 35 48 Q 40 41 45 48" stroke="#9AA18F" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M 55 48 Q 60 41 65 48" stroke="#9AA18F" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                </g>
+                <g class="bot-eyes-thinking" style="display:none;">
+                    <circle cx="40" cy="47" r="4.5" fill="#BFA17A"/>
+                    <line x1="55" y1="47" x2="65" y2="47" stroke="#BFA17A" stroke-width="3.5" stroke-linecap="round"/>
+                </g>
+                <!-- Mouth -->
+                <path class="bot-mouth" d="M 43 56 Q 50 60 57 56" stroke="#BFA17A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <!-- Base -->
+                <path d="M 34 78 Q 50 86 66 78" stroke="#8F6B3E" stroke-width="4" fill="none" stroke-linecap="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="glass-footer">
+        <div class="container footer-inner">
+            <span>منصة تحليلات الأعمال الأكاديمية © 2026-2027</span>
+            <span>نظم ومعلومات الأعمال</span>
+        </div>
+    </footer>
+
+    <script>
+/* ==========================================================================
+   1. QUESTION BANK & ESSAY GUIDE (Extracted & Structured by Chapters)
+   ========================================================================== */
+
+const QUESTION_BANK = [
+    // --- الفصل الأول: مفاهيم النظم ونظم المعلومات ---
+    {
+        id: 1,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'mcq',
+        question: 'ما المقصود بمفهوم النظام في إطار دراسة نظم المعلومات الإدارية؟',
+        options: ['عناصر مترابطة هادفة', 'عناصر منعزلة تماماً', 'برنامج تخزين فقط', 'شبكة الإنترنت وحدها'],
+        correctIndex: 0,
+        explanation: 'النظام عبارة عن مجموعة من العناصر المترابطة والمتفاعلة التي تعمل معاً في تناغم لتحقيق هدف أو أهداف محددة.'
+    },
+    {
+        id: 2,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'mcq',
+        question: 'أي من العناصر التالية يعد ركناً أساسياً في تعريف النظام؟',
+        options: ['نوع الطابعة', 'الأهداف والعلاقات والعناصر', 'اسم المستخدم', 'سرعة الإنترنت'],
+        correctIndex: 1,
+        explanation: 'الأركان الثلاثة الرئيسية لأي نظام هي: العناصر المكونة، العلاقات المتبادلة بينها، والأهداف المراد تحقيقها.'
+    },
+    {
+        id: 3,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'mcq',
+        question: 'كيف تسهم التغذية الراجعة في تحسين أداء النظام وتصحيح انحرافاته؟',
+        options: ['إلغاء المدخلات تماماً', 'إيقاف عمليات المعالجة', 'تصحيح انحراف الأداء', 'تخزين دون تقييم'],
+        correctIndex: 2,
+        explanation: 'التغذية الراجعة (Feedback) توفر معلومات تقييمية تساعد على مقارنة المخرجات بالأهداف وتصحيح الأخطاء الانحرافية.'
+    },
+    {
+        id: 4,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'mcq',
+        question: 'أي من الأمثلة التالية يمثل مدخلات يتم استخدامها بنظام المعلومات؟',
+        options: ['التقارير النهائية', 'القرارات المنفذة', 'نتائج التقييم', 'البيانات الخام'],
+        correctIndex: 3,
+        explanation: 'البيانات الخام (Raw Data) هي المادة الأولية وغير المعالجة التي تدخل للنظام لغرض المعالجة.'
+    },
+    {
+        id: 5,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'mcq',
+        question: 'ما المقصود بعملية معالجة البيانات داخل نظام المعلومات بالمؤسسة؟',
+        options: ['تحويل البيانات إلى معلومات', 'حذف البيانات بالكامل', 'طباعة الأرقام فقط', 'فصل أجزاء النظام'],
+        correctIndex: 0,
+        explanation: 'المعالجة (Processing) هي إجراء العمليات الحسابية والمنطقية لتحويل البيانات الأولية إلى معلومات قيمة لمتخذ القرار.'
+    },
+    {
+        id: 6,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'mcq',
+        question: 'أي من العناصر التالية يعد مخرجاً نهائياً لنظام المعلومات الإداري؟',
+        options: ['البيانات الأولية', 'تقارير المبيعات', 'إدخال طلب جديد', 'جمع الاستمارات'],
+        correctIndex: 1,
+        explanation: 'تقارير المبيعات تعتبر معلومات معالجة وجاهزة تعبر عن المخرجات النهائية للنظام.'
+    },
+    {
+        id: 7,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'mcq',
+        question: 'كيف يمكن تعريف النظام الفرعي وعلاقته بالنظام الأكبر داخل المؤسسة؟',
+        options: ['نظام مستقل تماماً', 'بديل النظام الرئيسي', 'جزء وظيفي تابع', 'رسم توضيحي فقط'],
+        correctIndex: 2,
+        explanation: 'النظام الفرعي (Subsystem) هو جزء وظيفي مكون ومندمج ضمن نظام كلي أكبر يؤدي دوراً مخصصاً.'
+    },
+    {
+        id: 8,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'mcq',
+        question: 'ما الدور الذي تؤديه النماذج الوصفية عند تمثيل الأنظمة المختلفة؟',
+        options: ['تصنيع مجسم مادي', 'تشفير قاعدة البيانات', 'استبدال الإدارة تماماً', 'الوصف النصي والشفهي'],
+        correctIndex: 3,
+        explanation: 'النماذج الوصفية تعتمد على الشرح اللغوي أو النصي والشفهي لوصف كينونة النظام وعلاقاته.'
+    },
+    {
+        id: 9,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'mcq',
+        question: 'أي من الخيارات التالية يُعد مثالاً واضحاً على النموذج المادي؟',
+        options: ['مجسم مبنى مصغر', 'تقرير كتابي', 'رسم بياني', 'معادلة حسابية'],
+        correctIndex: 0,
+        explanation: 'النموذج المادي (Physical Model) يمثل جسماً محسوساً ملموساً يماثل الواقع مثل المجسمات المعمارية.'
+    },
+
+    // --- الفصل الثاني: معالجة وتجهيز البيانات ---
+    {
+        id: 10,
+        chapter: 'الفصل الثاني: تجهيز البيانات',
+        type: 'mcq',
+        question: 'ما الهدف الأساسي من تنقية البيانات قبل استخدامها في التحليل؟',
+        options: ['زيادة أخطاء البيانات', 'ضمان الجودة والاكتمال', 'تحويلها إلى صور', 'إلغاء المراجعة'],
+        correctIndex: 1,
+        explanation: 'تنقية البيانات (Data Cleaning) تهدف لاكتشاف الأخطاء وتصحيح القيم المفقودة أو المتكررة لضمان جودة التحليل.'
+    },
+    {
+        id: 11,
+        chapter: 'الفصل الثاني: تجهيز البيانات',
+        type: 'mcq',
+        question: 'ماذا تعني عملية فرز البيانات عند التعامل مع السجلات المختلفة؟',
+        options: ['التنبؤ بحجم المبيعات', 'حذف البيانات الأصلية', 'ترتيب وتصنيف البيانات', 'إغلاق قاعدة البيانات'],
+        correctIndex: 2,
+        explanation: 'فرز البيانات (Sorting) يعني ترتيب البيانات وفق معيار محدد (تصاعدي/تنازلي، أبجدي أو تاريخي).'
+    },
+    {
+        id: 12,
+        chapter: 'الفصل الثاني: تجهيز البيانات',
+        type: 'mcq',
+        question: 'ما المقصود بتلخيص البيانات عند إعداد المعلومات اللازمة لاتخاذ القرار؟',
+        options: ['إضافة بيانات زائدة', 'حفظ نسخ منفصلة', 'خلط مصادر البيانات', 'إبراز النقاط الأساسية'],
+        correctIndex: 3,
+        explanation: 'التلخيص (Summarization) يركز على تجميع واختصار البيانات الضخمة لإبراز المؤشرات والنقاط الجوهرية.'
+    },
+
+    // --- الفصل الثالث: أنواع تحليلات الأعمال ---
+    {
+        id: 13,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'mcq',
+        question: 'ما الغاية الأساسية من استخدام تحليلات الأعمال داخل المؤسسات الحديثة؟',
+        options: ['دعم القرارات المؤسسية', 'الاستغناء عن البيانات', 'قرارات عشوائية تماماً', 'استبدال جميع الموظفين'],
+        correctIndex: 0,
+        explanation: 'الغرض الرئيسي لتحليلات الأعمال هو تحويل البيانات إلى أدلة ورؤى تدعم القرارات المؤسسية الذكية.'
+    },
+    {
+        id: 14,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'mcq',
+        question: 'أي نوع من تحليلات الأعمال يساعد على معرفة ما حدث؟',
+        options: ['التحليلات التنبؤية', 'التحليلات الوصفية', 'التحليلات التوجيهية', 'التحليلات الافتراضية'],
+        correctIndex: 1,
+        explanation: 'التحليلات الوصفية (Descriptive Analytics) تركز على الإجابة عن سؤال: ماذا حدث في الماضي والحاضر؟'
+    },
+    {
+        id: 15,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'mcq',
+        question: 'ما نوع التحليلات المستخدمة لتفسير أسباب وقوع الأحداث ونتائجها؟',
+        options: ['التحليلات الوصفية', 'التحليلات التوجيهية', 'التحليلات التشخيصية', 'إحصاء وصفي فقط'],
+        correctIndex: 2,
+        explanation: 'التحليلات التشخيصية (Diagnostic Analytics) تجيب عن سؤال: لماذا حدث ذلك؟ وتقوم بتحليل الأسباب الجذرية.'
+    },
+    {
+        id: 16,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'mcq',
+        question: 'أي أنواع تحليلات الأعمال يستخدم لتقدير النتائج المتوقعة مستقبلاً؟',
+        options: ['تحليل العمليات', 'التحليل الوصفي', 'التحليل التشخيصي', 'التحليل التنبؤي'],
+        correctIndex: 3,
+        explanation: 'التحليل التنبؤي (Predictive Analytics) يستخدم النماذج الإحصائية والتعلم الآلي لتقدير ما يحتمل حدوثه مستقبلاً.'
+    },
+    {
+        id: 17,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'mcq',
+        question: 'ما الدور الذي تقوم به التحليلات التوجيهية عند اتخاذ القرارات؟',
+        options: ['اقتراح الإجراءات المثلى', 'وصف الماضي فقط', 'جمع دون تحليل', 'تحديد أنواع الملفات'],
+        correctIndex: 0,
+        explanation: 'التحليلات التوجيهية (Prescriptive Analytics) توصي باقتراح الإجراءات والحلول المثلى الواجب اتخاذها.'
+    },
+    {
+        id: 18,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'mcq',
+        question: 'ما أول خطوة في خطوات تنفيذ تحليلات الأعمال بالمؤسسة؟',
+        options: ['تصور البيانات', 'جمع البيانات', 'عرض النتائج', 'النمذجة التنبؤية'],
+        correctIndex: 1,
+        explanation: 'أولى الخطوات العملية في دورة حياة تحليلات الأعمال هي جمع البيانات من مصادرها الموثوقة.'
+    },
+    {
+        id: 19,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'mcq',
+        question: 'متى يجب إجراء المعالجة المسبقة للبيانات خلال عملية التحليل؟',
+        options: ['بعد تقديم التقرير', 'قبل تحديد الأهداف', 'بعد جمع البيانات', 'بعد تنفيذ التوصيات'],
+        correctIndex: 2,
+        explanation: 'تأتي مرحلة معالجة وتنقية البيانات مباشرة عقب عملية جمع البيانات وتجميعها.'
+    },
+    {
+        id: 20,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'mcq',
+        question: 'ما المقصود بتصور البيانات في المراحل المختلفة لتحليلات الأعمال؟',
+        options: ['حذف الرسوم البيانية', 'نسخ البيانات يدوياً', 'كتابة أكواد فقط', 'عرض النتائج بصرياً'],
+        correctIndex: 3,
+        explanation: 'تصور البيانات (Data Visualization) يهدف إلى تحويل الأرقام والبيانات المعقدة إلى رسوم مرئية سهلة الفهم.'
+    },
+    {
+        id: 21,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'mcq',
+        question: 'ما الفائدة الرئيسية من استخدام لوحات المعلومات لعرض مؤشرات الأداء؟',
+        options: ['متابعة مؤشرات الأداء', 'إخفاء الأداء المؤسسي', 'تكرار البيانات عمداً', 'إلغاء مقاييس الأداء'],
+        correctIndex: 0,
+        explanation: 'لوحات المعلومات (Dashboards) توفر شاشات تفاعلية لمتابعة مؤشرات الأداء الرئيسية (KPIs) لحظياً.'
+    },
+
+    // --- الفصل الرابع: أدوار وأدوات محلل الأعمال ---
+    {
+        id: 22,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'mcq',
+        question: 'أي من المهام التالية يُعد ضمن المسؤوليات الأساسية لمحلل الأعمال؟',
+        options: ['صيانة الأجهزة فقط', 'تحديد متطلبات الأعمال', 'تصميم الشعار فقط', 'تسجيل حضور الموظفين'],
+        correctIndex: 1,
+        explanation: 'المسؤولية الجوهرية لمحلل الأعمال هي فهم وتحديد متطلبات المؤسسة والربط بين الإدارة والتكنولوجيا.'
+    },
+    {
+        id: 23,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'mcq',
+        question: 'من هم أصحاب المصلحة المرتبطون بالمشروع أو المتأثرون بنتائجه؟',
+        options: ['العملاء فقط', 'المبرمجون فقط', 'الأطراف المعنية بالمشروع', 'المدير المالي فقط'],
+        correctIndex: 2,
+        explanation: 'أصحاب المصلحة (Stakeholders) يشملون الإدارة والموظفين والعملاء وكل طرف يتأثر أو يؤثر بالمشروع.'
+    },
+    {
+        id: 24,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'mcq',
+        question: 'ما الهدف الأساسي من توثيق خطوات وإجراءات عمليات الأعمال بالمؤسسة؟',
+        options: ['زيادة التعقيد الإداري', 'إلغاء تدريب الموظفين', 'إخفاء خطوات العمل', 'توضيح فرص التحسين'],
+        correctIndex: 3,
+        explanation: 'التوثيق يساعد على فهم مسار سير العمل الحالي واكتشاف الفجوات وتوضيح نقاط التحسين والتطوير.'
+    },
+    {
+        id: 25,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'mcq',
+        question: 'أي من الأساليب التالية يساعد في توليد حلول مبتكرة للمشكلات؟',
+        options: ['العصف الذهني', 'الحذف العشوائي', 'تجاهل الأطراف المعنية', 'إيقاف جمع البيانات'],
+        correctIndex: 0,
+        explanation: 'العصف الذهني (Brainstorming) هو أسلوب تفاعلي جماعي رائد لتوليد أكبر عدد من الأفكار والحلول المبتكرة.'
+    },
+    {
+        id: 26,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'mcq',
+        question: 'ما المقصود بالتفكير الجانبي عند البحث عن حلول لمشكلات الأعمال؟',
+        options: ['اتباع حل واحد', 'استكشاف زوايا جديدة', 'تكرار الحل نفسه', 'منع الأفكار الجديدة'],
+        correctIndex: 1,
+        explanation: 'التفكير الجانبي (Lateral Thinking) يعتمد على الخروج عن الأطر التقليدية واستكشاف زوايا وحلول غير مألوفة.'
+    },
+    {
+        id: 27,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'mcq',
+        question: 'ما الغرض من إعداد خطة واضحة لتنفيذ أنشطة تحليل الأعمال؟',
+        options: ['إلغاء مسؤوليات الفريق', 'تقييد مهام المشروع', 'تحديد النطاق والمسؤوليات', 'الاعتماد على التخمين'],
+        correctIndex: 2,
+        explanation: 'تضع خطة التحليل نطاق العمل الزمني والمهام وتحدد توزيع المسؤوليات بدقة لتفادي العشوائية.'
+    },
+    {
+        id: 28,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'mcq',
+        question: 'لماذا يعد تفصيل متطلبات الحل ضروريًا قبل بدء عملية التنفيذ؟',
+        options: ['إخفاء تفاصيل المتطلبات', 'منع اختبارات الحل', 'زيادة غموض المتطلبات', 'توضيح متطلبات التنفيذ'],
+        correctIndex: 3,
+        explanation: 'التفصيل الدقيق يضمن عدم حدوث سوء فهم بين الفريق المنفذ والإدارة ويضمن مطابقة الحل المطور للاحتياج.'
+    },
+    {
+        id: 29,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'mcq',
+        question: 'ما أبرز اختلاف بين ذكاء الأعمال وعلم البيانات من حيث الاستخدام؟',
+        options: ['التقارير مقابل النمذجة', 'مفهومان متطابقان دائماً', 'تجاهل البيانات تماماً', 'غياب دعم القرار'],
+        correctIndex: 0,
+        explanation: 'ذكاء الأعمال (BI) يركز على التقارير واللوحات للأداء الحالي والماضي، بينما علم البيانات يركز على النمذجة التنبؤية المعقدة.'
+    },
+    {
+        id: 30,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'mcq',
+        question: 'ما الخطوة التي ينبغي تنفيذها بعد تقديم نتائج تحليلات الأعمال؟',
+        options: ['إهمال النتائج', 'متابعة تنفيذ التوصيات', 'منع مشاركة التقارير', 'إيقاف قياس الأداء'],
+        correctIndex: 1,
+        explanation: 'بعد تقديم النتائج يجب متابعة تطبيق التوصيات المقترحة على أرض الواقع وقياس الأثر الناتج عنها.'
+    },
+
+    // --- أسئلة الصح والخطأ (31 - 50) ---
+    {
+        id: 31,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'tf',
+        question: 'يتكون النظام من عناصر مترابطة تعمل معاً لتحقيق هدف محدد ومشترك.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ حيث يُعرّف النظام بأنه مجموعة عناصر متفاعلة تعمل معاً لتحقيق هدف محدد.'
+    },
+    {
+        id: 32,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'tf',
+        question: 'يمكن تقييم كفاءة النظام بدقة دون دراسة العلاقات بين مكوناته المختلفة.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 1,
+        explanation: 'عبارة خاطئة؛ لا يمكن تقييم النظام دون فهم وتحليل العلاقات والروابط التي تربط مكوناته ببعضها.'
+    },
+    {
+        id: 33,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'tf',
+        question: 'تعد الأهداف والعناصر والعلاقات من الأركان الأساسية اللازمة لتعريف النظام.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ تشكل العناصر والعلاقات والأهداف الركائز التعريفية الهيكلية لأي نظام.'
+    },
+    {
+        id: 34,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'tf',
+        question: 'لا يمكن للنظام الفرعي التفاعل مع أجزاء أخرى داخل النظام الأكبر.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 1,
+        explanation: 'عبارة خاطئة؛ الأنظمة الفرعية تتفاعل بالضرورة وتتبادل المدخلات والمخرجات ضمن النظام الأكبر.'
+    },
+    {
+        id: 35,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'tf',
+        question: 'تستخدم النماذج الوصفية للتعبير عن النظام باستخدام الكتابة أو الشرح الشفهي.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ النماذج الوصفية تشرح طبيعة العلاقات والنظام نصياً أو شفهياً.'
+    },
+    {
+        id: 36,
+        chapter: 'الفصل الأول: مفاهيم النظم',
+        type: 'tf',
+        question: 'يمثل النموذج المادي دائماً معادلة رياضية مجردة دون شكل محسوس.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 1,
+        explanation: 'عبارة خاطئة؛ النموذج المادي يكون مجسماً ملموساً (مثل مجسم مبنى)، أما المعادلة فهي نموذج رياضي.'
+    },
+    {
+        id: 37,
+        chapter: 'الفصل الثاني: تجهيز البيانات',
+        type: 'tf',
+        question: 'تساعد تنقية البيانات على اكتشاف الأخطاء والتحقق من سلامة البيانات المسجلة.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ تنقية البيانات تزيل التكرار وتصحح القيم الشاذة لتأكيد النزاهة والجودة.'
+    },
+    {
+        id: 38,
+        chapter: 'الفصل الثاني: تجهيز البيانات',
+        type: 'tf',
+        question: 'تعني عملية فرز البيانات حذف جميع السجلات الموجودة في النظام.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 1,
+        explanation: 'عبارة خاطئة؛ الفرز هو ترتيب وتصنيف السجلات وفق معيار معين وليس حذفها.'
+    },
+    {
+        id: 39,
+        chapter: 'الفصل الثاني: تجهيز البيانات',
+        type: 'tf',
+        question: 'تتضمن معالجة البيانات عمليات متنوعة مثل الحساب والمقارنة والفرز والتلخيص.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ تشمل المعالجة جميع العمليات الحسابية والمنطقية والتنظيمية لتحويل البيانات لمعلومات.'
+    },
+    {
+        id: 40,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'tf',
+        question: 'تسهم تحليلات الأعمال في دعم القرارات الإدارية اعتماداً على البيانات المتاحة.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ تمثل تحليلات الأعمال الأساس العلمي المبني على الأدلة لدعم القرار.'
+    },
+    {
+        id: 41,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'tf',
+        question: 'تستخدم التحليلات الوصفية حصرياً للتنبؤ بالأحداث التي ستقع في المستقبل.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 1,
+        explanation: 'عبارة خاطئة؛ التحليلات الوصفية تصف الماضي والحاضر، أما التنبؤ المستقبلي فهو وظيفة التحليلات التنبؤية.'
+    },
+    {
+        id: 42,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'tf',
+        question: 'تركز التحليلات التشخيصية على تحديد الأسباب التي أدت لوقوع الأحداث.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ هدف التحليل التشخيصي هو الإجابة عن سؤال: لماذا حدث ذلك؟'
+    },
+    {
+        id: 43,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'tf',
+        question: 'تساعد التحليلات التنبؤية في تقدير الاتجاهات والنتائج المحتملة مستقبلاً.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ تعتمد على نماذج الإحصاء والتعلم الآلي لتقدير الاتجاهات القادمة.'
+    },
+    {
+        id: 44,
+        chapter: 'الفصل الثاني: تجهيز البيانات',
+        type: 'tf',
+        question: 'لا تؤثر جودة البيانات المستخدمة على دقة نتائج تحليلات الأعمال.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 1,
+        explanation: 'عبارة خاطئة؛ جودة المخرجات تعتمد كلياً على جودة المدخلات (Garbage In, Garbage Out).'
+    },
+    {
+        id: 45,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'tf',
+        question: 'تعد عملية جمع البيانات خطوة أساسية ضمن مراحل تحليلات الأعمال.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ جمع البيانات يمثل نقطة البداية الأولى والضرورية لأي مشروع تحليلي.'
+    },
+    {
+        id: 46,
+        chapter: 'الفصل الثالث: أنواع التحليلات',
+        type: 'tf',
+        question: 'يساعد تصور البيانات على توضيح نتائج التحليل لمختلف أصحاب المصلحة.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ التصور البصري يسهل توصيل المفاهيم والمعلومات للإداريين وغير الفنيين.'
+    },
+    {
+        id: 47,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'tf',
+        question: 'يقتصر دور محلل الأعمال على كتابة الأكواد البرمجية دون مهام أخرى.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 1,
+        explanation: 'عبارة خاطئة؛ يتعدى دور محلل الأعمال البرمجة ليشمل جمع المتطلبات، تحليل العمليات، وتوثيق الحلول.'
+    },
+    {
+        id: 48,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'tf',
+        question: 'تساعد مقابلات العاملين على فهم سير العمليات وتوثيق خطوات تنفيذها.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ المقابلات تُعد أداة رئيسية لاستكشاف الواقع التشغيلي وتوثيق الإجراءات.'
+    },
+    {
+        id: 49,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'tf',
+        question: 'تهدف جهود تحسين عمليات الأعمال إلى خفض كفاءتها وزيادة تعقيدها.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 1,
+        explanation: 'عبارة خاطئة؛ تحسين العمليات يهدف لرفع الكفاءة، تقليل التكاليف، وتبسيط الإجراءات.'
+    },
+    {
+        id: 50,
+        chapter: 'الفصل الرابع: دور محلل الأعمال',
+        type: 'tf',
+        question: 'يشمل دعم التنفيذ الفني مراجعة الحلول والتحقق من استيفاء المتطلبات المحددة.',
+        options: ['صح', 'خطأ'],
+        correctIndex: 0,
+        explanation: 'عبارة صحيحة؛ ضمان استيفاء المتطلبات المحددة جزء رئيسي من نجاح الحل الفني.'
+    }
+];
+
+const ESSAY_QUESTIONS = [
+    {
+        id: 1,
+        title: 'السؤال 1: ما هي نظم المعلومات وما هي خصائصها الرئيسية؟',
+        answer: `<strong>تعريف نظم المعلومات (Information Systems):</strong> هي مجموعة متكاملة من الأفراد، الأجهزة، البرمجيات، البيانات، الإجراءات، وشبكات الاتصال تعمل معاً على جمع البيانات ومعالجتها وتخزينها وتحويلها إلى معلومات مفيدة لدعم العمليات الإدارية واتخاذ القرارات.<br><br>
+        <strong>أهم خصائص نظم المعلومات:</strong>
+        <ul>
+            <li><strong>التكامل (Integration):</strong> ربط الأقسام والوظائف المختلفة داخل المؤسسة.</li>
+            <li><strong>الدقة (Accuracy):</strong> توفير معلومات صحيحة وخالية من الأخطاء قدر الإمكان.</li>
+            <li><strong>السرعة (Speed):</strong> معالجة البيانات واسترجاع المعلومات في الوقت المناسب.</li>
+            <li><strong>المرونة (Flexibility):</strong> القدرة على التكيف مع التغيرات في احتياجات المؤسسة.</li>
+            <li><strong>الموثوقية (Reliability):</strong> توفير معلومات يمكن الاعتماد عليها بثقة.</li>
+            <li><strong>الأمن (Security):</strong> حماية البيانات من الوصول غير المصرح به.</li>
+            <li><strong>دعم اتخاذ القرار:</strong> تزويد المستويات الإدارية بالمعلومات الدقيقة.</li>
+        </ul>`
+    },
+    {
+        id: 2,
+        title: 'السؤال 2: ما هي الوظائف والعمليات الرئيسية لنظم المعلومات؟',
+        answer: `تتضمن نظم المعلومات سلسلة من الوظائف المتكاملة:
+        <ul>
+            <li><strong>جمع البيانات (Data Collection):</strong> الحصول على البيانات من المصادر الداخلية والخارجية.</li>
+            <li><strong>إدخال البيانات (Data Input):</strong> تسجيل البيانات داخل النظام.</li>
+            <li><strong>تنقية البيانات (Data Cleaning):</strong> اكتشاف الأخطاء والقيم غير الصحيحة وتصحيحها.</li>
+            <li><strong>ترميز البيانات (Data Coding):</strong> تحويل البيانات إلى رموز أو تصنيفات موحدة لتسهيل المعالجة.</li>
+            <li><strong>معالجة البيانات (Data Processing):</strong> إجراء العمليات الحسابية والمنطقية.</li>
+            <li><strong>فرز وتلخيص البيانات:</strong> ترتيب النتائج وإبراز المؤشرات الأساسية.</li>
+            <li><strong>تخزين واسترجاع وإخراج المعلومات:</strong> حفظ البيانات وتقديم التقارير ولوحات المعلومات.</li>
+        </ul>`
+    },
+    {
+        id: 3,
+        title: 'السؤال 3: ما هي أدوات وتقنيات جمع وتوثيق متطلبات محللي الأعمال؟',
+        answer: `<strong>أهم الأدوات والتقنيات المستعملة:</strong>
+        <ul>
+            <li><strong>المقابلات (Interviews):</strong> جمع المعلومات مباشرة من أصحاب المصلحة.</li>
+            <li><strong>الاستبيانات (Questionnaires):</strong> استطلاع آراء أعداد كبيرة من المستخدمين.</li>
+            <li><strong>الملاحظة (Observation):</strong> دراسة العمليات أثناء تنفيذها الفعلي على أرض الواقع.</li>
+            <li><strong>تحليل المستندات (Document Analysis):</strong> مراجعة التقارير والنماذج والسياسات الحالية.</li>
+            <li><strong>مخططات تدفق العمليات (Process Flowcharts):</strong> تمثيل خطوات العمل بصرياً.</li>
+            <li><strong>تحليل SWOT وتحليل الفجوات (Gap Analysis):</strong> تقييم الوضع الحالي والمستهدف.</li>
+        </ul>`
+    },
+    {
+        id: 4,
+        title: 'السؤال 4: ما هي مراحل تحسين عمليات الأعمال (BPI)؟',
+        answer: `تحسين عمليات الأعمال (Business Process Improvement) هو منهج منظم يمر بالمراحل التالية:
+        <ol>
+            <li>تحديد العملية المطلوب تحسينها.</li>
+            <li>جمع البيانات المتعلقة بأداء العملية الحالية.</li>
+            <li>تحليل الوضع الحالي واكتشاف المشكلات.</li>
+            <li>تحديد أسباب القصور والاختناقات.</li>
+            <li>اقتراح الحلول والتحسينات المناسبة.</li>
+            <li>تنفيذ التحسينات ومتابعة النتائج.</li>
+            <li>قياس الأداء باستخدام مؤشرات الأداء الرئيسية (KPIs).</li>
+        </ol>`
+    },
+    {
+        id: 5,
+        title: 'السؤال 5: ما هي خطوات تنفيذ دورة عمل تحليلات الأعمال بالمؤسسة؟',
+        answer: `تمر عملية تحليل الأعمال بالمراحل الأساسية التالية:
+        <ul>
+            <li><strong>1. تحديد المشكلة أو الفرصة:</strong> فهم الأهداف المطلوب تحقيقها.</li>
+            <li><strong>2. تحديد أصحاب المصلحة:</strong> التعرف على الأطراف المتأثرة بالمشروع.</li>
+            <li><strong>3. جمع المتطلبات:</strong> باستخدام المقابلات والاستبيانات والملاحظة.</li>
+            <li><strong>4. تحليل الوضع الحالي (As-Is Analysis):</strong> دراسة العمليات القائمة وتحديد الثغرات.</li>
+            <li><strong>5. تحليل الفجوات (Gap Analysis):</strong> مقارنة الوضع الحالي بالوضع المستهدف.</li>
+            <li><strong>6. تصميم الحل المقترح (To-Be Design):</strong> صياغة تحسينات النظم والعمليات.</li>
+            <li><strong>7. التوثيق والتقييم:</strong> مراجعة الوثائق والتأكد من تحقيق القيمة المرجوة.</li>
+        </ul>`
+    },
+    {
+        id: 6,
+        title: 'السؤال 6: ما هي الأدوار والمسؤوليات الرئيسية لمحلل الأعمال؟',
+        answer: `<strong>أولاً: الأدوات المستخدمة:</strong> DFD, Use Case Diagrams, BPMN, SWOT, Gap Analysis, Excel, Power BI, Jira.<br>
+        <strong>ثانياً: المسؤوليات:</strong>
+        <ul>
+            <li>تحديد احتياجات المؤسسة وأهدافها الاستراتيجية.</li>
+            <li>جمع متطلبات المستخدمين وتوضيحها لفرق التطوير.</li>
+            <li>توثيق العمليات وتحديد أسباب المشكلات.</li>
+            <li>تقييم البدائل من حيث التكلفة والمنفعة (Cost-Benefit Analysis).</li>
+            <li>متابعة نتائج الحلول وقياس التحسين في الأداء.</li>
+        </ul>`
+    },
+    {
+        id: 7,
+        title: 'السؤال 7: ما هي التحديات الشائعة التي تواجه مشاريع تحليلات الأعمال؟',
+        answer: `تتنوع التحديات بين تقنية وتنظيمية:
+        <ul>
+            <li><strong>عدم وضوح المتطلبات:</strong> صعوبة تحديد الاحتياجات الفعلية بدقة.</li>
+            <li><strong>تغير المتطلبات المستمر:</strong> ظهور متطلبات جديدة أثناء التنفيذ.</li>
+            <li><strong>ضعف التواصل:</strong> غياب التنسيق بين الإدارة والمستخدمين والمطورين.</li>
+            <li><strong>مقاومة التغيير:</strong> رفض الموظفين للأنظمة أو الإجراءات الجديدة.</li>
+            <li><strong>نقص جودة البيانات:</strong> غياب البيانات الدقيقة والكاملة.</li>
+            <li><strong>محدودية الموارد وضغط الوقت والميزانية.</strong></li>
+        </ul>`
+    },
+    {
+        id: 8,
+        title: 'السؤال 8: ما الفرق بين ذكاء الأعمال (BI) وتحليلات البيانات (DA) وعلم البيانات (DS)؟',
+        answer: `
+        <table class="essay-table">
+            <thead>
+                <tr>
+                    <th>وجه المقارنة</th>
+                    <th>ذكاء الأعمال (BI)</th>
+                    <th>تحليلات البيانات (DA)</th>
+                    <th>علم البيانات (DS)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>التركيز</strong></td>
+                    <td>الأداء الحالي والتاريخي</td>
+                    <td>تفسير العلاقات والرؤى</td>
+                    <td>النمذجة التنبؤية والذكاء الاصطناعي</td>
+                </tr>
+                <tr>
+                    <td><strong>السؤال الأهم</strong></td>
+                    <td>ماذا حدث الآن وسابقاً؟</td>
+                    <td>لماذا حدث وكيف نتصرف؟</td>
+                    <td>ماذا سيحدث مستقبلاً وكيف ننمذجه؟</td>
+                </tr>
+                <tr>
+                    <td><strong>الأدوات</strong></td>
+                    <td>Power BI, Tableau</td>
+                    <td>Excel, SQL, Python</td>
+                    <td>Python, R, Machine Learning</td>
+                </tr>
+            </tbody>
+        </table>`
+    },
+    {
+        id: 9,
+        title: 'السؤال 9: ما هي الأنواع الأربعة الرئيسية لتحليلات الأعمال؟',
+        answer: `
+        <ul>
+            <li><strong>1. التحليلات الوصفية (Descriptive):</strong> تجيب عن (ماذا حدث؟) عبر التقارير والإحصائيات.</li>
+            <li><strong>2. التحليلات التشخيصية (Diagnostic):</strong> تجيب عن (لماذا حدث؟) عبر المقارنات وتحليل السبب الجذري.</li>
+            <li><strong>3. التحليلات التنبؤية (Predictive):</strong> تجيب عن (ماذا يحتمل أن يحدث؟) عبر النماذج الإحصائية والتعلم الآلي.</li>
+            <li><strong>4. التحليلات التوجيهية (Prescriptive):</strong> تجيب عن (ما القرار الأفضل؟) عبر المحاكاة والتحسين الرياضي.</li>
+        </ul>`
+    },
+    {
+        id: 10,
+        title: 'السؤال 10: ما هي أبرز التقنيات والأدوات المستخدمة في تحليلات الأعمال؟',
+        answer: `<strong>الأدوات البرمجية:</strong> MS Excel (حسابات وتراكمات)، Power BI & Tableau (لوحات تفاعلية وتصور مرئي)، SQL (استعلام قواعد البيانات)، Python (تحليل ونمذجة متقدمة)، Jira (إدارة المتطلبات).<br><br>
+        <strong>التقنيات التحليلية:</strong>
+        <ul>
+            <li><strong>تحليل SWOT:</strong> نقاط القوة والضعف والفرص والتهديدات.</li>
+            <li><strong>تحليل PESTLE:</strong> العوامل السياسية والاقتصادية والاجتماعية والتكنولوجية والقانونية والبيئية.</li>
+            <li><strong>تحليل السبب الجذري (Root Cause Analysis):</strong> تشخيص الأسباب العميقة للمشكلات.</li>
+            <li><strong>تحليل التكلفة والمنفعة (Cost-Benefit Analysis).</strong></li>
+        </ul>`
+    }
+];
+
+/* ==========================================================================
+   2. APPLICATION STATE & CORE LOGIC
+   ========================================================================== */
+const state = {
+    username: localStorage.getItem('ba_username') || '',
+    quizHistory: JSON.parse(localStorage.getItem('ba_quiz_history') || '[]'),
+    bookmarks: JSON.parse(localStorage.getItem('ba_bookmarks') || '[]'),
+    chapterStats: JSON.parse(localStorage.getItem('ba_chapter_stats') || '{}'),
+
+    currentMode: 'full',
+    activeQuestions: [],
+    currentIndex: 0,
+    userAnswers: {},
+    timerSeconds: 0,
+    initialSeconds: 0,
+    timerInterval: null,
+    isSubmitted: false,
+    lastMissedIds: []
+};
+
+const PROGRESS_KEY = 'ba_in_progress';
+
+const MODE_LABELS = {
+    full: 'الاختبار الشامل (50)',
+    quick: 'اختبار سريع (10)',
+    mcq: 'اختيار من متعدد (30)',
+    tf: 'صح أم خطأ (20)',
+    retry: 'إعادة حل الأخطاء'
+};
+
+let accuracyChartInstance = null;
+let chapterChartInstance = null;
+let resultDonutInstance = null;
+
+/* ==========================================================================
+   3. INITIALIZATION & USER IDENTITY (Liquid Glass Modal)
+   ========================================================================== */
+window.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    renderEssayGuide();
+    updateDashboardMetrics();
+
+    if (!state.username) {
+        promptEditName(true);
+    } else {
+        document.getElementById('headerUserName').innerText = state.username;
+        offerResume();
+    }
+});
+
+/* ---------- Progress persistence (survives refresh) ---------- */
+function saveProgress() {
+    if (state.isSubmitted || !state.activeQuestions.length) return;
+    try {
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+            mode: state.currentMode,
+            questions: state.activeQuestions,
+            currentIndex: state.currentIndex,
+            userAnswers: state.userAnswers,
+            timerSeconds: state.timerSeconds,
+            initialSeconds: state.initialSeconds
+        }));
+    } catch (e) { /* storage unavailable */ }
+}
+
+function clearProgress() {
+    try { localStorage.removeItem(PROGRESS_KEY); } catch (e) { /* ignore */ }
+}
+
+function loadProgress() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(PROGRESS_KEY) || 'null');
+        if (saved && Array.isArray(saved.questions) && saved.questions.length && saved.timerSeconds > 0) return saved;
+    } catch (e) { /* ignore */ }
+    return null;
+}
+
+function offerResume() {
+    const saved = loadProgress();
+    if (!saved) return;
+    const answered = Object.keys(saved.userAnswers || {}).length;
+
+    Swal.fire({
+        title: 'عندك اختبار لم يكتمل',
+        html: `${MODE_LABELS[saved.mode] || ''}<br>جاوبت على ${answered} من ${saved.questions.length} سؤال، والوقت المتبقي ${Math.ceil(saved.timerSeconds / 60)} دقيقة.`,
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'استكمال الاختبار',
+        cancelButtonText: 'إلغاؤه',
+        confirmButtonColor: '#8F6B3E',
+        allowOutsideClick: false,
+        customClass: { popup: 'luxury-glass-swal' }
+    }).then((res) => {
+        if (res.isConfirmed) {
+            state.currentMode = saved.mode;
+            state.activeQuestions = saved.questions;
+            state.currentIndex = Math.min(saved.currentIndex || 0, saved.questions.length - 1);
+            state.userAnswers = saved.userAnswers || {};
+            state.timerSeconds = saved.timerSeconds;
+            state.initialSeconds = saved.initialSeconds || saved.timerSeconds;
+            state.isSubmitted = false;
+            enterQuizView();
+        } else {
+            clearProgress();
+        }
+    });
+}
+
+function promptEditName(isFirstVisit = false) {
+    Swal.fire({
+        title: isFirstVisit ? 'أهلاً بك في منصة تحليلات الأعمال' : 'تعديل اسم الطالب',
+        text: 'اكتب اسمك ليظهر في لوحة التحكم وسجل إنجازاتك:',
+        input: 'text',
+        inputValue: state.username || '',
+        inputPlaceholder: 'مثال: أحمد صلاح',
+        confirmButtonText: 'حفظ والبدء',
+        confirmButtonColor: '#8F6B3E',
+        showCancelButton: !isFirstVisit,
+        cancelButtonText: 'إلغاء',
+        allowOutsideClick: !isFirstVisit,
+        customClass: {
+            popup: 'luxury-glass-swal',
+            input: 'luxury-swal-input'
+        },
+        inputValidator: (value) => {
+            if (!value || !value.trim()) {
+                return 'يرجى كتابة اسمك أولاً!';
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            state.username = result.value.trim();
+            localStorage.setItem('ba_username', state.username);
+            document.getElementById('headerUserName').innerText = state.username;
+            if (isFirstVisit) offerResume();
+            updateBotSpeech(
+                'idle',
+                `أهلاً بك يا ${state.username}!`,
+                'أنا مساعدك الذكي في مادة تحليلات الأعمال. اختر أي وضع اختبار وهكون معاك خطوة بخطوة!'
+            );
+        }
+    });
+}
+
+/* ==========================================================================
+   4. NAVIGATION
+   ========================================================================== */
+function switchView(viewName) {
+    document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+    const target = document.getElementById(`view-${viewName}`);
+    if (target) target.classList.add('active');
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === viewName);
+    });
+
+    if (viewName === 'dashboard') {
+        updateDashboardMetrics();
+        renderDashboardCharts();
+        renderHistoryTable();
+    }
+
+    lucide.createIcons();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ==========================================================================
+   5. INTERACTIVE STUDY BOT CONTROLLER
+   ========================================================================== */
+function updateBotSpeech(mood, title, message) {
+    const avatar = document.getElementById('botAvatarBtn');
+    const bubble = document.getElementById('botSpeechBubble');
+    const titleEl = document.getElementById('botStatusTitle');
+    const textEl = document.getElementById('botSpeechText');
+
+    avatar.classList.remove('state-idle', 'state-happy', 'state-thinking');
+    avatar.classList.add(`state-${mood}`);
+
+    avatar.querySelector('.bot-eyes-idle').style.display = mood === 'idle' ? 'block' : 'none';
+    avatar.querySelector('.bot-eyes-happy').style.display = mood === 'happy' ? 'block' : 'none';
+    avatar.querySelector('.bot-eyes-thinking').style.display = mood === 'thinking' ? 'block' : 'none';
+
+    const mouth = avatar.querySelector('.bot-mouth');
+    if (mood === 'happy') {
+        mouth.setAttribute('d', 'M 41 55 Q 50 64 59 55');
+    } else if (mood === 'thinking') {
+        mouth.setAttribute('d', 'M 44 58 Q 50 54 56 58');
+    } else {
+        mouth.setAttribute('d', 'M 43 56 Q 50 60 57 56');
+    }
+
+    bubble.classList.remove('hidden', 'bubble-correct', 'bubble-wrong');
+    if (mood === 'happy') bubble.classList.add('bubble-correct');
+    if (mood === 'thinking') bubble.classList.add('bubble-wrong');
+
+    titleEl.innerText = title;
+    textEl.innerText = message;
+}
+
+function toggleBotBubble() {
+    document.getElementById('botSpeechBubble').classList.toggle('hidden');
+}
+
+function hideBotBubble() {
+    document.getElementById('botSpeechBubble').classList.add('hidden');
+}
+
+/* ==========================================================================
+   6. QUIZ ENGINE
+   ========================================================================== */
+function shuffleArray(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+// Shuffle MCQ options and remap the correct index (True/False keeps its natural order)
+function prepareQuestion(q) {
+    if (q.type !== 'mcq') return { ...q, options: [...q.options] };
+    const order = shuffleArray(q.options.map((_, i) => i));
+    return {
+        ...q,
+        options: order.map(i => q.options[i]),
+        correctIndex: order.indexOf(q.correctIndex)
+    };
+}
+
+function startQuiz(mode, customIds) {
+    let pool;
+    let seconds;
+
+    if (mode === 'full') {
+        pool = QUESTION_BANK;
+        seconds = 50 * 60;
+    } else if (mode === 'quick') {
+        pool = shuffleArray(QUESTION_BANK).slice(0, 10);
+        seconds = 10 * 60;
+    } else if (mode === 'mcq') {
+        pool = QUESTION_BANK.filter(q => q.type === 'mcq');
+        seconds = 30 * 60;
+    } else if (mode === 'tf') {
+        pool = QUESTION_BANK.filter(q => q.type === 'tf');
+        seconds = 20 * 60;
+    } else if (mode === 'retry') {
+        pool = QUESTION_BANK.filter(q => (customIds || []).includes(q.id));
+        seconds = Math.max(2, pool.length) * 60;
+    }
+    if (!pool || !pool.length) return;
+
+    state.currentMode = mode;
+    state.currentIndex = 0;
+    state.userAnswers = {};
+    state.isSubmitted = false;
+    state.activeQuestions = shuffleArray(pool).map(prepareQuestion);
+    state.timerSeconds = seconds;
+    state.initialSeconds = seconds;
+
+    saveProgress();
+    enterQuizView();
+}
+
+function enterQuizView() {
+    document.getElementById('quizTypeBadge').innerText = MODE_LABELS[state.currentMode] || '';
+    document.getElementById('totalQNum').innerText = state.activeQuestions.length;
+
+    updateBotSpeech(
+        'idle',
+        'الاختبار بدأ!',
+        'التصحيح والشرح هيظهروا بعد التسليم بس. تقدر تغيّر أي إجابة وترجع لأي سؤال قبل ما تسلّم.'
+    );
+    setTimeout(hideBotBubble, 4500);
+
+    startTimer();
+    renderQuestion();
+    switchView('quiz');
+}
+
+function startTimer() {
+    clearInterval(state.timerInterval);
+    const timerContainer = document.getElementById('timerContainer');
+    const timerText = document.getElementById('timerText');
+
+    const updateDisplay = () => {
+        const mins = Math.floor(state.timerSeconds / 60);
+        const secs = state.timerSeconds % 60;
+        timerText.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        timerContainer.classList.toggle('timer-low', state.timerSeconds < 180);
+    };
+
+    updateDisplay();
+
+    state.timerInterval = setInterval(() => {
+        if (state.timerSeconds <= 0) {
+            clearInterval(state.timerInterval);
+            submitQuiz();
+            return;
+        }
+        state.timerSeconds--;
+        updateDisplay();
+        if (state.timerSeconds % 5 === 0) saveProgress();
+    }, 1000);
+}
+
+function renderQuestion() {
+    const q = state.activeQuestions[state.currentIndex];
+    if (!q) return;
+
+    document.getElementById('currentQNum').innerText = state.currentIndex + 1;
+    document.getElementById('questionChapter').innerText = q.chapter;
+    document.getElementById('questionTypeLabel').innerText = q.type === 'mcq' ? 'اختيار من متعدد' : 'صح / خطأ';
+    document.getElementById('questionText').innerText = q.question;
+
+    const percent = ((state.currentIndex + 1) / state.activeQuestions.length) * 100;
+    document.getElementById('quizProgressBar').style.width = `${percent}%`;
+
+    const container = document.getElementById('optionsContainer');
+    container.innerHTML = '';
+
+    const letters = ['أ', 'ب', 'ج', 'د'];
+    const selectedIdx = state.userAnswers[q.id];
+
+    q.options.forEach((opt, idx) => {
+        const isSelected = selectedIdx === idx;
+        const badge = q.type === 'mcq' ? letters[idx] : (idx === 0 ? '✓' : '✗');
+
+        let cls = 'option-card';
+        if (isSelected) cls += ' selected';
+
+        const el = document.createElement('div');
+        el.className = cls;
+        el.onclick = () => selectOption(q.id, idx);
+        el.innerHTML = `
+            <span class="option-letter">${badge}</span>
+            <span>${opt}</span>
+        `;
+        container.appendChild(el);
+    });
+
+    const isBookmarked = state.bookmarks.includes(q.id);
+    const bmBtn = document.getElementById('bookmarkBtn');
+    bmBtn.classList.toggle('bookmarked-active', isBookmarked);
+    bmBtn.querySelector('span').innerText = isBookmarked ? 'محفوظ' : 'حفظ';
+
+    const prevBtn = document.getElementById('prevQBtn');
+    prevBtn.disabled = state.currentIndex === 0;
+    prevBtn.style.opacity = state.currentIndex === 0 ? '0.45' : '1';
+
+    const nextBtn = document.getElementById('nextQBtn');
+    if (state.currentIndex === state.activeQuestions.length - 1) {
+        nextBtn.innerHTML = `<span>إنهاء وتسليم</span><i data-lucide="check-circle"></i>`;
+        nextBtn.onclick = confirmExitQuiz;
+    } else {
+        nextBtn.innerHTML = `<span>التالي</span><i data-lucide="chevron-left"></i>`;
+        nextBtn.onclick = () => navigateQuestion(1);
+    }
+
+    renderQuestionGrid();
+    lucide.createIcons();
+}
+
+function selectOption(qId, optionIdx) {
+    if (state.isSubmitted) return;
+    state.userAnswers[qId] = optionIdx;
+    saveProgress();
+    renderQuestion();
+}
+
+function navigateQuestion(dir) {
+    const nextIdx = state.currentIndex + dir;
+    if (nextIdx >= 0 && nextIdx < state.activeQuestions.length) {
+        state.currentIndex = nextIdx;
+        hideBotBubble();
+        renderQuestion();
+        saveProgress();
+    }
+}
+
+function toggleBookmarkCurrent() {
+    const q = state.activeQuestions[state.currentIndex];
+    if (!q) return;
+
+    const idx = state.bookmarks.indexOf(q.id);
+    if (idx > -1) {
+        state.bookmarks.splice(idx, 1);
+    } else {
+        state.bookmarks.push(q.id);
+    }
+    localStorage.setItem('ba_bookmarks', JSON.stringify(state.bookmarks));
+    renderQuestion();
+}
+
+function renderQuestionGrid() {
+    const grid = document.getElementById('questionGrid');
+    grid.innerHTML = '';
+
+    state.activeQuestions.forEach((q, idx) => {
+        const isAnswered = state.userAnswers[q.id] !== undefined;
+        const isCurrent = idx === state.currentIndex;
+        const isBookmarked = state.bookmarks.includes(q.id);
+
+        const btn = document.createElement('button');
+        btn.className = `q-pill ${isAnswered ? 'answered' : ''} ${isCurrent ? 'current' : ''}`;
+        btn.innerHTML = `${idx + 1}${isBookmarked ? '<span class="bm-dot"></span>' : ''}`;
+        btn.onclick = () => {
+            state.currentIndex = idx;
+            hideBotBubble();
+            renderQuestion();
+            saveProgress();
+        };
+        grid.appendChild(btn);
+    });
+}
+
+function confirmExitQuiz() {
+    const unanswered = state.activeQuestions.filter(q => state.userAnswers[q.id] === undefined).length;
+    Swal.fire({
+        title: 'تسليم الاختبار؟',
+        text: unanswered > 0
+            ? `فاضل ${unanswered} سؤال من غير إجابة، وهيتحسبوا خطأ.`
+            : 'جاوبت على كل الأسئلة. بعد التسليم مش هتقدر تغيّر إجاباتك.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'نعم، اعرض النتيجة',
+        cancelButtonText: 'استكمال الحل',
+        confirmButtonColor: '#8F6B3E',
+        customClass: { popup: 'luxury-glass-swal' }
+    }).then((res) => {
+        if (res.isConfirmed) submitQuiz();
+    });
+}
+
+function submitQuiz() {
+    if (state.isSubmitted) return;
+    clearInterval(state.timerInterval);
+    state.isSubmitted = true;
+    clearProgress();
+
+    let correctCount = 0;
+    let answeredCount = 0;
+    state.lastMissedIds = [];
+
+    state.activeQuestions.forEach(q => {
+        const uAns = state.userAnswers[q.id];
+        if (!state.chapterStats[q.chapter]) {
+            state.chapterStats[q.chapter] = { correct: 0, total: 0 };
+        }
+
+        if (uAns !== undefined) {
+            answeredCount++;
+            state.chapterStats[q.chapter].total++;
+            if (uAns === q.correctIndex) {
+                correctCount++;
+                state.chapterStats[q.chapter].correct++;
+            }
+        }
+        if (uAns !== q.correctIndex) state.lastMissedIds.push(q.id);
+    });
+
+    localStorage.setItem('ba_chapter_stats', JSON.stringify(state.chapterStats));
+
+    const total = state.activeQuestions.length;
+    const percentage = Math.round((correctCount / total) * 100);
+
+    const spentSecs = Math.max(1, state.initialSeconds - state.timerSeconds);
+    const mins = Math.floor(spentSecs / 60);
+    const secs = spentSecs % 60;
+    const timeStr = `${mins} د ${secs} ث`;
+
+    const attempt = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('ar-EG'),
+        mode: state.currentMode,
+        score: correctCount,
+        answered: answeredCount,
+        total,
+        percentage,
+        timeSpent: timeStr
+    };
+
+    state.quizHistory.unshift(attempt);
+    localStorage.setItem('ba_quiz_history', JSON.stringify(state.quizHistory));
+
+    if (percentage > 85) {
+        confetti({
+            particleCount: 110,
+            spread: 75,
+            origin: { y: 0.6 },
+            colors: ['#8F6B3E', '#BFA17A', '#9AA18F', '#E6E0D4']
+        });
+        updateBotSpeech(
+            'happy',
+            `مبروك التفوق يا ${state.username}!`,
+            `حققت ${percentage}%! مستوى رائع يثبت إنك متمكن من المادة.`
+        );
+    } else {
+        updateBotSpeech(
+            'idle',
+            'تم رصد نتيجتك في لوحة التحكم',
+            `حققت ${percentage}%. راجع الأسئلة الخاطئة بالأسفل لتقوية أي نقاط ضعف.`
+        );
+    }
+
+    renderResultsView(attempt);
+    updateDashboardMetrics();
+    switchView('results');
+}
+
+/* ==========================================================================
+   7. RESULTS VIEW
+   ========================================================================== */
+function renderResultsView(attempt) {
+    document.getElementById('resultPercentText').innerText = `${attempt.percentage}%`;
+    document.getElementById('resScoreVal').innerText = `${attempt.score} / ${attempt.total}`;
+    document.getElementById('resTimeVal').innerText = attempt.timeSpent;
+
+    const badge = document.getElementById('resultBadge');
+    const gradeVal = document.getElementById('resGradeVal');
+    const message = document.getElementById('resultMessage');
+
+    if (attempt.percentage >= 85) {
+        badge.innerHTML = `<i data-lucide="award"></i><span>امتياز - أداء استثنائي</span>`;
+        gradeVal.innerText = 'ممتاز';
+        message.innerText = `أداء مبهر يا ${state.username}! استيعابك لمفاهيم تحليلات الأعمال ممتاز.`;
+    } else if (attempt.percentage >= 65) {
+        badge.innerHTML = `<i data-lucide="thumbs-up"></i><span>مستوى جيد جداً</span>`;
+        gradeVal.innerText = 'جيد جداً';
+        message.innerText = 'نتيجة طيبة! مراجعة سريعة للأخطاء ستوصلك للدرجة النهائية.';
+    } else {
+        badge.innerHTML = `<i data-lucide="alert-circle"></i><span>يحتاج مراجعة إضافية</span>`;
+        gradeVal.innerText = 'مقبول';
+        message.innerText = 'ينصح بمراجعة الشرح التفصيلي ودليل الأسئلة المقالية قبل المحاولة القادمة.';
+    }
+
+    const ctx = document.getElementById('resultDonutChart').getContext('2d');
+    if (resultDonutInstance) resultDonutInstance.destroy();
+
+    resultDonutInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['صحيحة', 'خاطئة'],
+            datasets: [{
+                data: [attempt.score, attempt.total - attempt.score],
+                backgroundColor: ['#9AA18F', '#8F6B3E'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '76%',
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    const missed = state.lastMissedIds.length;
+    const retryBtn = document.getElementById('retryWrongBtn');
+    retryBtn.style.display = missed > 0 ? '' : 'none';
+    document.getElementById('retryWrongLabel').innerText = `أعد حل أخطائي (${missed})`;
+
+    document.querySelectorAll('.filter-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+    renderDetailedResultsList('all');
+    lucide.createIcons();
+}
+
+function retryWrongAnswers() {
+    if (!state.lastMissedIds.length) return;
+    startQuiz('retry', [...state.lastMissedIds]);
+}
+
+function filterResults(mode, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderDetailedResultsList(mode);
+}
+
+function renderDetailedResultsList(filterMode) {
+    const container = document.getElementById('detailedResultsList');
+    container.innerHTML = '';
+
+    state.activeQuestions.forEach((q, idx) => {
+        const uAns = state.userAnswers[q.id];
+        const isCorrect = uAns === q.correctIndex;
+        const isBookmarked = state.bookmarks.includes(q.id);
+
+        if (filterMode === 'incorrect' && isCorrect) return;
+        if (filterMode === 'bookmarked' && !isBookmarked) return;
+
+        const uText = uAns !== undefined ? q.options[uAns] : 'لم يتم الإجابة';
+        const cText = q.options[q.correctIndex];
+
+        const card = document.createElement('div');
+        card.className = `glass-card review-card ${isCorrect ? 'is-correct' : 'is-wrong'}`;
+        card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; gap:1rem; margin-bottom:0.75rem;">
+                <strong style="font-size:1rem;">#${idx + 1} - ${q.question}</strong>
+                <span class="badge-mode">${isCorrect ? 'صحيحة' : (uAns === undefined ? 'بدون إجابة' : 'خاطئة')}</span>
+            </div>
+            <p style="font-size:0.9rem; margin-bottom:0.35rem;">إجابتك: <strong>${uText}</strong></p>
+            <p style="font-size:0.9rem; color:#9AA18F; margin-bottom:0.65rem;">الإجابة الصحيحة: <strong>${cText}</strong></p>
+            <div style="font-size:0.86rem; padding:0.7rem; border-radius:12px; background:rgba(20,17,14,0.5);">
+                <strong>الشرح:</strong> ${q.explanation}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+/* ==========================================================================
+   8. ANALYTICS DASHBOARD & CHARTS
+   ========================================================================== */
+function updateDashboardMetrics() {
+    let highest = 0;
+    let totalAnswered = 0;
+    let totalCorrect = 0;
+
+    let totalQuestions = 0;
+
+    state.quizHistory.forEach(h => {
+        if (h.percentage > highest) highest = h.percentage;
+        totalAnswered += (h.answered !== undefined ? h.answered : h.total);
+        totalQuestions += h.total;
+        totalCorrect += h.score;
+    });
+
+    const avgAcc = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+
+    document.getElementById('statHighScore').innerText = `${highest}%`;
+    document.getElementById('statTotalPassed').innerText = state.quizHistory.length;
+
+    document.getElementById('dashTotalAnswered').innerText = totalAnswered;
+    document.getElementById('dashAvgAccuracy').innerText = `${avgAcc}%`;
+    document.getElementById('dashBestScore').innerText = `${highest}%`;
+    document.getElementById('dashAttemptsCount').innerText = state.quizHistory.length;
+}
+
+function renderDashboardCharts() {
+    let totalCorrect = 0;
+    let totalWrong = 0;
+
+    state.quizHistory.forEach(h => {
+        totalCorrect += h.score;
+        totalWrong += (h.total - h.score);
+    });
+
+    document.getElementById('dashCorrectText').innerText = `صحيحة: ${totalCorrect}`;
+    document.getElementById('dashWrongText').innerText = `خاطئة: ${totalWrong}`;
+
+    const ctx1 = document.getElementById('accuracyChart').getContext('2d');
+    if (accuracyChartInstance) accuracyChartInstance.destroy();
+    const hasData = (totalCorrect + totalWrong) > 0;
+
+    accuracyChartInstance = new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+            labels: hasData ? ['إجابات صحيحة', 'إجابات خاطئة'] : ['لا توجد بيانات'],
+            datasets: [{
+                data: hasData ? [totalCorrect, totalWrong] : [1],
+                backgroundColor: hasData ? ['#9AA18F', '#8F6B3E'] : ['rgba(230, 224, 212, 0.12)'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '72%',
+            plugins: { legend: { display: false }, tooltip: { enabled: hasData } }
+        }
+    });
+
+    const chapters = [
+        'الفصل الأول: مفاهيم النظم',
+        'الفصل الثاني: تجهيز البيانات',
+        'الفصل الثالث: أنواع التحليلات',
+        'الفصل الرابع: دور محلل الأعمال'
+    ];
+
+    const chapterScores = chapters.map(ch => {
+        const rec = state.chapterStats[ch];
+        if (!rec || rec.total === 0) return 0;
+        return Math.round((rec.correct / rec.total) * 100);
+    });
+
+    const ctx2 = document.getElementById('chapterChart').getContext('2d');
+    if (chapterChartInstance) chapterChartInstance.destroy();
+
+    chapterChartInstance = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: ['مفاهيم النظم', 'تجهيز البيانات', 'أنواع التحليلات', 'دور محلل الأعمال'],
+            datasets: [{
+                label: 'دقة الفصل %',
+                data: chapterScores,
+                backgroundColor: 'rgba(191, 161, 122, 0.45)',
+                borderColor: '#BFA17A',
+                borderWidth: 1.5,
+                borderRadius: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: { color: '#E6E0D4', font: { family: 'Readex Pro' } },
+                    grid: { color: 'rgba(230, 224, 212, 0.08)' }
+                },
+                x: {
+                    ticks: { color: '#E6E0D4', font: { family: 'IBM Plex Sans Arabic' } },
+                    grid: { display: false }
+                }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+
+function renderHistoryTable() {
+    const tbody = document.getElementById('historyTableBody');
+    tbody.innerHTML = '';
+
+    if (state.quizHistory.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-row">لا توجد محاولات مسجلة حتى الآن.</td></tr>`;
+        return;
+    }
+
+    const modeLabels = {
+        full: 'اختبار شامل (50)',
+        quick: 'اختبار سريع (10)',
+        mcq: 'اختيار من متعدد',
+        tf: 'صح أم خطأ',
+        retry: 'إعادة حل الأخطاء'
+    };
+
+    state.quizHistory.forEach((h, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td>${modeLabels[h.mode] || h.mode}</td>
+            <td><strong>${h.score} / ${h.total}</strong></td>
+            <td><span class="badge-mode">${h.percentage}%</span></td>
+            <td>${h.timeSpent}</td>
+            <td>${h.date}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function resetStats() {
+    Swal.fire({
+        title: 'مسح سجل المحاولات؟',
+        text: 'سيتم حذف جميع الدرجات والإحصائيات المحفوظة على هذا المتصفح.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'نعم، امسح البيانات',
+        cancelButtonText: 'تراجع',
+        confirmButtonColor: '#6F4F2A',
+        customClass: { popup: 'luxury-glass-swal' }
+    }).then((res) => {
+        if (res.isConfirmed) {
+            localStorage.removeItem('ba_quiz_history');
+            localStorage.removeItem('ba_chapter_stats');
+            state.quizHistory = [];
+            state.chapterStats = {};
+            updateDashboardMetrics();
+            renderDashboardCharts();
+            renderHistoryTable();
+        }
+    });
+}
+
+/* ==========================================================================
+   9. ESSAY STUDY GUIDE
+   ========================================================================== */
+function renderEssayGuide() {
+    const container = document.getElementById('essayAccordionContainer');
+    container.innerHTML = '';
+
+    ESSAY_QUESTIONS.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'glass-card essay-card';
+        card.dataset.search = `${item.title} ${item.answer}`.toLowerCase();
+
+        card.innerHTML = `
+            <div class="essay-header" onclick="toggleEssay(${item.id})">
+                <span>${item.title}</span>
+                <i data-lucide="chevron-down" id="essay-icon-${item.id}"></i>
+            </div>
+            <div class="essay-body hidden" id="essay-body-${item.id}">
+                ${item.answer}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function toggleEssay(id) {
+    const body = document.getElementById(`essay-body-${id}`);
+    const icon = document.getElementById(`essay-icon-${id}`);
+    body.classList.toggle('hidden');
+    icon.style.transform = body.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+function filterEssayQuestions() {
+    const q = document.getElementById('essaySearchInput').value.toLowerCase().trim();
+    document.querySelectorAll('.essay-card').forEach(card => {
+        card.style.display = card.dataset.search.includes(q) ? 'block' : 'none';
+    });
+}
+    </script>
+</body>
+</html>
