@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0D0D0D">
+<meta name="description" content="Abo_salah - ملخصات وسلايدات وعروض ومنصات أسئلة لطلاب الجامعة">
+<title>Abo_salah | خدمات للطلاب</title>
+
+<!-- Open Graph: غيّر YOUR-DOMAIN لدومين موقعك الحقيقي. الصورة لازم تكون 1200×630 ومسارها كامل (https) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_EG">
+<meta property="og:site_name" content="Abo_salah | خدمات للطلاب">
+<meta property="og:title" content="Abo_salah | ملخصات وعروض ومنصات أسئلة لطلاب الجامعة">
+<meta property="og:description" content="ملخصات مبسّطة، سلايدات مرسومة، ورق زتونة، عروض جاهزة للتاسك، ومنصة أسئلة تجرّب نفسك عليها.">
+<meta property="og:url" content="https://YOUR-DOMAIN/">
+<meta property="og:image" content="https://YOUR-DOMAIN/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Abo_salah ومعاه زيتونة، مرشد الموقع">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Abo_salah | خدمات للطلاب">
+<meta name="twitter:description" content="ملخصات وسلايدات وعروض ومنصات أسئلة لطلاب الجامعة.">
+<meta name="twitter:image" content="https://YOUR-DOMAIN/og-image.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Readex+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<style>
+:root{--bg:#0D0D0D;--red:#73030D;--rose:#732F3B;--hot:#D91E36;--tx:#F2F2F2;--mg:#A3A3A3;--olive:#8FA33A;--wa:#25D366;--sb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{background:var(--bg);color:var(--tx);font:400 16px/1.8 'Readex Pro',sans-serif;overflow-x:hidden;padding-bottom:calc(110px + var(--sb))}
+h1,h2,h3{font-family:'Lalezar','Readex Pro',sans-serif;font-weight:400;line-height:1.35}
+.blobs{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.blobs i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.75;animation:drift 18s ease-in-out infinite alternate}
+.blobs i:nth-child(1){width:70vw;height:70vw;background:var(--red);top:-10vw;right:-20vw}
+.blobs i:nth-child(2){width:60vw;height:60vw;background:var(--rose);top:45vh;left:-25vw;animation-delay:-6s}
+.blobs i:nth-child(3){width:50vw;height:50vw;background:#3b1a6b;bottom:-10vw;right:-10vw;opacity:.5;animation-delay:-11s}
+@keyframes drift{to{transform:translate(8vw,-6vh) scale(1.15)}}
+.glass{position:relative;overflow:hidden;border-radius:28px;background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.04));backdrop-filter:blur(22px) saturate(185%);-webkit-backdrop-filter:blur(22px) saturate(185%);border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(255,255,255,.06),inset 1px 0 0 rgba(255,255,255,.1),0 12px 32px rgba(0,0,0,.45)}
+.glass::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 70% at 85% -10%,rgba(255,255,255,.22),transparent 55%)}
+.glass>*{position:relative}
+.top{position:sticky;top:max(10px,env(safe-area-inset-top));z-index:50;margin:10px 14px 0;padding:8px 8px 8px 18px;display:flex;align-items:center;justify-content:space-between;border-radius:999px}
+.brand b{font:400 1.25rem 'Lalezar';display:block;line-height:1.2}.brand small{color:var(--mg);font-size:.75rem}
+.ico{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sq{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:0;color:var(--tx);cursor:pointer;background:rgba(255,255,255,.1)}
+main{padding:0 14px}
+.hero{padding:44px 6px 20px}
+.hero h1{font-size:2.5rem;margin-bottom:14px}
+.hero p{color:#d4d4d4;font-weight:300;margin-bottom:22px}
+.btns{display:flex;flex-direction:column;gap:10px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 20px;border-radius:999px;font:500 .95rem 'Readex Pro';color:var(--tx);text-decoration:none;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.1);backdrop-filter:blur(14px) saturate(170%);-webkit-backdrop-filter:blur(14px) saturate(170%);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.35),0 6px 18px rgba(0,0,0,.35);transition:transform .2s,filter .2s;cursor:pointer}
+.btn:active{transform:scale(.96)}
+.pri{background:linear-gradient(135deg,rgba(217,30,54,.75),rgba(115,3,13,.8))}
+.wa{background:linear-gradient(135deg,rgba(37,211,102,.8),rgba(18,140,70,.8))}
+section{padding:30px 0}
+.sh{padding:0 6px 16px}.sh h2{font-size:1.7rem}.sh p{color:var(--mg);font-size:.9rem;font-weight:300}
+.grid{display:grid;gap:14px}
+.card{padding:18px;display:flex;flex-direction:column;gap:12px}
+.card h3{font-size:1.3rem}.card p{color:#cfcfcf;font-size:.9rem;font-weight:300}
+.tag{align-self:flex-start;padding:2px 12px;border-radius:999px;font-size:.75rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}.acts .btn{flex:1 1 140px;font-size:.85rem}
+.vid{aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.14);display:block;width:100%;position:relative}
+.vid iframe{width:100%;height:100%;border:0;display:block}
+button.vid{padding:0;cursor:pointer;color:#fff}
+button.vid img{width:100%;height:100%;object-fit:cover;display:block;opacity:.85}
+button.vid .pl{position:absolute;inset:0;display:grid;place-items:center}
+button.vid .pl svg{width:64px;height:64px;padding:18px;border-radius:50%;background:rgba(217,30,54,.9);fill:#fff;stroke:#fff;box-shadow:0 6px 18px rgba(0,0,0,.5)}
+audio{width:100%;height:44px;border-radius:999px}
+.zimg{padding:0;border:1px solid rgba(255,255,255,.18);border-radius:18px;overflow:hidden;height:210px;position:relative;cursor:zoom-in;background:#000}
+.zimg img{width:100%;height:100%;object-fit:cover;display:block}
+.zimg span{position:absolute;bottom:8px;left:8px;padding:2px 12px;border-radius:999px;font:400 .75rem 'Readex Pro';color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(8px)}
+.sub{font-size:1.15rem;margin:22px 6px 12px}
+.svc{padding:16px;display:flex;gap:12px;align-items:flex-start}.svc svg{margin-top:4px;color:var(--hot)}
+.svc h3{font-size:1.1rem}.svc p{font-size:.86rem;color:#cfcfcf;font-weight:300;line-height:1.7}
+.step{display:flex;gap:14px;align-items:center;padding:14px 18px}.step em{font:400 1.6rem 'Lalezar';color:var(--hot);font-style:normal;width:28px;text-align:center}
+.about{padding:20px;display:flex;flex-direction:column;gap:14px}
+.about p{color:#e2e2e2;font-weight:300}
+.stat{display:flex;align-items:center;gap:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.14)}
+.stat b{font:400 2rem 'Lalezar';color:var(--hot);line-height:1}.stat span{color:var(--mg);font-size:.9rem}
+.price{padding:20px;display:flex;flex-direction:column;gap:8px}
+.price h3{font-size:1.3rem}.price p{color:#cfcfcf;font-size:.92rem;font-weight:300}
+.shots{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+.shots button{flex:0 0 78%;scroll-snap-align:center;border:1px solid rgba(255,255,255,.18);border-radius:18px;overflow:hidden;padding:0;background:#000}
+.shots img{width:100%;display:block}
+.revs{display:grid;gap:14px}
+.rv{padding:10px;display:flex;flex-direction:column;gap:8px}
+.rv .zimg{height:auto;background:#0b141a}
+.rv .zimg img{height:auto;object-fit:contain}
+.rv p{font-size:.82rem;color:var(--mg);padding:0 6px}
+footer{padding:36px 20px;text-align:center;margin:20px 14px 0}
+footer h3{font-size:1.4rem;margin-bottom:8px}footer p{color:#cfcfcf;font-size:.9rem;margin-bottom:16px;font-weight:300}
+footer .btns{margin-bottom:14px}
+.dock{position:fixed;z-index:60;bottom:calc(14px + var(--sb));left:12px;right:12px;display:flex;gap:8px;justify-content:center;align-items:center}
+.tabs{display:flex;flex:1;max-width:420px;padding:6px;border-radius:999px;justify-content:space-between}
+.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:0;padding:6px 0;border-radius:999px;color:var(--mg);text-decoration:none;font-size:.72rem;line-height:1.3;transition:background .25s,color .25s}
+.tabs a.on{background:rgba(255,255,255,.18);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.dock .wa{width:56px;height:56px;min-height:0;padding:0;border-radius:50%;flex:none}
+#zat{position:fixed;z-index:70;right:10px;bottom:calc(92px + var(--sb));width:76px;touch-action:manipulation}
+#zbot{background:none;border:0;width:76px;height:76px;cursor:pointer;display:block;filter:drop-shadow(0 8px 10px rgba(0,0,0,.5))}
+/* الفقاعة برّه #zat عشان حركة GSAP (transform) متكسرش الـ position:fixed */
+#bub{position:fixed;z-index:71;right:10px;bottom:calc(176px + var(--sb));width:min(78vw,290px);padding:12px 14px;border-radius:22px;font-size:.88rem;line-height:1.7;opacity:0;pointer-events:none;transform:translateY(8px) scale(.96);transition:.3s}
+#bub.show{opacity:1;pointer-events:auto;transform:none}
+#bub.l{right:auto;left:10px}
+#bub b{font:400 1rem 'Lalezar';color:var(--olive);display:block}
+#bub .row{display:flex;gap:8px;margin-top:8px}#bub button{flex:1;min-height:38px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.12);color:#fff;font:400 .78rem 'Readex Pro';cursor:pointer}
+.lb{position:fixed;inset:0;z-index:200;display:none;place-items:center;background:rgba(0,0,0,.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:16px}
+.lb.on{display:grid}.lb img{max-width:100%;max-height:82vh;border-radius:20px;border:1px solid rgba(255,255,255,.2)}
+.lb .sq{position:absolute;top:max(14px,env(safe-area-inset-top));left:14px}
+a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+noscript .ns{margin:20px 14px;padding:18px;border-radius:20px;background:rgba(255,255,255,.1);text-align:center}
+noscript .ns a{color:var(--wa)}
+
+/* موبايل: تخفيف الحمل على الأجهزة الضعيفة + الفقاعة فوق مش على الكروت */
+@media(max-width:719px){
+  .blobs i{animation:none;filter:blur(36px)}
+  .glass{backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%)}
+  .btn{backdrop-filter:none;-webkit-backdrop-filter:none}
+  #bub,#bub.l{top:calc(76px + env(safe-area-inset-top));bottom:auto;left:14px;right:14px;width:auto;transform:translateY(-8px) scale(.98)}
+  #bub.show{transform:none}
+}
+@media(min-width:720px){.btns{flex-direction:row}.grid.c2{grid-template-columns:1fr 1fr}.grid.c3{grid-template-columns:repeat(3,1fr)}main,.top{max-width:1000px;margin-inline:auto}.top{margin-top:10px}.hero h1{font-size:3.4rem}.shots button{flex-basis:32%}#bub{width:300px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-pres" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zM4 19V5"/></symbol>
+<symbol id="i-img" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><path d="M3 14v-2a9 9 0 0118 0v2M3 14h3v6H3zM18 14h3v6h-3z"/></symbol>
+<symbol id="i-cpu" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 9h6v6H9zM9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></symbol>
+<symbol id="i-wa" viewBox="0 0 24 24"><path d="M3 21l1.6-5A9 9 0 1112 21a9 9 0 01-4.4-1.2z"/><path d="M9 9c0 3 3 6 6 6l1-2-2-1-1 .8c-.8-.4-1.6-1.2-2-2l.8-1-1-2z"/></symbol>
+<symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8zM14 3v5h5M9 13h6M9 17h6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-vol" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zM17 9a4 4 0 010 6"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.5 6 6.5.5-5 4.3 1.6 6.4L12 16.8 6.4 20.2 8 13.8 3 9.5 9.5 9z"/></symbol>
+</defs></svg>
+
+<div class="blobs" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<header class="top glass">
+  <a href="#" class="brand" style="color:inherit;text-decoration:none"><b>Abo_salah</b><small>خدمات للطلاب</small></a>
+  <button class="sq" id="mute" aria-label="خلّي زيتونة تتكلم" title="صوت زيتونة"><svg class="ico"><use href="#i-vol"/></svg></button>
+</header>
+
+<noscript>
+  <div class="ns">
+    الموقع محتاج JavaScript عشان يعرض الخدمات والأعمال.<br>
+    تقدر تكلمني مباشرة على <a href="https://wa.me/201028801344">واتساب 01028801344</a>.
+  </div>
+</noscript>
+
+<main>
+  <div class="hero">
+    <h1>المنهج طويل؟ أنا هقصّره عليك.</h1>
+    <p>بجهّزلك الملخص اللي تفهمه من أول قراية، والسلايدات اللي تفضل في دماغك، وورق الزتونة ليلة الامتحان، والعرض الجاهز للتاسك. وكمان منصة أسئلة تجرّب نفسك عليها.</p>
+    <div class="btns">
+      <a href="#presentations" class="btn pri">شوف شغلي</a>
+      <a href="#platforms" class="btn">جرّب منصة الأسئلة</a>
+    </div>
+  </div>
+
+  <section id="about">
+    <div class="glass about">
+      <h2 style="font-size:1.5rem">مين أنا؟</h2>
+      <p>انا طالب في اداره اعمال تخصص نظم ومعلومات وبعمل شغل لي اكتر من كليه منم ادارة الاعمال بجميع تخصصاتها وكليات تانيه زي تجاره وداب وسياحه وفنادق وتربيه رياضيه</p>
+      <div class="stat"><b id="stat-n">+50</b><span>طالب استخدموا المنصة</span></div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="sh"><h2>بعمل إيه بالظبط؟</h2><p>كل حاجة بتتعمل على مادتك وعلى مقاسك</p></div>
+    <div class="grid c2" id="svcs"></div>
+  </section>
+
+  <section id="how">
+    <div class="sh"><h2>الشغل بيمشي إزاي؟</h2></div>
+    <div class="grid">
+      <div class="glass step"><em>1</em><span>تبعتلي المادة أو المحاضرة على واتساب.</span></div>
+      <div class="glass step"><em>2</em><span>نتفق على الشكل اللي يريحك: ملخص، سلايدات، عرض ولا منصة، وعلى السعر والميعاد.</span></div>
+      <div class="glass step"><em>3</em><span>بسلّمك الشغل جاهز خلال 24–48 ساعة حسب الحجم، وتقولي لو عايز أي تعديل.</span></div>
+    </div>
+  </section>
+
+  <section id="reviews">
+    <div class="sh"><h2>زمايلك قالوا إيه؟</h2><p>رسايل حقيقية من الواتساب، دوس على الصورة تكبّرها</p></div>
+    <div class="revs grid c3">
+      <div class="glass rv"><button class="zimg" data-z="reviews/r1.webp"><img loading="lazy" src="reviews/r1.webp" alt="رأي طالب في عرض شركة نون"><span>كبّر</span></button><p>عن عرض شركة نون</p></div>
+      <div class="glass rv"><button class="zimg" data-z="reviews/r2.webp"><img loading="lazy" src="reviews/r2.webp" alt="رأي طالب في فيديو شرح"><span>كبّر</span></button><p>عن فيديو شرح</p></div>
+      <div class="glass rv"><button class="zimg" data-z="reviews/r3.webp"><img loading="lazy" src="reviews/r3.webp" alt="رأي جروب الدفعة في طريقة العرض"><span>كبّر</span></button><p>من جروب الدفعة</p></div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="sh"><h2>الأسعار</h2></div>
+    <div class="glass price">
+      <h3>السعر حسب حجم المادة</h3>
+      <p>ابعتلي المحاضرة أو المنهج وهقولك السعر قبل ما نبدأ، من غير أي مفاجآت. الأسعار مناسبة لطالب جامعة، وبيتحدد الميعاد معاك من الأول.</p>
+      <div class="acts" style="margin-top:8px"><a href="https://wa.me/201028801344" data-wa target="_blank" rel="noopener" class="btn wa"><svg class="ico"><use href="#i-wa"/></svg>اسأل عن السعر</a></div>
+    </div>
+  </section>
+
+  <section id="presentations">
+    <div class="sh"><h2>عروض بديل البوربوينت</h2><p>بتشتغل من المتصفح على موبايلك، ومعاها سكريبت إلقاء كامل</p></div>
+    <div class="grid c2" id="g-pres"></div>
+  </section>
+
+  <section id="study-guides">
+    <div class="sh"><h2>ملخصات مبسّطة</h2><p>شرح سهل، أمثلة من السوق المصري، وجدول مقارنة ليلة الامتحان</p></div>
+    <div class="grid c2" id="g-guides"></div>
+  </section>
+
+  <section id="visual-slides">
+    <div class="sh"><h2>سلايدات مرسومة وورق الزتونة</h2><p>مراجعة بالصور بتثبّت المعلومة بعد المذاكرة</p></div>
+    <div class="grid c2" id="g-slides"></div>
+    <h3 class="sub">نماذج ورق الزتونة (دوس على الصورة تكبّرها)</h3>
+    <div class="grid c3" id="g-zat"></div>
+  </section>
+
+  <section id="media">
+    <div class="sh"><h2>اسمع واتفرج</h2><p>الملخص في المواصلات، أو شرح المحاضرة بالفيديو</p></div>
+    <div class="grid c2" id="g-aud" style="margin-bottom:14px"></div>
+    <div class="grid c2" id="g-vid"></div>
+  </section>
+
+  <section id="platforms">
+    <div class="sh"><h2>منصة تدريب بأسئلة حقيقية</h2><p>بتحسب دقتك وبتشرحلك كل إجابة</p></div>
+    <div class="glass card">
+      <span class="tag">جرّبها بنفسك</span>
+      <h3>منصة تحليلات الأعمال</h3>
+      <p>50 سؤال اختيار من متعدد و10 أسئلة مقالي. فيها 4 أوضاع امتحان، ومساعد يشرحلك سبب الإجابة في نفس اللحظة، ولوحة تحفظ درجاتك وتوريك مستواك في كل فصل.</p>
+      <div class="shots">
+        <button data-z="platforms/screen-1.png"><img loading="lazy" width="600" height="400" src="platforms/screen-1.png" alt="واجهة منصة تحليلات الأعمال"></button>
+        <button data-z="platforms/screen-2.png"><img loading="lazy" width="600" height="400" src="platforms/screen-2.png" alt="لوحة التحكم وتحليل الأداء"></button>
+        <button data-z="platforms/screen-3.png"><img loading="lazy" width="600" height="400" src="platforms/screen-3.png" alt="دليل الأسئلة المقالية"></button>
+      </div>
+      <div class="acts"><a href="platforms/business_analytics.html" target="_blank" rel="noopener" class="btn pri"><svg class="ico"><use href="#i-play"/></svg>افتح المنصة وجرّب</a></div>
+    </div>
+  </section>
+</main>
+
+<footer class="glass">
+  <h3>محتاج ملخص، عرض لتاسك، أو منصة أسئلة لدفعتك؟</h3>
+  <p>كلمني على طول وقولي المادة والميعاد.</p>
+  <div class="btns">
+    <a href="https://wa.me/201028801344" data-wa target="_blank" rel="noopener" class="btn wa"><svg class="ico"><use href="#i-wa"/></svg>واتساب 01028801344</a>
+    <a href="tel:+201028801344" class="btn"><svg class="ico"><use href="#i-tel"/></svg>اتصل بيا</a>
+  </div>
+  <p style="font-size:.8rem;opacity:.7;margin:0">تصميم وتطوير: Abo_salah © 2026</p>
+</footer>
+
+<nav class="dock" aria-label="التنقل">
+  <div class="tabs glass" id="tabs">
+    <a href="#presentations"><svg class="ico"><use href="#i-pres"/></svg>عروض</a>
+    <a href="#study-guides"><svg class="ico"><use href="#i-book"/></svg>ملخصات</a>
+    <a href="#visual-slides"><svg class="ico"><use href="#i-img"/></svg>سلايدات</a>
+    <a href="#media"><svg class="ico"><use href="#i-mic"/></svg>صوت</a>
+    <a href="#platforms"><svg class="ico"><use href="#i-cpu"/></svg>منصة</a>
+  </div>
+  <a href="https://wa.me/201028801344" data-wa target="_blank" rel="noopener" class="btn wa" aria-label="واتساب"><svg class="ico" style="width:26px;height:26px"><use href="#i-wa"/></svg></a>
+</nav>
+
+<div id="bub" class="glass" role="status" aria-live="polite"><b>زيتونة</b><span id="bt"></span>
+  <div class="row"><button id="snd">اسمعني</button><button id="hide">اقفل</button></div></div>
+
+<div id="zat">
+  <button id="zbot" aria-label="زيتونة، مرشد الموقع">
+    <svg viewBox="0 0 80 80" width="76" height="76">
+      <defs><radialGradient id="zg" cx="35%" cy="28%"><stop offset="0" stop-color="#d4e66b"/><stop offset=".55" stop-color="#8FA33A"/><stop offset="1" stop-color="#4d5c17"/></radialGradient></defs>
+      <g id="zleaf"><path d="M40 14c0-6 4-9 10-9-1 6-4 9-10 9z" fill="#6f8a2a"/><path d="M40 16V10" stroke="#4d5c17" stroke-width="2.5" stroke-linecap="round"/></g>
+      <ellipse cx="40" cy="44" rx="27" ry="30" fill="url(#zg)"/>
+      <ellipse cx="29" cy="26" rx="9" ry="5" fill="#fff" opacity=".35" transform="rotate(-25 29 26)"/>
+      <rect x="18" y="32" width="44" height="22" rx="11" fill="#14100f"/>
+      <g id="zeyes" fill="#ffd66b"><ellipse cx="31" cy="43" rx="4" ry="5"/><ellipse cx="49" cy="43" rx="4" ry="5"/></g>
+      <path d="M35 60q5 4 10 0" stroke="#4d5c17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <circle cx="13" cy="50" r="5" fill="#6f8a2a"/><circle cx="67" cy="50" r="5" fill="#6f8a2a"/>
+    </svg>
+  </button>
+</div>
+
+<div class="lb" id="lb"><button class="sq" aria-label="إغلاق"><svg class="ico"><use href="#i-x"/></svg></button><img id="lbi" alt="معاينة مكبرة"></div>
+
+<script>
+const $=s=>document.querySelector(s),ic=n=>`<svg class="ico"><use href="#i-${n}"/></svg>`;
+
+/* إعدادات سهلة التعديل */
+const CFG={
+  students:'+50',  /* حط الرقم الحقيقي */
+  waNumber:'201028801344',
+  waText:'أهلاً Abo_salah، شفت البورتفوليو وعايز أسأل عن خدمة لمادة ...'
+};
+$('#stat-n').textContent=CFG.students;
+document.querySelectorAll('a[data-wa]').forEach(a=>a.href=`https://wa.me/${CFG.waNumber}?text=${encodeURIComponent(CFG.waText)}`);
+
+/* فيديو يوتيوب: صورة + زرار تشغيل، والـ iframe بيتحمّل لما الطالب يدوس */
+const yt=(id,title)=>`<button class="vid" data-yt="${id}" aria-label="شغّل: ${title}"><img loading="lazy" src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" alt="${title}"><span class="pl">${ic('play')}</span></button>`;
+const card=(o)=>`<div class="glass card"><span class="tag">${o.t}</span><h3>${o.h}</h3>${o.d?`<p>${o.d}</p>`:''}${o.x||''}${o.a?`<div class="acts">${o.a}</div>`:''}</div>`;
+const lnk=(h,t,i,p)=>`<a href="${h}" target="_blank" rel="noopener" class="btn ${p?'pri':''}">${ic(i)}${t}</a>`;
+const put=(id,arr)=>$('#'+id).innerHTML=arr.join('');
+
+put('svcs',[
+ ['book','ملخصات PDF','باخد المحاضرة الطويلة وأطلّعلك منها ملخص مترتب، فيه أمثلة وجداول مقارنة تفتكرها في الامتحان.'],
+ ['img','سلايدات مرسومة','بشرحلك الموضوع بالرسم والحكاية، فالمعلومة تثبت في دماغك أسهل من القراية.'],
+ ['star','ورق الزتونة','المنهج كله في ورقة واحدة. تفتحها ليلة الامتحان وتراجع في ساعة.'],
+ ['pres','عروض تفاعلية','عرض جاهز للتاسك بيشتغل من المتصفح، بالأنيميشن والرسوم، ومعاه سكريبت تقوله وانت واقف قدامهم.'],
+ ['mic','صوت وفيديو','ملخص تسمعه في المواصلات، أو فيديو بيشرح المحاضرة بالبساطة.'],
+ ['cpu','منصة أسئلة لدفعتك','بنك أسئلة بمؤقت، بيصحّحلك وبيشرح الغلط، وبيوريك مستواك فين.']
+].map(s=>`<div class="glass svc">${ic(s[0])}<div><h3>${s[1]}</h3><p>${s[2]}</p></div></div>`));
+
+put('g-pres',[
+ card({t:'دراسة حالة لوجستية',h:'عرض شركة نون',d:'تحليل لسلاسل الإمداد والتوصيل السريع، برسومات ثلاثية الأبعاد ورسوم بيانية تتحرك.',x:yt('zRdRcQAM8rU','فيديو عرض شركة نون'),a:lnk('presentations/noon.html','شغّل العرض','pres',1)+lnk('presentations/Script_noon.pdf','سكريبت الإلقاء','file')}),
+ card({t:'شركة عالمية',h:'عرض شركة سوني',d:'عرض فيه وضع ليلي ونهاري، خط زمني تفاعلي، مجسمات 3D وتحليل مالي بالرسوم.',x:yt('rPUrChRAq9I','فيديو عرض شركة سوني'),a:lnk('presentations/SONY.html','شغّل العرض','pres',1)+lnk('presentations/Script_sony.pdf','سكريبت الإلقاء','file')})
+]);
+put('g-guides',[
+ card({t:'مبادئ الاقتصاد',h:'نظرية العرض ومحدداته',d:'شرح بالرسومات والأمثلة من السوق المصري، وجدول مقارنة مهم للامتحان وقواعد تساعدك في الحل.',a:lnk('Study_Guides/economics-guide.pdf','افتح الملخص','file',1)}),
+ card({t:'مبادئ التسويق',h:'الفصل الرابع: تخطيط المنتج ودورة حياته',d:'مستويات المنتج وتصنيفاته واستراتيجيات دورة الحياة، بأمثلة من توشيبا العربي وجهينة.',a:lnk('Study_Guides/marketing-guide.pdf','افتح الملخص','file',1)})
+]);
+put('g-slides',[
+ ['رحلة محقق البيانات','أنواع التحليلات الأربعة وأبعاد البيانات الضخمة في حكاية سهلة.','Visual_Slides/analytics-slides.pdf'],
+ ['دليلك السهل لأنظمة ERP','مراحل تطبيق النظام ومقارنة بين SAP وOracle وDynamics.','Visual_Slides/erp-slides.pdf'],
+ ['ريادة الأعمال والمشروعات الصغيرة','الفرق بين رائد الأعمال ورجل الأعمال التقليدي، ودورة حياة المشروع.','Visual_Slides/entrepreneurship-slides.pdf'],
+ ['أسرار سلاسل الإمداد الذكية','RFID والباركود وأنظمة إدارة النقل والتوزيع بالرسم.','Visual_Slides/Smart_Logistics_Secrets.pdf']
+].map(s=>card({t:'سلايدات مرسومة',h:s[0],d:s[1],a:lnk(s[2],'افتح السلايدات','file')})));
+put('g-zat',[
+ ['Comprehensive_Guide_to_Resource_Planning_Systems','زتونة أنظمة ERP في ورقة'],
+ ['Guide_to_the_OSI_Model_and_Network_Protocols','زتونة طبقات OSI وبروتوكولات الشبكة'],
+ ['Traditional_and_Modern_Analytics_and_Big_Data','زتونة التحليلات والبيانات الضخمة']
+].map(z=>`<div class="glass card"><button class="zimg" data-z="Visual_Slides/${z[0]}.png"><img loading="lazy" width="600" height="420" src="Visual_Slides/${z[0]}.png" alt="${z[1]}"><span>كبّر</span></button><h3 style="font-size:1.1rem">${z[1]}</h3></div>`));
+put('g-aud',[
+ ['إزاي تحمي محفظتك من الارتباط الخفي','شرح صوتي بسيط لتحليل المخاطر، والارتباط (Correlation) بين الأصول في البيانات المالية.','media/portfolio-risk-record.m4a'],
+ ['إزاي تقرأ بيانات السوق وتسبق منافسينك','شرح صوتي عملي لاستخدام تحليلات السوق في القرار.','media/market-data-record.m4a']
+].map(a=>card({t:'ملخص صوتي',h:a[0],d:a[1],x:`<audio controls preload="none" src="${a[2]}"></audio>`})));
+/* TODO: بدّل اسم المادة والموضوع في العنوانين دول بالحقيقي */
+put('g-vid',[
+ ['شرح محاضرة [اسم المادة]: [الموضوع]','trjdU2bULag'],
+ ['شرح محاضرة [اسم المادة]: [الموضوع]','rjkgVK5PtZg']
+].map(v=>card({t:'فيديو شرح',h:v[0],x:yt(v[1],v[0])})));
+
+/* تشغيل الفيديو لما الطالب يدوس */
+document.addEventListener('click',e=>{
+  const y=e.target.closest('[data-yt]');if(!y)return;
+  const id=y.dataset.yt,t=y.getAttribute('aria-label')||'فيديو';
+  y.outerHTML=`<div class="vid"><iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="${t}" allow="autoplay;picture-in-picture;encrypted-media" allowfullscreen></iframe></div>`;
+});
+
+/* lightbox */
+const lb=$('#lb');document.addEventListener('click',e=>{const z=e.target.closest('[data-z]');if(z){$('#lbi').src=z.dataset.z;lb.classList.add('on')}else if(lb.classList.contains('on')&&!e.target.matches('#lbi'))lb.classList.remove('on')});
+addEventListener('keydown',e=>e.key==='Escape'&&lb.classList.remove('on'));
+
+/* Zatoona */
+const Z={on:false,side:0,t:null,d:null},bub=$('#bub'),zat=$('#zat'),G=()=>window.gsap;
+try{Z.on=localStorage.getItem('zv')==='1'}catch(e){}
+const lines={
+ top:'أهلاً! أنا زيتونة. هلف معاك في الصفحة وأقولك إيه الحكاية. اسحب لتحت.',
+ about:'ده Abo_salah، طالب زيك. بيعمل الشغل ده لزمايله.',
+ services:'دي الخدمات. كل حاجة بتتعمل على مادتك إنت.',
+ how:'الموضوع بسيط: تبعت المادة، نتفق، وتستلم.',
+ reviews:'متصدقش كلامي أنا، شوف زمايلك قالوا إيه.',
+ pricing:'السعر حسب حجم المادة. اسأل Abo_salah وهيقولك قبل ما يبدأ.',
+ presentations:'هنا العروض. شغّل واحد منها، وخد سكريبت الإلقاء معاه.',
+ 'study-guides':'الملخصات دي مكتوبة بأمثلة من السوق عندنا، فهتفهمها بسرعة.',
+ 'visual-slides':'هنا السلايدات المرسومة. وورق الزتونة ده شغلتي أنا، دوس على أي صورة تكبّرها.',
+ media:'ودي للمواصلات: سمّع الملخص أو اتفرج على الشرح.',
+ platforms:'أهم حاجة! افتح المنصة وجرّب الامتحان بنفسك.'
+};
+function speak(t){if(!Z.on||!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t),v=speechSynthesis.getVoices();u.voice=v.find(x=>x.lang==='ar-EG')||v.find(x=>x.lang.startsWith('ar'))||null;u.lang=u.voice?u.voice.lang:'ar-EG';u.pitch=1.35;u.rate=1;speechSynthesis.speak(u)}
+function say(t,keep){clearTimeout(Z.t);const el=$('#bt');el.textContent='';bub.classList.add('show');let i=0;const type=()=>{el.textContent=t.slice(0,++i);if(i<t.length)setTimeout(type,22)};type();speak(t);if(!keep)Z.t=setTimeout(()=>bub.classList.remove('show'),5500+t.length*30)}
+function move(){if(!G())return;Z.side^=1;const x=Z.side?-(innerWidth-96):0;bub.classList.toggle('l',!!Z.side);G().timeline().to(zat,{y:-70,rotation:Z.side?-14:14,duration:.28,ease:'power2.out'}).to(zat,{x,duration:.5,ease:'power1.inOut'},'<').to(zat,{y:0,rotation:0,duration:.45,ease:'bounce.out'}).fromTo('#zbot',{scaleY:.85,transformOrigin:'50% 100%'},{scaleY:1,duration:.3,ease:'elastic.out(1,.4)'},'-=.2')}
+let cur='top';
+const visited=new Set(['top']); /* زيتونة بتتكلم أول مرة بس في كل سكشن */
+const tabs=[...document.querySelectorAll('#tabs a')],io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting||e.target.id===cur)return;
+  cur=e.target.id;
+  tabs.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur)); /* التاب يتحدّث فورًا */
+  clearTimeout(Z.d); /* debounce: لو الطالب عدّى سكاشن كتير بسرعة، بنتكلم عن آخر واحد بس */
+  Z.d=setTimeout(()=>{if(visited.has(cur)||!lines[cur])return;visited.add(cur);move();say(lines[cur])},600);
+}),{rootMargin:'-45% 0px -50% 0px'});
+document.querySelectorAll('section').forEach(s=>io.observe(s));
+$('#zbot').onclick=()=>{const k=Object.keys(lines);say(lines[cur]||lines[k[Math.floor(Math.random()*k.length)]],true);if(G())G().fromTo('#zbot',{rotation:-12},{rotation:0,duration:.8,ease:'elastic.out(1,.3)'})};
+$('#snd').onclick=()=>{Z.on=true;try{localStorage.setItem('zv','1')}catch(e){}say(bub.querySelector('#bt').textContent,true)};
+$('#mute').onclick=()=>{Z.on=!Z.on;try{localStorage.setItem('zv',Z.on?'1':'0')}catch(e){}if(!Z.on&&window.speechSynthesis)speechSynthesis.cancel();say(Z.on?'تمام، هتكلم معاك بصوتي.':'خلاص، هسكت وأكتب بس.',true)};
+$('#hide').onclick=()=>{bub.classList.remove('show');if(window.speechSynthesis)speechSynthesis.cancel()};
+addEventListener('load',()=>{if(G()){G().from('.hero h1,.hero p,.hero .btns',{y:24,opacity:0,duration:.8,stagger:.14,ease:'power3.out'});G().to('#zleaf',{rotation:10,transformOrigin:'40px 16px',repeat:-1,yoyo:true,duration:1.2,ease:'sine.inOut'});G().to('#zeyes',{scaleY:.1,svgOrigin:'40 43',repeat:-1,repeatDelay:3,yoyo:true,duration:.09});G().to('#zbot',{y:-5,repeat:-1,yoyo:true,duration:1.4,ease:'sine.inOut'})}setTimeout(()=>say(lines.top),900)});
+</script>
+</body>
+</html>
