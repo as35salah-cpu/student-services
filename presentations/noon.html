@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>منظومة اللوجستيات الذكية وإدارة التغليف والمخازن في شركة نون (Noon)</title>
+
+  <!-- استيراد باقة الخطوط العربية الاحترافية من Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&family=Changa:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Readex+Pro:wght@600;700&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet" />
+
+  <!-- مكتبة Tailwind CSS للتصميم المتجاوب -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- مكتبة Chart.js للمخططات البيانية التفاعلية -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            noonYellow: '#FEEE00',
+            noonBlack: '#111111',
+            noonSlate: '#1E1E24',
+            techBlue: '#00A8E8',
+          },
+          fontFamily: {
+            heading: ['Changa', 'Cairo', 'sans-serif'],
+            cairo: ['Cairo', 'sans-serif'],
+            body: ['IBM Plex Sans Arabic', 'Tajawal', 'sans-serif'],
+            tajawal: ['Tajawal', 'sans-serif'],
+            kpi: ['Readex Pro', 'Cairo', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --noon-yellow: #FEEE00;
+      --noon-black: #111111;
+      --noon-slate: #1E1E24;
+      --tech-blue: #00A8E8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--noon-black);
+      color: #FFFFFF;
+      font-family: 'IBM Plex Sans Arabic', 'Tajawal', sans-serif;
+    }
+
+    /* خلفية شبكية هندسية (Isometric Tech Grid) */
+    .isometric-bg {
+      background-color: #111111;
+      background-image:
+        radial-gradient(circle at 82% 20%, rgba(254, 238, 0, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 18% 82%, rgba(0, 168, 232, 0.09) 0%, transparent 45%),
+        linear-gradient(30deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(150deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 56px 32px, 56px 32px;
+    }
+
+    /* البطاقات الزجاجية الفاخرة (Glassmorphism + 3D Perspective) */
+    .glass-card {
+      background: linear-gradient(145deg, rgba(30, 30, 36, 0.85), rgba(20, 20, 25, 0.94));
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 18px 40px -15px rgba(0, 0, 0, 0.75);
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(254, 238, 0, 0.45);
+      box-shadow: 0 22px 48px -12px rgba(254, 238, 0, 0.14);
+    }
+
+    .glass-card-blue:hover {
+      border-color: rgba(0, 168, 232, 0.55);
+      box-shadow: 0 22px 48px -12px rgba(0, 168, 232, 0.18);
+    }
+
+    /* خطوط العناوين والأرقام */
+    .title-font {
+      font-family: 'Changa', 'Cairo', sans-serif;
+    }
+
+    .kpi-number {
+      font-family: 'Readex Pro', 'Cairo', sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* نظام انتقال الشرائح السينمائي مع إتاحة التمرير العمودي على جميع المقاسات */
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      padding: 4.1rem 2rem 4.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.95) translateY(18px);
+      transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                  visibility 0.55s;
+      z-index: 1;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1) translateY(0);
+      z-index: 10;
+    }
+
+    .slide.prev {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(1.03) translateY(-18px);
+    }
+
+    /* حركات طفو وتفاعل المجسمات ثلاثية الأبعاد */
+    @keyframes float3D {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-14px) rotate(1.2deg);
+      }
+    }
+
+    @keyframes float3DDelayed {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-10px) rotate(-1.5deg);
+      }
+    }
+
+    @keyframes laserSweep {
+      0%, 100% {
+        transform: translateY(-14px) scaleX(0.96);
+        opacity: 0.72;
+      }
+      50% {
+        transform: translateY(16px) scaleX(1.04);
+        opacity: 1;
+      }
+    }
+
+    @keyframes tapeRoll {
+      0%, 100% {
+        transform: translateX(0px) translateY(0px);
+      }
+      50% {
+        transform: translateX(-12px) translateY(6px);
+      }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        opacity: 0.45;
+        transform: scale(0.96);
+      }
+      50% {
+        opacity: 0.9;
+        transform: scale(1.04);
+      }
+    }
+
+    .animate-float-3d {
+      animation: float3D 4.6s ease-in-out infinite;
+    }
+
+    .animate-float-3d-slow {
+      animation: float3DDelayed 5.8s ease-in-out infinite;
+    }
+
+    .animate-laser {
+      animation: laserSweep 2.2s ease-in-out infinite;
+    }
+
+    .animate-tape {
+      animation: tapeRoll 3.4s ease-in-out infinite;
+    }
+
+    .animate-glow {
+      animation: pulseGlow 3.6s ease-in-out infinite;
+    }
+
+    .slide-inner {
+      max-width: 1280px;
+      width: 100%;
+      margin: auto;
+    }
+
+    /* شريط التقدم العلوي */
+    #top-progress-bar {
+      box-shadow: 0 0 16px rgba(254, 238, 0, 0.85);
+      transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* فهرس الشرائح الجانبي */
+    #slide-drawer {
+      transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+    }
+
+    /* لوحة ملاحظات المتحدث الجانبية */
+    #notes-drawer {
+      transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+    }
+
+    /* شريط الربط الأكاديمي السفلي داخل كل شريحة */
+    .bis-ribbon {
+      background: linear-gradient(90deg, rgba(0, 168, 232, 0.14), rgba(254, 238, 0, 0.08));
+      border: 1px solid rgba(0, 168, 232, 0.35);
+    }
+
+    @media (max-height: 800px) {
+      .slide {
+        padding: 3.5rem 1.5rem 4.1rem 1.5rem;
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .slide {
+        padding: 4rem 1rem 4.6rem 1rem;
+        justify-content: flex-start;
+      }
+    }
+
+    /* تنسيق الطباعة وتصدير PDF (صفحة لكل شريحة وإظهار المراجع كاملة) */
+    @media print {
+      @page {
+        size: landscape;
+        margin: 8mm;
+      }
+      html, body {
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        background: #111111 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      header, footer, #slide-drawer, #notes-drawer, #top-progress-bar {
+        display: none !important;
+      }
+      #presentation-deck {
+        position: static !important;
+        overflow: visible !important;
+        height: auto !important;
+      }
+      .slide {
+        position: relative !important;
+        inset: auto !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow: visible !important;
+        padding: 1.5rem 2rem !important;
+        background-color: #111111 !important;
+      }
+      .slide:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+      }
+      .refs-scroll-box {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+    }
+  </style>
+</head>
+<body class="isometric-bg antialiased selection:bg-noonYellow selection:text-noonBlack">
+
+  <!-- شريط التقدم العلوي المتوهج -->
+  <div class="fixed top-0 right-0 left-0 h-1.5 bg-white/10 z-50">
+    <div id="top-progress-bar" class="h-full bg-noonYellow" style="width: 9.09%;"></div>
+  </div>
+
+  <!-- الشريط العلوي للتحكم والهوية -->
+  <header class="fixed top-1.5 right-0 left-0 z-40 px-3 md:px-7 py-2 flex items-center justify-between pointer-events-none">
+    <!-- شعار نون وعنوان الشريحة الحالية -->
+    <div class="flex items-center gap-2.5 pointer-events-auto">
+      <div class="flex items-center gap-2 bg-noonYellow text-noonBlack px-3.5 py-1.5 rounded-xl font-black tracking-tight shadow-lg shadow-noonYellow/20">
+        <span class="w-2.5 h-2.5 rounded-full bg-noonBlack"></span>
+        <span class="font-cairo text-base md:text-lg leading-none" dir="ltr">noon</span>
+        <span class="text-xs font-bold border-r border-noonBlack/30 pr-2 mr-0.5 hidden sm:inline">تحليل نظم اللوجستيات</span>
+      </div>
+
+      <div id="header-slide-pill" class="hidden lg:flex items-center gap-2 bg-noonSlate/90 border border-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-xl text-xs font-semibold text-gray-200">
+        <span class="w-2 h-2 rounded-full bg-techBlue"></span>
+        <span id="current-slide-label">الغلاف الرئيسي</span>
+      </div>
+    </div>
+
+    <!-- أدوات العرض: رقم الشريحة، طباعة PDF، الفهرس، ملء الشاشة -->
+    <div class="flex items-center gap-1.5 sm:gap-2 pointer-events-auto">
+      <div class="bg-noonSlate/90 border border-white/10 backdrop-blur-md px-3 py-1.5 rounded-xl text-xs md:text-sm font-bold text-noonYellow kpi-number">
+        <span id="slide-counter">1 / 11</span>
+      </div>
+
+      <button onclick="exportPDF()" title="طباعة أو حفظ كملف PDF" class="bg-noonSlate/90 hover:bg-techBlue hover:text-noonBlack border border-white/10 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z" />
+        </svg>
+        <span class="hidden md:inline">طباعة / PDF</span>
+      </button>
+
+      <button id="btn-drawer" onclick="toggleDrawer()" title="فهرس الشرائح" class="bg-noonSlate/90 hover:bg-noonYellow hover:text-noonBlack border border-white/10 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10" />
+        </svg>
+        <span class="hidden sm:inline">الفهرس</span>
+      </button>
+
+      <button id="btn-fullscreen" onclick="toggleFullscreen()" title="ملء الشاشة" class="bg-noonSlate/90 hover:bg-techBlue hover:text-noonBlack border border-white/10 text-white p-2 rounded-xl transition-all cursor-pointer">
+        <svg id="icon-fs-enter" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4" />
+        </svg>
+        <svg id="icon-fs-exit" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- قائمة فهرس الشرائح المنبثقة (يسار) -->
+  <aside id="slide-drawer" class="fixed top-0 left-0 h-full w-80 max-w-[88vw] bg-[#16161B]/95 backdrop-blur-xl border-r border-white/15 z-50 p-5 flex flex-col justify-between -translate-x-full opacity-0 pointer-events-none">
+    <div class="overflow-y-auto pr-1">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-sm bg-noonYellow"></span>
+          <h3 class="title-font text-lg font-extrabold text-white">فهرس الشرائح (11)</h3>
+        </div>
+        <button onclick="toggleDrawer(false)" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-gray-300 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <nav id="drawer-list" class="mt-3 space-y-1.5"></nav>
+    </div>
+
+    <div class="pt-3 border-t border-white/10 text-xs text-gray-400 space-y-1">
+      <p class="font-bold text-noonYellow">إعداد: أحمد صلاح</p>
+      <p>تخصص: نظم معلومات الأعمال (<span dir="ltr">BIS</span>)</p>
+    </div>
+  </aside>
+
+  <!-- لوحة ملاحظات المتحدث والأسئلة المتوقعة (يمين) -->
+  <aside id="notes-drawer" class="fixed top-0 right-0 h-full w-96 max-w-[92vw] bg-[#16161B]/95 backdrop-blur-xl border-l border-noonYellow/30 z-50 p-5 flex flex-col justify-between translate-x-full opacity-0 pointer-events-none">
+    <div class="flex flex-col h-full overflow-hidden">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-techBlue"></span>
+          <h3 class="title-font text-base sm:text-lg font-extrabold text-noonYellow">ملاحظات المتحدث (أحمد صلاح)</h3>
+        </div>
+        <button onclick="toggleNotes(false)" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-gray-300 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="overflow-y-auto py-4 space-y-4 text-sm text-gray-200 leading-relaxed pr-1">
+        <!-- شرح الشريحة الحالية -->
+        <div class="bg-noonSlate/90 border border-white/10 rounded-xl p-4 space-y-2">
+          <div class="flex items-center justify-between text-xs font-bold text-techBlue">
+            <span id="notes-slide-badge">الشريحة 1 من 11</span>
+            <span>نقاط الإلقاء المقترحة</span>
+          </div>
+          <h4 id="notes-slide-title" class="title-font text-base font-extrabold text-white">الغلاف الرئيسي</h4>
+          <p id="notes-slide-content" class="text-xs sm:text-sm text-gray-300 leading-relaxed"></p>
+        </div>
+
+        <!-- قسم الأسئلة المتوقعة وإجاباتها النموذجية -->
+        <div class="border-t border-white/15 pt-3 space-y-2.5">
+          <div class="flex items-center gap-2 text-noonYellow font-extrabold text-xs sm:text-sm">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>أسئلة المناقشة المتوقعة وإجاباتها النموذجية</span>
+          </div>
+
+          <details class="bg-white/5 rounded-xl p-3 border border-white/10 group" open>
+            <summary class="font-bold text-xs sm:text-sm text-white cursor-pointer list-none flex items-center justify-between">
+              <span>1. ليه اخترت شركة نون تحديداً؟</span>
+              <span class="text-noonYellow text-xs">+</span>
+            </summary>
+            <p class="text-xs text-gray-300 mt-2 leading-relaxed border-t border-white/10 pt-2">
+              لأن نون تمثل نموذجاً إقليمياً بارزاً في الإمارات والسعودية ومصر [8][9]، وتدير نماذج تنفيذ متنوعة (<span dir="ltr">FBN, FBP, DSE</span>) [2][3] إلى جانب التوسع في التجارة السريعة (<span dir="ltr">noon Minutes</span>) [6][7]، مما يجعلها حالة دراسية ثرية لتحليل دور نظم المعلومات في سلاسل الإمداد.
+            </p>
+          </details>
+
+          <details class="bg-white/5 rounded-xl p-3 border border-white/10">
+            <summary class="font-bold text-xs sm:text-sm text-white cursor-pointer list-none flex items-center justify-between">
+              <span>2. الأرقام والمعلومات اللي في العرض جايبها منين؟</span>
+              <span class="text-noonYellow text-xs">+</span>
+            </summary>
+            <p class="text-xs text-gray-300 mt-2 leading-relaxed border-t border-white/10 pt-2">
+              اعتمدت على 11 مرجعاً محدداً: الحقائق الموثقة عن نون مستندة لمراكز مساعدة نون والمواقع الإخبارية المعتمدة مثل سنوات التوسع [8][9]، ونماذج التنفيذ [2][3]، وإطلاق خدمة 15 دقيقة في دبي 2022 [6] وعملها في مصر [7]، ومنافسة طلبات مارت في مصر [10]، والإطار الأكاديمي من مرجع Laudon &amp; Laudon (2025) [11]. أما الحسابات الهندسية للتغليف أو الرسوم المقارنة فهي <strong>أمثلة توضيحية وقيم افتراضية للشرح الأكاديمي</strong> وليست أرقاماً منشورة من نون.
+            </p>
+          </details>
+
+          <details class="bg-white/5 rounded-xl p-3 border border-white/10">
+            <summary class="font-bold text-xs sm:text-sm text-white cursor-pointer list-none flex items-center justify-between">
+              <span>3. إيه علاقة اللوجستيات والتغليف بتخصص نظم معلومات الأعمال؟</span>
+              <span class="text-noonYellow text-xs">+</span>
+            </summary>
+            <p class="text-xs text-gray-300 mt-2 leading-relaxed border-t border-white/10 pt-2">
+              وفق إطار نظم المعلومات الإدارية [11]، كل خطوة تشغيلية تعتمد على نظام معلومات: مسح الباركود يمثل نظم معالجة المعاملات (<span dir="ltr">TPS</span>)، واختيار أبعاد الكرتونة يمثل نظم دعم القرار (<span dir="ltr">DSS</span>)، وتوجيه المخزون والطلب يمثل إدارة سلسلة الإمداد (<span dir="ltr">SCM</span>) وذكاء الأعمال (<span dir="ltr">BI</span>).
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- حاوية الشرائح الإحدى عشرة -->
+  <main id="presentation-deck" class="relative w-full h-full overflow-hidden">
+
+    <!-- ========================================================= -->
+    <!-- الشريحة 1: الغلاف (Cover Slide) -->
+    <!-- ========================================================= -->
+    <section class="slide active" data-title="الغلاف الرئيسي">
+      <div class="slide-inner grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <!-- النصوص وبيانات المُعد -->
+        <div class="lg:col-span-7 space-y-4 z-10 text-right">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-noonYellow/15 border border-noonYellow/40 text-noonYellow text-xs sm:text-sm font-bold">
+            <span class="w-2 h-2 rounded-full bg-noonYellow"></span>
+            <span>دراسة تحليلية في سلاسل الإمداد ونظم معلومات الأعمال</span>
+          </div>
+
+          <h1 class="title-font text-3xl sm:text-4xl lg:text-[2.7rem] font-extrabold leading-[1.24] text-white">
+            منظومة اللوجستيات الذكية وإدارة التغليف والمخازن في شركة
+            <span class="text-noonYellow inline-block">نون (<span dir="ltr">Noon</span>)</span>
+          </h1>
+
+          <p class="text-gray-200 text-base md:text-lg leading-relaxed max-w-2xl">
+            تحليل تكامل أنظمة إدارة المستودعات، وأساليب التغليف، ونماذج التوصيل: من <span dir="ltr" class="text-noonYellow font-bold">noon Express</span> (منتجات منفذة من نون بخيارات توصيل سريع للمنتجات المؤهلة) إلى <span dir="ltr" class="text-techBlue font-bold">noon Minutes</span> (التوصيل السريع لمنتجات مختارة).
+          </p>
+
+          <!-- بطاقة بيانات المُعد -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border-r-4 border-r-noonYellow max-w-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+              <div class="w-12 h-12 rounded-xl bg-noonYellow text-noonBlack flex items-center justify-center font-black text-xl title-font shadow-lg shadow-noonYellow/20 shrink-0">
+                أ.ص
+              </div>
+              <div>
+                <div class="text-xs text-gray-400 font-semibold">إعداد وتقديم</div>
+                <div class="text-lg md:text-xl font-extrabold text-white title-font">أحمد صلاح</div>
+              </div>
+            </div>
+
+            <div class="sm:border-r sm:border-white/10 sm:pr-4">
+              <div class="text-xs text-gray-400 font-semibold">التخصص الأكاديمي</div>
+              <div class="text-base font-bold text-techBlue">
+                نظم معلومات الأعمال (<span dir="ltr">BIS</span>)
+              </div>
+            </div>
+          </div>
+
+          <!-- أزرار سريعة لبدء العرض -->
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <button onclick="nextSlide()" class="bg-noonYellow hover:bg-yellow-300 text-noonBlack font-extrabold px-6 py-3 rounded-xl text-base transition-all shadow-lg shadow-noonYellow/25 flex items-center gap-2 cursor-pointer">
+              <span>ابدأ استكشاف الدراسة</span>
+              <svg class="w-5 h-5 rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+            <button onclick="toggleNotes(true)" class="bg-noonSlate hover:bg-white/10 border border-white/15 text-white font-bold px-5 py-3 rounded-xl text-base transition-all cursor-pointer">
+              عرض ملاحظات المتحدث
+            </button>
+          </div>
+        </div>
+
+        <!-- مجسمات 3D لصناديق شحن نون الصفراء (Isometric SVG متحركة) -->
+        <div class="lg:col-span-5 flex items-center justify-center relative">
+          <div class="absolute w-72 h-72 rounded-full bg-noonYellow/15 blur-3xl animate-glow pointer-events-none"></div>
+          <div class="absolute w-56 h-56 rounded-full bg-techBlue/15 blur-3xl -bottom-6 left-6 pointer-events-none"></div>
+
+          <svg viewBox="0 0 460 420" class="w-full max-w-[420px] h-auto drop-shadow-2xl overflow-visible" aria-label="مجسم ثلاثي الأبعاد لصناديق شحن نون الصفراء">
+            <defs>
+              <linearGradient id="boxTopYellow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFF55A" />
+                <stop offset="100%" stop-color="#FEEE00" />
+              </linearGradient>
+              <linearGradient id="boxLeftYellow" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#E5D500" />
+                <stop offset="100%" stop-color="#B8AA00" />
+              </linearGradient>
+              <linearGradient id="boxRightYellow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#F5E300" />
+                <stop offset="100%" stop-color="#C9B900" />
+              </linearGradient>
+              <linearGradient id="tapeDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#27272E" />
+                <stop offset="100%" stop-color="#111111" />
+              </linearGradient>
+              <linearGradient id="boxSlateTop" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#32323D" />
+                <stop offset="100%" stop-color="#1E1E24" />
+              </linearGradient>
+              <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="12" />
+                <feOffset dx="0" dy="18" result="offsetblur" />
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.55" />
+                </feComponentTransfer>
+                <feMerge>
+                  <feMergeNode />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- شبكة أرضية ثلاثية الأبعاد تحت الصناديق -->
+            <g opacity="0.35">
+              <polygon points="230,275 410,340 230,405 50,340" fill="none" stroke="#FEEE00" stroke-width="1.2" stroke-dasharray="5 5" />
+              <polygon points="230,295 365,342 230,390 95,342" fill="rgba(254,238,0,0.06)" stroke="#00A8E8" stroke-width="1" />
+            </g>
+
+            <!-- الصندوق الخلفي الصغير -->
+            <g class="animate-float-3d-slow" filter="url(#softShadow)">
+              <polygon points="345,175 415,205 345,235 275,205" fill="rgba(0,0,0,0.45)" />
+              <polygon points="345,95 410,125 345,155 280,125" fill="url(#boxSlateTop)" stroke="#00A8E8" stroke-width="1.2" />
+              <polygon points="280,125 345,155 345,212 280,182" fill="#18181F" stroke="#00A8E8" stroke-width="0.8" />
+              <polygon points="410,125 345,155 345,212 410,182" fill="#23232C" stroke="#00A8E8" stroke-width="0.8" />
+              <polygon points="312,110 377,140 385,136 320,106" fill="#FEEE00" />
+              <polygon points="377,140 385,136 385,165 377,169" fill="#D4C500" />
+              <circle cx="345" cy="125" r="6" fill="#00A8E8" />
+            </g>
+
+            <!-- الصندوق الرئيسي الكبير لشركة نون -->
+            <g class="animate-float-3d" filter="url(#softShadow)">
+              <polygon points="210,115 335,172 210,229 85,172" fill="url(#boxTopYellow)" />
+              <polygon points="85,172 210,229 210,348 85,291" fill="url(#boxLeftYellow)" />
+              <polygon points="335,172 210,229 210,348 335,291" fill="url(#boxRightYellow)" />
+              <polyline points="85,172 210,229 335,172" fill="none" stroke="#FFFCE0" stroke-width="2" />
+              <line x1="210" y1="229" x2="210" y2="348" stroke="#FFFCE0" stroke-width="1.8" />
+
+              <!-- شريط التغليف الأسود -->
+              <polygon points="145,143 270,200 282,194 157,137" fill="url(#tapeDark)" />
+              <polygon points="270,200 282,194 282,248 270,254" fill="#16161B" />
+              <line x1="151" y1="140" x2="276" y2="197" stroke="#FEEE00" stroke-width="1.5" stroke-dasharray="6 4" />
+
+              <!-- ملصق الشحن -->
+              <g transform="matrix(1, 0.455, 0, 1, 108, 212)">
+                <rect x="0" y="0" width="76" height="48" rx="4" fill="#FFFFFF" opacity="0.95" />
+                <rect x="6" y="6" width="22" height="22" rx="2" fill="#111111" />
+                <rect x="9" y="9" width="7" height="7" fill="#FEEE00" />
+                <rect x="18" y="18" width="7" height="7" fill="#00A8E8" />
+                <line x1="34" y1="10" x2="68" y2="10" stroke="#111111" stroke-width="3" stroke-linecap="round" />
+                <line x1="34" y1="18" x2="58" y2="18" stroke="#00A8E8" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="34" y1="26" x2="64" y2="26" stroke="#666666" stroke-width="2" stroke-linecap="round" />
+                <path d="M8,35 v8 M12,35 v8 M15,35 v8 M20,35 v8 M24,35 v8 M29,35 v8 M33,35 v8 M38,35 v8 M43,35 v8 M47,35 v8 M53,35 v8 M58,35 v8 M63,35 v8 M68,35 v8" stroke="#111111" stroke-width="1.8" />
+              </g>
+
+              <!-- شعار noon -->
+              <g transform="matrix(1, -0.455, 0, 1, 232, 274)">
+                <rect x="0" y="0" width="82" height="32" rx="6" fill="#111111" />
+                <text x="41" y="22" text-anchor="middle" fill="#FEEE00" font-family="Cairo, sans-serif" font-weight="900" font-size="19" letter-spacing="1">noon</text>
+              </g>
+            </g>
+
+            <!-- الصندوق الأمامي الصغير -->
+            <g class="animate-float-3d-slow" filter="url(#softShadow)">
+              <polygon points="92,262 152,290 92,318 32,290" fill="url(#boxTopYellow)" />
+              <polygon points="32,290 92,318 92,374 32,346" fill="url(#boxLeftYellow)" />
+              <polygon points="152,290 92,318 92,374 152,346" fill="url(#boxRightYellow)" />
+              <polygon points="60,276 120,304 127,300 67,272" fill="#111111" />
+              <circle cx="122" cy="332" r="9" fill="#00A8E8" />
+              <path d="M118,332 l3,3 l5,-6" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+            </g>
+
+            <!-- شارات توضيحية للمحاكاة -->
+            <g>
+              <rect x="24" y="102" width="124" height="28" rx="8" fill="#1E1E24" stroke="#00A8E8" stroke-width="1.2" />
+              <circle cx="38" cy="116" r="4" fill="#00A8E8" />
+              <text x="92" y="120" text-anchor="middle" fill="#FFFFFF" font-family="Cairo, sans-serif" font-size="10.5" font-weight="700">نموذج محاكاة بصري</text>
+
+              <rect x="285" y="298" width="146" height="28" rx="8" fill="#1E1E24" stroke="#FEEE00" stroke-width="1.2" />
+              <circle cx="299" cy="312" r="4" fill="#FEEE00" />
+              <text x="364" y="316" text-anchor="middle" fill="#FEEE00" font-family="Readex Pro, sans-serif" font-size="10.5" font-weight="700">BIS Case Study</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- الشريحة 2: أهداف الدراسة والسؤال البحثي -->
+    <!-- ========================================================= -->
+    <section class="slide" data-title="أهداف الدراسة والسؤال البحثي">
+      <div class="slide-inner space-y-4">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-2.5">
+          <div>
+            <span class="text-noonYellow text-xs font-extrabold">02 | الإطار المنهجي للدراسة</span>
+            <h2 class="title-font text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mt-0.5">
+              أهداف الدراسة و<span class="text-noonYellow">السؤال البحثي</span>
+            </h2>
+          </div>
+          <span class="text-xs text-gray-300 bg-white/5 px-3 py-1 rounded-lg border border-white/10">
+            تخصص نظم معلومات الأعمال (<span dir="ltr">BIS</span>)
+          </span>
+        </div>
+
+        <!-- السؤال البحثي الرئيسي -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border-r-4 border-r-noonYellow bg-noonYellow/5">
+          <span class="inline-block text-xs font-extrabold text-noonYellow mb-1">السؤال البحثي المحوري</span>
+          <h3 class="title-font text-lg sm:text-xl lg:text-2xl font-extrabold text-white leading-relaxed">
+            «كيف يمكن تفسير دور نظم المعلومات الإدارية في دعم كفاءة وسرعة المنظومة اللوجستية للتجارة الإلكترونية، بتطبيق الإطار النظري على ممارسات نون الموثقة؟»
+          </h3>
+        </div>
+
+        <!-- الأهداف الثلاثة -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border-t-4 border-t-noonYellow space-y-2">
+            <span class="inline-block px-2.5 py-0.5 rounded-md bg-noonYellow text-noonBlack font-extrabold text-xs kpi-number">الهدف 01</span>
+            <h4 class="title-font text-lg sm:text-xl font-extrabold text-white">توثيق نماذج التنفيذ</h4>
+            <p class="text-base text-gray-200 leading-relaxed">
+              تحديد نماذج التنفيذ والتوصيل الموثقة في نون (<span dir="ltr">FBN, FBP, DSE</span>) وخدمة التجارة السريعة.
+            </p>
+          </div>
+
+          <div class="glass-card glass-card-blue rounded-2xl p-4 sm:p-5 border-t-4 border-t-techBlue space-y-2">
+            <span class="inline-block px-2.5 py-0.5 rounded-md bg-techBlue text-noonBlack font-extrabold text-xs kpi-number">الهدف 02</span>
+            <h4 class="title-font text-lg sm:text-xl font-extrabold text-white">التفسير بنظم المعلومات</h4>
+            <p class="text-base text-gray-200 leading-relaxed">
+              ربط عمليات المستودع والتغليف والتتبع بأنظمة <span dir="ltr">TPS, DSS, ERP, SCM, BI</span> وفق المرجع [11].
+            </p>
+          </div>
+
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border-t-4 border-t-noonYellow space-y-2">
+            <span class="inline-block px-2.5 py-0.5 rounded-md bg-noonYellow text-noonBlack font-extrabold text-xs kpi-number">الهدف 03</span>
+            <h4 class="title-font text-lg sm:text-xl font-extrabold text-white">التقييم النقدي للمخاطر</h4>
+            <p class="text-base text-gray-200 leading-relaxed">
+              تحليل التحديات المالية والتشغيلية والتنافسية المرتبطة بالتوصيل السريع والأتمتة.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- الشريحة 3: نظرة عامة على منظومة نون اللوجستية -->
+    <!-- ========================================================= -->
+    <section class="slide" data-title="نظرة عامة على منظومة نون">
+      <div class="slide-inner space-y-3.5">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-2.5">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="text-noonYellow text-xs font-extrabold">03 | الإطار العام للمنظومة</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-noonYellow/15 border border-noonYellow/40 text-noonYellow text-xs font-bold">موثق بالمراجع [1]–[5], [8], [9]</span>
+            </div>
+            <h2 class="title-font text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
+              نظرة عامة على منظومة <span class="text-noonYellow">نون (<span dir="ltr">Noon</span>)</span> اللوجستية
+            </h2>
+          </div>
+          <span class="text-xs text-gray-300 font-semibold">المصادر: [1], [2], [3], [4], [5], [8], [9]</span>
+        </div>
+
+        <!-- 3 بطاقات رئيسية موثقة بدقة -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- البطاقة 1: النطاق الجغرافي -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 space-y-2 border-t-4 border-t-noonYellow">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-noonYellow">النطاق الجغرافي</span>
+              <span class="text-xs bg-noonYellow/15 text-noonYellow px-2 py-0.5 rounded font-bold">موثق [5][8][9]</span>
+            </div>
+            <h3 class="title-font text-lg sm:text-xl font-extrabold text-white">3 أسواق إقليمية</h3>
+            <p class="text-base text-gray-200 leading-relaxed">
+              تعمل في <strong>الإمارات والسعودية ومصر</strong> (الإمارات 2017، ومصر 2019) [8][9]، بملايين المنتجات بشارة <span dir="ltr" class="text-noonYellow font-bold">noon Express</span> [5].
+            </p>
+          </div>
+
+          <!-- البطاقة 2: هيكل الشبكة ونماذج التنفيذ -->
+          <div class="glass-card glass-card-blue rounded-2xl p-4 sm:p-5 space-y-2 border-t-4 border-t-techBlue">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-techBlue">نماذج التنفيذ</span>
+              <span class="text-xs bg-noonYellow/15 text-noonYellow px-2 py-0.5 rounded font-bold">موثق [2][3][4]</span>
+            </div>
+            <h3 class="title-font text-lg sm:text-xl font-extrabold text-white">3 نماذج وناقل داخلي</h3>
+            <p class="text-base text-gray-200 leading-relaxed">
+              <strong><span dir="ltr">FBN</span></strong> (تنفيذ كامل من نون)، <strong><span dir="ltr">FBP</span></strong> (تجهيز البائع وتوصيل نون)، و<strong><span dir="ltr">DSE</span></strong> (توصيل سريع من مخزن البائع) [2][3] عبر ناقل داخلي لمنتجات نون [4].
+            </p>
+          </div>
+
+          <!-- البطاقة 3: سرعة التوصيل -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 space-y-2 border-t-4 border-t-noonYellow">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-noonYellow">خيارات التوصيل</span>
+              <span class="text-xs bg-noonYellow/15 text-noonYellow px-2 py-0.5 rounded font-bold">موثق [1]</span>
+            </div>
+            <h3 class="title-font text-lg sm:text-xl font-extrabold text-white">شارة <span dir="ltr">noon Express</span></h3>
+            <p class="text-base text-gray-200 leading-relaxed">
+              تعني أن المنتج <strong>مخزّن ومغلّف ومشحون من نون</strong>، ويتاح توصيل نفس اليوم أو اليوم التالي لمنتجات ومدن مؤهلة فقط [1].
+            </p>
+          </div>
+        </div>
+
+        <!-- شريط الربط الأكاديمي الصريح بمنهج BIS -->
+        <div class="bis-ribbon rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded-lg bg-techBlue text-noonBlack font-extrabold text-xs shrink-0">ربط المنهج (BIS) [11]</span>
+            <p class="text-base text-white font-semibold">
+              <strong>إدارة سلسلة الإمداد (<span dir="ltr">SCM</span>):</strong> تنسيق تدفق السلع والمعلومات رقمياً بين البائعين ومراكز التنفيذ والعملاء [11].
+            </p>
+          </div>
+          <span class="text-xs text-gray-300 shrink-0">[1]–[5], [8], [9], [11]</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- الشريحة 4: رحلة الطلب داخل مركز التوزيع (Fulfillment Center) -->
+    <!-- ========================================================= -->
+    <section class="slide" data-title="رحلة الطلب داخل المستودع">
+      <div class="slide-inner space-y-3">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-2">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="text-techBlue text-xs font-extrabold">04 | هندسة العمليات التشغيلية</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-techBlue/15 border border-techBlue/40 text-techBlue text-xs font-bold">نموذج عام في أنظمة إدارة المستودعات (WMS)</span>
+            </div>
+            <h2 class="title-font text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
+              رحلة الطلب داخل مركز التوزيع (<span dir="ltr" class="text-noonYellow">Fulfillment Center</span>)
+            </h2>
+          </div>
+          <span class="text-xs bg-white/5 border border-white/10 px-3 py-1 rounded-lg text-gray-300">
+            انقر على أي مرحلة للاستعراض
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+          <!-- المراحل الأربع المختصرة -->
+          <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div onclick="selectStep(1)" id="step-card-1" class="step-card glass-card rounded-2xl p-3.5 border-2 border-noonYellow cursor-pointer transition-all">
+              <div class="flex items-center justify-between mb-1">
+                <span class="px-2 py-0.5 rounded bg-noonYellow text-noonBlack font-extrabold text-xs kpi-number">01 | الاستلام</span>
+                <span class="text-xs text-techBlue font-bold">فحص الوارد</span>
+              </div>
+              <h3 class="title-font text-lg font-extrabold text-white">مسح الشحنات الواردة</h3>
+              <p class="text-base text-gray-200 mt-1 leading-snug">
+                مطابقة المنتجات إلكترونياً مع أوامر التوريد قبل إضافتها للمخزون.
+              </p>
+            </div>
+
+            <div onclick="selectStep(2)" id="step-card-2" class="step-card glass-card rounded-2xl p-3.5 border border-white/10 cursor-pointer transition-all">
+              <div class="flex items-center justify-between mb-1">
+                <span class="px-2 py-0.5 rounded bg-white/10 text-noonYellow font-extrabold text-xs kpi-number">02 | التسكين</span>
+                <span class="text-xs text-techBlue font-bold">تصنيف ABC</span>
+              </div>
+              <h3 class="title-font text-lg font-extrabold text-white">توزيع الأصناف والالتقاط</h3>
+              <p class="text-base text-gray-200 mt-1 leading-snug">
+                تسكين الأصناف عالية الطلب قرب محطات التجهيز لتقليل المسافة.
+              </p>
+            </div>
+
+            <div onclick="selectStep(3)" id="step-card-3" class="step-card glass-card rounded-2xl p-3.5 border border-white/10 cursor-pointer transition-all">
+              <div class="flex items-center justify-between mb-1">
+                <span class="px-2 py-0.5 rounded bg-white/10 text-noonYellow font-extrabold text-xs kpi-number">03 | التغليف</span>
+                <span class="text-xs text-techBlue font-bold">تأمين الطرد</span>
+              </div>
+              <h3 class="title-font text-lg font-extrabold text-white">إغلاق العبوة والملصق</h3>
+              <p class="text-base text-gray-200 mt-1 leading-snug">
+                تغليف الطلب بالشريط اللاصق وتوليد بوليصة شحن مرتبطة بالعميل.
+              </p>
+            </div>
+
+            <div onclick="selectStep(4)" id="step-card-4" class="step-card glass-card rounded-2xl p-3.5 border border-white/10 cursor-pointer transition-all">
+              <div class="flex items-center justify-between mb-1">
+                <span class="px-2 py-0.5 rounded bg-white/10 text-noonYellow font-extrabold text-xs kpi-number">04 | الشحن</span>
+                <span class="text-xs text-techBlue font-bold">التوجيه</span>
+              </div>
+              <h3 class="title-font text-lg font-extrabold text-white">الفرز الجغرافي والتسليم</h3>
+              <p class="text-base text-gray-200 mt-1 leading-snug">
+                تجميع الطرود حسب المناطق وتسليمها لمركبات التوزيع وفق المسارات.
+              </p>
+            </div>
+          </div>
+
+          <!-- المشهد البصري الثلاثي الأبعاد: سكانر الباركود + أداة التغليف -->
+          <div class="lg:col-span-5 glass-card rounded-2xl p-3.5 flex flex-col items-center justify-between relative overflow-hidden">
+            <div class="w-full flex items-center justify-between text-xs text-gray-300 border-b border-white/10 pb-1.5">
+              <span class="font-bold text-noonYellow">محاكاة توضيحية لمحطة التجهيز</span>
+              <span id="step-status-badge" class="text-techBlue font-bold">01: مسح الباركود</span>
+            </div>
+
+            <svg viewBox="0 0 420 215" class="w-full max-w-[330px] h-auto my-1 overflow-visible" aria-label="سكانر الباركود وأداة التغليف ثلاثية الأبعاد">
+              <defs>
+                <linearGradient id="laserBeamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#FF2A5F" stop-opacity="0.9" />
+                  <stop offset="50%" stop-color="#00A8E8" stop-opacity="0.85" />
+                  <stop offset="100%" stop-color="#FF2A5F" stop-opacity="0.1" />
+                </linearGradient>
+                <linearGradient id="dispenserBody" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#FEEE00" />
+                  <stop offset="100%" stop-color="#C9B800" />
+                </linearGradient>
+              </defs>
+
+              <!-- سير النقل -->
+              <polygon points="30,160 275,55 395,107 150,212" fill="#23232B" stroke="#3B3B47" stroke-width="1.5" />
+              <polygon points="30,160 150,212 150,225 30,173" fill="#17171D" />
+              <polygon points="150,212 395,107 395,120 150,225" fill="#1D1D24" />
+              <line x1="75" y1="141" x2="195" y2="193" stroke="#00A8E8" stroke-width="2" stroke-dasharray="6 6" opacity="0.65" />
+              <line x1="130" y1="117" x2="250" y2="169" stroke="#00A8E8" stroke-width="2" stroke-dasharray="6 6" opacity="0.65" />
+              <line x1="185" y1="93" x2="305" y2="145" stroke="#00A8E8" stroke-width="2" stroke-dasharray="6 6" opacity="0.65" />
+
+              <!-- طرد الشحن -->
+              <g>
+                <polygon points="180,83 250,113 180,143 110,113" fill="#FEEE00" />
+                <polygon points="110,113 180,143 180,189 110,159" fill="#D4C500" />
+                <polygon points="250,113 180,143 180,189 250,159" fill="#E6D600" />
+                <polygon points="132,132 166,147 166,169 132,154" fill="#FFFFFF" />
+                <line x1="138" y1="140" x2="160" y2="150" stroke="#111111" stroke-width="3" />
+                <line x1="138" y1="147" x2="156" y2="155" stroke="#111111" stroke-width="2" />
+              </g>
+
+              <!-- سكانر الباركود 3D -->
+              <g class="animate-float-3d">
+                <polygon points="44,47 64,39 74,83 54,91" fill="#2A2A34" stroke="#FFFFFF" stroke-width="0.6" />
+                <polygon points="36,19 88,1 102,29 50,47" fill="#FEEE00" />
+                <polygon points="50,47 102,29 106,41 54,59" fill="#18181F" />
+                <ellipse cx="98" cy="21" rx="5" ry="10" transform="rotate(-18 98 21)" fill="#00A8E8" />
+                <g class="animate-laser">
+                  <polygon points="100,19 162,139 142,151" fill="url(#laserBeamGrad)" />
+                  <line x1="100" y1="19" x2="152" y2="145" stroke="#FF2A5F" stroke-width="2" />
+                </g>
+              </g>
+
+              <!-- أداة التغليف بالشريط اللاصق 3D -->
+              <g class="animate-tape">
+                <ellipse cx="318" cy="33" rx="25" ry="25" fill="#FEEE00" stroke="#111111" stroke-width="3" />
+                <ellipse cx="318" cy="33" rx="10" ry="10" fill="#1E1E24" stroke="#00A8E8" stroke-width="2" />
+                <path d="M294,41 L264,81 L282,91 L312,57 Z" fill="url(#dispenserBody)" stroke="#111111" stroke-width="1.5" />
+                <rect x="322" y="7" width="38" height="14" rx="6" transform="rotate(-25 322 7)" fill="#2D2D38" stroke="#FEEE00" stroke-width="1" />
+                <polygon points="270,83 225,103 233,108 278,88" fill="#111111" opacity="0.9" />
+                <line x1="274" y1="85" x2="229" y2="105" stroke="#FEEE00" stroke-width="1.5" />
+              </g>
+            </svg>
+
+            <div id="step-detail-box" class="w-full bg-noonBlack/75 border border-white/10 rounded-xl p-2 text-base text-gray-200 leading-snug">
+              <strong class="text-noonYellow">دور النظام:</strong> تسجيل كل حركة مسح كمعاملة فورية تمنع تضارب المخزون.
+            </div>
+          </div>
+        </div>
+
+        <!-- شريط الربط الأكاديمي -->
+        <div class="bis-ribbon rounded-xl p-2.5 flex items-center gap-2.5">
+          <span class="px-2.5 py-1 rounded-lg bg-techBlue text-noonBlack font-extrabold text-xs shrink-0">ربط المنهج (BIS) [11]</span>
+          <p class="text-base text-white font-semibold">
+            <strong>نظم معالجة المعاملات (<span dir="ltr">TPS</span>):</strong> تسجيل كل حركة استلام أو فرز لحظياً لضمان دقة البيانات [11].
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- الشريحة 5: تقنيات التغليف الذكي وتقليل الهدر -->
+    <!-- ========================================================= -->
+    <section class="slide" data-title="تقنيات التغليف الذكي">
+      <div class="slide-inner space-y-3.5">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-2.5">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="text-noonYellow text-xs font-extrabold">05 | الاستدامة والكفاءة التشغيلية</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-techBlue/15 border border-techBlue/40 text-techBlue text-xs font-bold">ممارسة شائعة في القطاع اللوجستي</span>
+            </div>
+            <h2 class="title-font text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
+              تقنيات <span class="text-noonYellow">التغليف الذكي</span> وتقليل الهدر
+            </h2>
+          </div>
+          <span class="text-xs text-gray-300 bg-white/5 px-3 py-1 rounded-lg border border-white/10">
+            نموذج اختيار المقاس الأمثل (<span dir="ltr">Right-Sizing</span>)
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+          <!-- العمود الأيمن: وصف نوعي + حسبة هندسية افتراضية دقيقة -->
+          <div class="lg:col-span-7 space-y-3">
+            <div class="glass-card rounded-2xl p-4 space-y-1.5">
+              <h3 class="title-font text-lg sm:text-xl font-extrabold text-white">
+                تقليل الفراغ الداخلي ومواد الحشو عبر مطابقة الأبعاد
+              </h3>
+              <p class="text-base text-gray-200 leading-relaxed">
+                تطابق أنظمة المستودعات أبعاد المنتج لاختيار أصغر عبوة مناسبة آلياً، مما يقلل الكرتون المهدر ويرفع كفاءة مساحة الشحن.
+              </p>
+            </div>
+
+            <!-- بطاقة الحسبة الهندسية الافتراضية الدقيقة -->
+            <div class="glass-card glass-card-blue rounded-2xl p-4 border-2 border-techBlue/50 bg-techBlue/5 space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="px-3 py-1 rounded-lg bg-noonYellow text-noonBlack font-extrabold text-xs">
+                  مثال توضيحي – أبعاد افتراضية
+                </span>
+                <span class="text-xs text-techBlue font-bold">محاكاة حسابية للشرح الأكاديمي</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-base bg-noonBlack/70 p-3 rounded-xl border border-white/10">
+                <div>
+                  <span class="block text-xs text-gray-400">1. كرتونة قياسية (<span dir="ltr">40×30×25</span> سم):</span>
+                  <div class="text-white font-bold mt-0.5">
+                    الحجم <span class="kpi-number">30,000 سم³</span> | الفراغ <span class="text-red-400 kpi-number">22,800 سم³</span>
+                  </div>
+                </div>
+                <div>
+                  <span class="block text-xs text-gray-400">2. كرتونة مطابقة (<span dir="ltr">32×24×16</span> سم):</span>
+                  <div class="text-white font-bold mt-0.5">
+                    الحجم <span class="kpi-number">12,288 سم³</span> | الفراغ <span class="text-techBlue kpi-number">5,088 سم³</span>
+                  </div>
+                </div>
+              </div>
+
+              <p class="text-base text-white font-bold leading-snug">
+                لمنتج (<span dir="ltr">30×20×12</span> سم = <span class="kpi-number">7,200 سم³</span>): يقل الفراغ بمقدار <span class="text-noonYellow kpi-number">17,712 سم³</span> بنسبة <span class="text-noonYellow kpi-number">77.7%</span> (افتراضات للشرح وليست منشورة من نون).
+              </p>
+            </div>
+          </div>
+
+          <!-- العمود الأيسر: مجسم 3D يوضح مطابقة أبعاد الصندوق -->
+          <div class="lg:col-span-5 glass-card rounded-2xl p-4 flex flex-col items-center justify-center relative">
+            <span class="text-xs font-bold text-techBlue mb-1">محاكاة توضيحية للقياس الحجمي</span>
+            <svg viewBox="0 0 380 265" class="w-full max-w-[310px] h-auto overflow-visible" aria-label="مجسم التغليف الذكي">
+              <g stroke="#00A8E8" stroke-width="1.5" stroke-dasharray="4 4">
+                <line x1="70" y1="125" x2="190" y2="70" />
+                <line x1="190" y1="70" x2="310" y2="125" />
+                <line x1="322" y1="130" x2="322" y2="225" />
+              </g>
+              <text x="112" y="88" fill="#00A8E8" font-family="Cairo, sans-serif" font-size="11" font-weight="700">الطول (L)</text>
+              <text x="255" y="88" fill="#00A8E8" font-family="Cairo, sans-serif" font-size="11" font-weight="700">العرض (W)</text>
+              <text x="328" y="182" fill="#00A8E8" font-family="Cairo, sans-serif" font-size="11" font-weight="700">الارتفاع</text>
+
+              <g class="animate-float-3d">
+                <polygon points="190,84 298,134 190,184 82,134" fill="#FEEE00" />
+                <polygon points="82,134 190,184 190,258 82,208" fill="#D1C200" />
+                <polygon points="298,134 190,184 190,258 298,208" fill="#E8D800" />
+
+                <polygon points="132,111 240,161 252,155 144,105" fill="#111111" />
+                <polygon points="240,161 252,155 252,198 240,204" fill="#1E1E24" />
+
+                <g class="animate-tape">
+                  <circle cx="136" cy="85" r="22" fill="#1E1E24" stroke="#FEEE00" stroke-width="3.5" />
+                  <circle cx="136" cy="85" r="8" fill="#00A8E8" />
+                  <path d="M136,107 L144,112 L152,106 L146,95 Z" fill="#FEEE00" />
+                </g>
+              </g>
+
+              <rect x="75" y="242" width="230" height="24" rx="8" fill="#111111" stroke="#00A8E8" stroke-width="1" />
+              <text x="190" y="258" text-anchor="middle" fill="#FFFFFF" font-family="Cairo, sans-serif" font-size="10.5" font-weight="700">نموذج اختيار المقاس الأمثل وتقليل الفراغ</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- شريط الربط الأكاديمي -->
+        <div class="bis-ribbon rounded-xl p-2.5 flex items-center gap-2.5">
+          <span class="px-2.5 py-1 rounded-lg bg-techBlue text-noonBlack font-extrabold text-xs shrink-0">ربط المنهج (BIS) [11]</span>
+          <p class="text-base text-white font-semibold">
+            <strong>نظم دعم القرار (<span dir="ltr">DSS</span>):</strong> استخدام النماذج التحليلية لاختيار المقاس الأمثل وتقليل التكلفة التشغيلية [11].
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- الشريحة 6: تتبع الشحنات بالباركود و RFID -->
+    <!-- ========================================================= -->
+    <section class="slide" data-title="تتبع الشحنات بالباركود و RFID">
+      <div class="slide-inner space-y-3.5">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-2.5">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="text-techBlue text-xs font-extrabold">06 | دقة البيانات والتتبع الآلي</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-techBlue/15 border border-techBlue/40 text-techBlue text-xs font-bold">نموذج توضيحي لأنظمة WMS</span>
+            </div>
+            <h2 class="title-font text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
+              تتبع الشحنات بتقنيات <span class="text-noonYellow">الباركود</span> و <span dir="ltr" class="text-techBlue">RFID</span>
+            </h2>
+          </div>
+          <span class="text-xs text-gray-300 bg-white/5 px-3 py-1 rounded-lg border border-white/10">
+            نموذج عام للتتبع في مستودعات التجارة الإلكترونية
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+          <!-- مجسم سكانر الباركود 3D مع ليزر متحرك -->
+          <div class="lg:col-span-5 glass-card glass-card-blue rounded-2xl p-4 flex flex-col items-center justify-center relative">
+            <svg viewBox="0 0 380 265" class="w-full max-w-[310px] h-auto overflow-visible" aria-label="سكانر الباركود ثلاثي الأبعاد">
+              <defs>
+                <linearGradient id="bigLaser" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#FF2A5F" stop-opacity="0.95" />
+                  <stop offset="60%" stop-color="#00A8E8" stop-opacity="0.7" />
+                  <stop offset="100%" stop-color="#00A8E8" stop-opacity="0.05" />
+                </linearGradient>
+              </defs>
+
+              <!-- موجات التعريف اللاسلكي -->
+              <g fill="none" stroke="#00A8E8" stroke-width="1.5" opacity="0.55" class="animate-pulse">
+                <path d="M235,150 Q265,130 295,150" />
+                <path d="M225,137 Q265,110 305,137" />
+                <path d="M215,124 Q265,90 315,124" />
+              </g>
+
+              <!-- طرد الشحن -->
+              <g>
+                <polygon points="245,150 335,190 245,230 155,190" fill="#FEEE00" />
+                <polygon points="155,190 245,230 245,272 155,232" fill="#C9BA00" />
+                <polygon points="335,190 245,230 245,272 335,232" fill="#E3D300" />
+
+                <polygon points="205,180 268,208 242,220 179,192" fill="#FFFFFF" />
+                <line x1="204" y1="187" x2="254" y2="209" stroke="#111111" stroke-width="3" />
+                <line x1="196" y1="192" x2="246" y2="214" stroke="#111111" stroke-width="2" />
+                <line x1="189" y1="196" x2="239" y2="218" stroke="#00A8E8" stroke-width="2.5" />
+              </g>
+
+              <!-- مجسم السكانر الصناعي 3D -->
+              <g class="animate-float-3d">
+                <polygon points="56,97 86,85 104,160 74,172" fill="#23232C" stroke="#454554" stroke-width="1" />
+                <polygon points="88,100 98,97 102,113 92,116" fill="#FEEE00" />
+                <polygon points="42,49 134,17 156,63 64,95" fill="#FEEE00" />
+                <polygon points="64,95 156,63 162,81 70,113" fill="#18181F" />
+                <polygon points="64,49 114,31 122,47 72,65" fill="#111111" />
+                <line x1="74" y1="53" x2="110" y2="40" stroke="#00A8E8" stroke-width="3" stroke-linecap="round" />
+                <polygon points="134,17 156,63 162,81 142,33" fill="#00A8E8" />
+
+                <g class="animate-laser">
+                  <polygon points="148,47 256,200 190,210" fill="url(#bigLaser)" />
+                  <line x1="148" y1="47" x2="225" y2="203" stroke="#FF2A5F" stroke-width="2.5" />
+                </g>
+              </g>
+
+              <!-- بطاقة توضيحية -->
+              <rect x="20" y="206" width="132" height="44" rx="10" fill="#111111" stroke="#00A8E8" stroke-width="1.2" />
+              <text x="86" y="224" text-anchor="middle" fill="#00A8E8" font-family="Cairo, sans-serif" font-size="10.5" font-weight="700">محاكاة مسح الشحنة</text>
+              <text x="86" y="240" text-anchor="middle" fill="#FEEE00" font-family="Cairo, sans-serif" font-size="10" font-weight="700">تحديث قاعدة البيانات ✓</text>
+            </svg>
+          </div>
+
+          <!-- الفكرة الرئيسية + معادلات قياس المؤشرات الافتراضية -->
+          <div class="lg:col-span-7 space-y-3">
+            <div class="glass-card rounded-2xl p-4">
+              <h3 class="title-font text-lg sm:text-xl font-extrabold text-white mb-1">
+                التكامل بين المسح الضوئي واللاسلكي لضبط المخزون
+              </h3>
+              <p class="text-base text-gray-200 leading-relaxed">
+                يُستخدم <strong>الباركود</strong> للتحقق الدقيق للقطعة الفردية أثناء التغليف، بينما تتيح بوابات <span dir="ltr">RFID</span> قراءة الطرود دفعة واحدة عند الشحن.
+              </p>
+            </div>
+
+            <!-- معادلات قياس المؤشرات الافتراضية للشرح الأكاديمي -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="glass-card rounded-2xl p-3.5 border-r-4 border-r-noonYellow">
+                <span class="inline-block text-xs font-extrabold text-noonYellow mb-1">هدف افتراضي للشرح الأكاديمي: 99.9%</span>
+                <h4 class="title-font text-lg font-extrabold text-white">دقة توجيه الشحنات</h4>
+                <p class="text-base text-gray-200 mt-1 leading-snug bg-noonBlack/60 p-2 rounded-lg border border-white/10">
+                  (الشحنات الموجهة صحيحاً ÷ إجمالي الممسوحة) × 100
+                </p>
+              </div>
+
+              <div class="glass-card glass-card-blue rounded-2xl p-3.5 border-r-4 border-r-techBlue">
+                <span class="inline-block text-xs font-extrabold text-techBlue mb-1">هدف افتراضي للشرح الأكاديمي: ≤ 0.01%</span>
+                <h4 class="title-font text-lg font-extrabold text-white">نسبة الفقد بالمناولة</h4>
+                <p class="text-base text-gray-200 mt-1 leading-snug bg-noonBlack/60 p-2 rounded-lg border border-white/10">
+                  (الطرود المفقودة ÷ إجمالي المستلمة) × 100
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- شريط الربط الأكاديمي -->
+        <div class="bis-ribbon rounded-xl p-2.5 flex items-center gap-2.5">
+          <span class="px-2.5 py-1 rounded-lg bg-techBlue text-noonBlack font-extrabold text-xs shrink-0">ربط المنهج (BIS) [11]</span>
+          <p class="text-base text-white font-semibold">
+            <strong>تخطيط موارد المؤسسة (<span dir="ltr">ERP</span>):</strong> تغذية سجلات المخزون والمالية آلياً عند كل عملية مسح لتوحيد البيانات [11].
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- الشريحة 7: لوحة المؤشرات التحليلية – محاكاة توضيحية -->
+    <!-- ========================================================= -->
+    <section class="slide" data-title="لوحة المؤشرات التحليلية">
+      <div class="slide-inner space-y-3">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-2">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="text-noonYellow text-xs font-extrabold">07 | التحليل الكمي ومؤشرات الأداء</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-noonYellow text-noonBlack text-xs font-extrabold">محاكاة توضيحية – افتراضات الباحث</span>
+            </div>
+            <h2 class="title-font text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
+              لوحة المؤشرات التحليلية (<span class="text-techBlue">محاكاة توضيحية</span>)
+            </h2>
+          </div>
+          <button onclick="renderCharts(true)" class="self-start md:self-auto bg-white/10 hover:bg-noonYellow hover:text-noonBlack text-white text-xs font-bold px-3.5 py-1.5 rounded-xl transition-all cursor-pointer">
+            إعادة رسم المحاكاة ↻
+          </button>
+        </div>
+
+        <!-- شبكة المخططين البيانيين -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+          <!-- مخطط الأعمدة بمقياس لوغاريتمي وتدرجات 10 و 100 و 1000 -->
+          <div class="lg:col-span-7 glass-card rounded-2xl p-4 flex flex-col justify-between">
+            <div class="mb-1">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="title-font text-lg font-extrabold text-white">مقارنة زمن التوصيل (مقياس لوغاريتمي بالدقائق)</h3>
+                <span class="text-xs bg-noonYellow/15 text-noonYellow px-2 py-0.5 rounded font-bold">محاكاة توضيحية</span>
+              </div>
+            </div>
+            <div class="relative w-full h-44 sm:h-52">
+              <canvas id="deliveryBarChart"></canvas>
+            </div>
+            <p class="text-base text-gray-200 font-semibold mt-1.5 pt-1.5 border-t border-white/10">
+              * قيم افتراضية للمقارنة | <span dir="ltr" class="text-noonYellow">noon Minutes [6]</span> (15 دقيقة أُعلنت في دبي 2022 بمناطق محددة).
+            </p>
+          </div>
+
+          <!-- مخطط الدائرة: توزيع عمليات المستودع -->
+          <div class="lg:col-span-5 glass-card glass-card-blue rounded-2xl p-4 flex flex-col justify-between">
+            <div class="mb-1">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="title-font text-lg font-extrabold text-white">تقسيم وقت المستودع</h3>
+                <span class="text-xs bg-techBlue/20 text-techBlue px-2 py-0.5 rounded font-bold">افتراضات الباحث</span>
+              </div>
+            </div>
+            <div class="relative w-full h-44 sm:h-52 flex items-center justify-center">
+              <canvas id="warehouseDoughnutChart"></canvas>
+            </div>
+            <p class="text-base text-gray-200 font-semibold mt-1.5 pt-1.5 border-t border-white/10">
+              نسب افتراضية للشرح وليست بيانات منشورة من نون.
+            </p>
+          </div>
+        </div>
+
+        <!-- شريط الربط الأكاديمي -->
+        <div class="bis-ribbon rounded-xl p-2.5 flex items-center gap-2.5">
+          <span class="px-2.5 py-1 rounded-lg bg-techBlue text-noonBlack font-extrabold text-xs shrink-0">ربط المنهج (BIS) [11]</span>
+          <p class="text-base text-white font-semibold">
+            <strong>ذكاء الأعمال (<span dir="ltr">BI</span>) ومؤشرات الأداء (<span dir="ltr">KPIs</span>):</strong> تحويل البيانات التشغيلية إلى لوحات قياس بصرية لدعم القرار [11].
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- الشريحة 8: خدمة noon Minutes والتجارة السريعة -->
+    <!-- ========================================================= -->
+    <section class="slide" data-title="خدمة noon Minutes">
+      <div class="slide-inner space-y-3.5">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-2.5">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="text-techBlue text-xs font-extrabold">08 | التجارة السريعة</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-noonYellow/15 border border-noonYellow/40 text-noonYellow text-xs font-bold">موثق بالمراجع [6], [7]</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20 text-gray-200 text-xs font-bold">نموذج قطاعي عام</span>
+            </div>
+            <h2 class="title-font text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
+              خدمة <span dir="ltr" class="text-noonYellow">noon Minutes</span> والتجارة السريعة
+            </h2>
+          </div>
+          <span class="text-xs text-gray-300 font-semibold">المصادر: [6], [7], [11]</span>
+        </div>
+
+        <!-- بطاقتان تفصلان بدقة بين الموثق عن نون والنموذج العام -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border-t-4 border-t-noonYellow space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-noonYellow">واقع الخدمة في نون</span>
+              <span class="text-xs bg-noonYellow/15 text-noonYellow px-2 py-0.5 rounded font-bold">موثق [6][7]</span>
+            </div>
+            <h3 class="title-font text-lg sm:text-xl font-extrabold text-white">إطلاق دبي 2022 والتواجد في مصر</h3>
+            <p class="text-base text-gray-200 leading-relaxed">
+              أُعلن عن وعد <strong>15 دقيقة</strong> عند إطلاق الخدمة في <strong>دبي (مايو 2022)</strong> بمناطق محددة مع إعفاء رسوم التوصيل عند التأخير [6]، وتعمل <span dir="ltr" class="text-noonYellow font-bold">noon Minutes</span> في <strong>مصر</strong> [7].
+            </p>
+          </div>
+
+          <div class="glass-card glass-card-blue rounded-2xl p-4 sm:p-5 border-t-4 border-t-techBlue space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-techBlue">آلية العمل في القطاع</span>
+              <span class="text-xs bg-white/10 text-gray-200 px-2 py-0.5 rounded font-bold">غير موثق خاصة بنون</span>
+            </div>
+            <h3 class="title-font text-lg sm:text-xl font-extrabold text-white">المستودعات المصغرة في التجارة السريعة</h3>
+            <p class="text-base text-gray-200 leading-relaxed">
+              تعتمد شركات التجارة السريعة عموماً على نقاط تخزين مصغرة داخل الأحياء (<span class="text-noonYellow font-bold">افتراض توضيحي: نطاق 3 كم</span>) لتقليص مسافة التوصيل وتجهيز السلع بسرعة.
+            </p>
+          </div>
+        </div>
+
+        <!-- شريط الربط الأكاديمي -->
+        <div class="bis-ribbon rounded-xl p-3 flex items-center gap-2.5">
+          <span class="px-2.5 py-1 rounded-lg bg-techBlue text-noonBlack font-extrabold text-xs shrink-0">ربط المنهج (BIS) [11]</span>
+          <p class="text-base text-white font-semibold">
+            <strong>المخزون اللامركزي ونظم المعلومات الجغرافية (<span dir="ltr">GIS</span>):</strong> تقريب المخزون لمناطق الطلب لتقليص زمن الميل الأخير [11].
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- الشريحة 9: التحديات والتحليل النقدي -->
+    <!-- ========================================================= -->
+    <section class="slide" data-title="التحديات والتحليل النقدي">
+      <div class="slide-inner space-y-3.5">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-2.5">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="text-noonYellow text-xs font-extrabold">09 | التقييم الموضوعي للمنظومة</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20 text-gray-200 text-xs font-bold">تحليل أكاديمي نقدي</span>
+            </div>
+            <h2 class="title-font text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
+              التحديات التشغيلية و<span class="text-noonYellow">التحليل النقدي</span>
+            </h2>
+          </div>
+          <span class="text-xs text-gray-300 font-semibold">المصادر: [10], [11] وتحليل الباحث</span>
+        </div>
+
+        <!-- 5 محاور نقدية متزنة -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div class="glass-card rounded-2xl p-3.5 border-r-4 border-r-noonYellow">
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="title-font text-lg font-extrabold text-white">1. تكلفة المستودعات المصغرة</h3>
+              <span class="text-xs bg-white/10 px-2 py-0.5 rounded text-gray-300">تحليل الباحث</span>
+            </div>
+            <p class="text-base text-gray-200 leading-snug">
+              ارتفاع الإيجارات داخل المدن والتشغيل المستمر يضغط على ربحية الطلبات منخفضة القيمة.
+            </p>
+          </div>
+
+          <div class="glass-card glass-card-blue rounded-2xl p-3.5 border-r-4 border-r-techBlue">
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="title-font text-lg font-extrabold text-white">2. ضغط العمالة والذروة</h3>
+              <span class="text-xs bg-white/10 px-2 py-0.5 rounded text-gray-300">تحليل الباحث</span>
+            </div>
+            <p class="text-base text-gray-200 leading-snug">
+              الالتزام بمهل توصيل قصيرة يضاعف الضغط على المناديب والفرز في مواسم العروض.
+            </p>
+          </div>
+
+          <div class="glass-card rounded-2xl p-3.5 border-r-4 border-r-noonYellow">
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="title-font text-lg font-extrabold text-white">3. المرتجعات والدفع النقدي</h3>
+              <span class="text-xs bg-white/10 px-2 py-0.5 rounded text-gray-300">تحليل الباحث</span>
+            </div>
+            <p class="text-base text-gray-200 leading-snug">
+              ارتفاع تكلفة اللوجستيات العكسية وإعادة الفحص مع انتشار الدفع عند الاستلام (<span dir="ltr">COD</span>).
+            </p>
+          </div>
+
+          <div class="glass-card glass-card-blue rounded-2xl p-3.5 border-r-4 border-r-techBlue">
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="title-font text-lg font-extrabold text-white">4. حدة المنافسة الإقليمية</h3>
+              <span class="text-xs bg-noonYellow/15 text-noonYellow px-2 py-0.5 rounded font-bold">مرجع [10]</span>
+            </div>
+            <p class="text-base text-gray-200 leading-snug">
+              منافسة <strong>أمازون</strong> (معلومة عامة بدون مرجع)، وتطبيقات مثل <strong>طلبات مارت (<span dir="ltr">talabat mart</span>)</strong> بتوصيل البقالة في أقل من 30 دقيقة في مصر [10].
+            </p>
+          </div>
+
+          <div class="glass-card rounded-2xl p-3.5 border-r-4 border-r-noonYellow sm:col-span-2 lg:col-span-2">
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="title-font text-lg font-extrabold text-white">5. مخاطر الاعتماد المفرط على الأتمتة</h3>
+              <span class="text-xs bg-white/10 px-2 py-0.5 rounded text-gray-300">تحليل الباحث</span>
+            </div>
+            <p class="text-base text-gray-200 leading-snug">
+              ارتفاع التكلفة الرأسمالية الأولية للأنظمة الآلية، ومخاطر تعطل العمليات عند حدوث أعطال تقنية في الشبكة أو البرمجيات.
+            </p>
+          </div>
+        </div>
+
+        <!-- شريط الربط الأكاديمي -->
+        <div class="bis-ribbon rounded-xl p-2.5 flex items-center gap-2.5">
+          <span class="px-2.5 py-1 rounded-lg bg-techBlue text-noonBlack font-extrabold text-xs shrink-0">ربط المنهج (BIS) [11]</span>
+          <p class="text-base text-white font-semibold">
+            <strong>إدارة المخاطر والعائد على الاستثمار (<span dir="ltr">ROI</span>):</strong> الموازنة بين تكلفة التكنولوجيا والعائد الاقتصادي واستمرارية الأعمال [11].
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- الشريحة 10: الخلاصة والرؤية المستقبلية (والإجابة على السؤال البحثي) -->
+    <!-- ========================================================= -->
+    <section class="slide" data-title="الخلاصة والرؤية المستقبلية">
+      <div class="slide-inner space-y-3.5">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-2.5">
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="text-noonYellow text-xs font-extrabold">10 | النتائج والتوجهات المستقبلية</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-techBlue/15 border border-techBlue/40 text-techBlue text-xs font-bold">اتجاهات عامة في القطاع وليست خطة معلنة لنون</span>
+            </div>
+            <h2 class="title-font text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
+              الخلاصة و<span class="text-noonYellow">الرؤية المستقبلية</span>
+            </h2>
+          </div>
+          <span class="text-xs text-gray-300 font-semibold">إجابة السؤال البحثي وآفاق القطاع [11]</span>
+        </div>
+
+        <!-- الإجابة الصريحة على السؤال البحثي المطروح في الشريحة 2 -->
+        <div class="glass-card rounded-2xl p-4 border-2 border-noonYellow/60 bg-noonYellow/5 space-y-1">
+          <span class="inline-block text-xs font-extrabold text-noonYellow">الإجابة على السؤال البحثي (الشريحة 02)</span>
+          <p class="text-base text-white font-semibold leading-relaxed">
+            <strong>يمكن تفسير</strong> دور نظم المعلومات الإدارية <strong>وفق الإطار النظري [11]</strong> من خلال تكامل <span dir="ltr">TPS</span> و<span dir="ltr">ERP</span> لضبط المخزون والطلبات (<span dir="ltr">FBN/FBP/DSE</span>)، ونظم <span dir="ltr">DSS</span> لتقليل هدر التغليف، وأدوات <span dir="ltr">BI</span> لدعم القرار وسرعة الاستجابة؛ <strong>مع التنويه بأن نون لا تنشر تفاصيل أنظمتها الداخلية</strong>.
+          </p>
+        </div>
+
+        <!-- محوران مستقبليان مع توضيح أنهما اتجاهات عامة في القطاع -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="title-font text-lg font-extrabold text-techBlue">الرؤية المستقبلية في لوجستيات التجارة الإلكترونية</h3>
+            <span class="text-xs bg-noonYellow/15 text-noonYellow px-2.5 py-0.5 rounded font-bold">اتجاهات عامة في القطاع وليست خطة معلنة لنون</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            <div class="glass-card glass-card-blue rounded-2xl p-4 space-y-1.5 border-t-4 border-t-techBlue">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-techBlue text-noonBlack flex items-center justify-center font-black text-xs title-font">01</span>
+                <h4 class="title-font text-lg font-extrabold text-white">التعلم الآلي والتحليلات التنبؤية</h4>
+              </div>
+              <p class="text-base text-gray-200 leading-snug">
+                توظيف خوارزميات التعلم الآلي للتنبؤ بالطلب الموسمي والجغرافي وتحسين مستويات إعادة الطلب.
+              </p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-4 space-y-1.5 border-t-4 border-t-noonYellow">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-noonYellow text-noonBlack flex items-center justify-center font-black text-xs title-font">02</span>
+                <h4 class="title-font text-lg font-extrabold text-white">الروبوتات المتنقلة والتغليف المستدام</h4>
+              </div>
+              <p class="text-base text-gray-200 leading-snug">
+                التوسع في الروبوتات ذاتية الحركة (<span dir="ltr">AMRs</span>) لدعم الالتقاط، واعتماد خامات تغليف قابلة لإعادة التدوير.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- شريط الربط الأكاديمي -->
+        <div class="bis-ribbon rounded-xl p-2.5 flex items-center gap-2.5">
+          <span class="px-2.5 py-1 rounded-lg bg-techBlue text-noonBlack font-extrabold text-xs shrink-0">ربط المنهج (BIS) [11]</span>
+          <p class="text-base text-white font-semibold">
+            <strong>التحليلات التنبؤية (<span dir="ltr">Predictive Analytics</span>):</strong> استشراف الطلب المستقبلي وتوجيه الموارد استباقياً [11].
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- الشريحة 11: المراجع (APA) ومنهجية البيانات -->
+    <!-- ========================================================= -->
+    <section class="slide" data-title="المراجع ومنهجية البيانات">
+      <div class="slide-inner space-y-3">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-2">
+          <div>
+            <span class="text-noonYellow text-xs font-extrabold">11 | التوثيق العلمي والشفافية المنهجية</span>
+            <h2 class="title-font text-2xl sm:text-3xl font-extrabold text-white">
+              قائمة <span class="text-techBlue">المراجع (APA)</span> ومنهجية البيانات
+            </h2>
+          </div>
+          <span class="text-xs font-bold text-noonYellow">تاريخ الاطلاع: 25 نوفمبر 2026</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch">
+          <!-- قائمة المراجع [1] إلى [11] بصيغة APA كاملة بروابط قابلة للضغط -->
+          <div class="refs-scroll-box lg:col-span-8 glass-card rounded-2xl p-3.5 sm:p-4 space-y-1.5 overflow-y-auto max-h-[56vh]" dir="ltr">
+            <div class="text-right text-xs font-extrabold text-noonYellow mb-1" dir="rtl">المراجع المعتمدة (11 مرجعاً):</div>
+            <ol class="space-y-1.5 text-xs text-gray-200 leading-snug font-body">
+              <li>
+                <span class="text-noonYellow font-bold">[1]</span> noon. (n.d.). <em>Everything you need to know about noon Express</em>. noon Help Center.
+                <a href="https://help.noon.com/portal/en/kb/articles/everything-you-need-to-know-about-noon-express" target="_blank" rel="noopener" class="text-techBlue underline break-all hover:text-noonYellow">https://help.noon.com/portal/en/kb/articles/everything-you-need-to-know-about-noon-express</a>
+              </li>
+              <li>
+                <span class="text-noonYellow font-bold">[2]</span> noon. (n.d.). <em>Understanding Directship Express (DSE)</em>. noon Seller Help Center.
+                <a href="https://helpcenter.noon.partners/en/category/fulfilled-by-partner-fbp/understanding-directship-express-dse" target="_blank" rel="noopener" class="text-techBlue underline break-all hover:text-noonYellow">https://helpcenter.noon.partners/en/category/fulfilled-by-partner-fbp/understanding-directship-express-dse</a>
+              </li>
+              <li>
+                <span class="text-noonYellow font-bold">[3]</span> noon. (n.d.). <em>What is FBN or noon Express?</em> noon Seller Help Center.
+                <a href="https://helpcenter.noon.partners/en/category/fulfilled-by-noon-fbn/what-is-fbn-or-noon-express" target="_blank" rel="noopener" class="text-techBlue underline break-all hover:text-noonYellow">https://helpcenter.noon.partners/en/category/fulfilled-by-noon-fbn/what-is-fbn-or-noon-express</a>
+              </li>
+              <li>
+                <span class="text-noonYellow font-bold">[4]</span> noon. (n.d.). <em>Delivery options</em>. noon Help Center.
+                <a href="https://help.noon.com/portal/en/kb/articles/deliver" target="_blank" rel="noopener" class="text-techBlue underline break-all hover:text-noonYellow">https://help.noon.com/portal/en/kb/articles/deliver</a>
+              </li>
+              <li>
+                <span class="text-noonYellow font-bold">[5]</span> noon. (n.d.). <em>What does free delivery on noon Express include?</em> noon Help Center.
+                <a href="https://help.noon.com/portal/en/kb/articles/what-does-free-delivery-on-noon-express-include" target="_blank" rel="noopener" class="text-techBlue underline break-all hover:text-noonYellow">https://help.noon.com/portal/en/kb/articles/what-does-free-delivery-on-noon-express-include</a>
+              </li>
+              <li>
+                <span class="text-noonYellow font-bold">[6]</span> What's On. (2022, May). <em>Noon launches 15-minute delivery service in Dubai</em>.
+                <a href="https://whatson.ae/2022/05/noon-launches-15-minute-delivery-service-in-dubai/" target="_blank" rel="noopener" class="text-techBlue underline break-all hover:text-noonYellow">https://whatson.ae/2022/05/noon-launches-15-minute-delivery-service-in-dubai/</a>
+              </li>
+              <li>
+                <span class="text-noonYellow font-bold">[7]</span> Zawya. (n.d.). <em>Valu and noon Minutes partner to bring flexible payments to quick-commerce shopping in Egypt</em>.
+                <a href="https://www.zawya.com/en/press-release/companies-news/valu-and-noon-minutes-partner-to-bring-flexible-payments-to-quick-commerce-shopping-in-egypt-1202318" target="_blank" rel="noopener" class="text-techBlue underline break-all hover:text-noonYellow">https://www.zawya.com/en/press-release/companies-news/valu-and-noon-minutes-partner-to-bring-flexible-payments-to-quick-commerce-shopping-in-egypt-1202318</a>
+              </li>
+              <li>
+                <span class="text-noonYellow font-bold">[8]</span> Wamda. (2019, February). <em>E-commerce venture Noon expands operations to Egypt</em>.
+                <a href="https://wamda.com/2019/02/e-commerce-venture-noon-expands-operations-egypt" target="_blank" rel="noopener" class="text-techBlue underline break-all hover:text-noonYellow">https://wamda.com/2019/02/e-commerce-venture-noon-expands-operations-egypt</a>
+              </li>
+              <li>
+                <span class="text-noonYellow font-bold">[9]</span> The National. (2017). <em>E-commerce platform noon launches in UAE</em>.
+                <a href="https://www.thenationalnews.com/business/economy/e-commerce-platform-noon-launches-in-uae-1.662988" target="_blank" rel="noopener" class="text-techBlue underline break-all hover:text-noonYellow">https://www.thenationalnews.com/business/economy/e-commerce-platform-noon-launches-in-uae-1.662988</a>
+              </li>
+              <li>
+                <span class="text-noonYellow font-bold">[10]</span> Egyptian Gazette. (n.d.). <em>talabat launches 30-minute grocery delivery service in Egypt</em>.
+                <a href="https://egyptian-gazette.com/technology/talabat-launches-30-minute-grocery-delivery-service-in-egypt/" target="_blank" rel="noopener" class="text-techBlue underline break-all hover:text-noonYellow">https://egyptian-gazette.com/technology/talabat-launches-30-minute-grocery-delivery-service-in-egypt/</a>
+              </li>
+              <li>
+                <span class="text-noonYellow font-bold">[11]</span> Laudon, K. C., Laudon, J. P., &amp; Traver, C. G. (2025). <em>Management Information Systems: Managing the Digital Firm</em> (18th ed.). Pearson.
+                <a href="https://www.pearson.com/en-us/pearsonplus/p/9780138344108" target="_blank" rel="noopener" class="text-techBlue underline break-all hover:text-noonYellow">https://www.pearson.com/en-us/pearsonplus/p/9780138344108</a>
+              </li>
+            </ol>
+          </div>
+
+          <!-- التنويه المنهجي الصريح -->
+          <div class="lg:col-span-4 glass-card glass-card-blue rounded-2xl p-4 border-2 border-noonYellow/60 flex flex-col justify-between space-y-2.5">
+            <div class="space-y-2">
+              <span class="inline-block px-3 py-1 rounded-lg bg-noonYellow text-noonBlack font-extrabold text-xs">
+                تنويه منهجي إلزامي
+              </span>
+              <h3 class="title-font text-lg font-extrabold text-white">طبيعة الأرقام والمصادر</h3>
+              <p class="text-base text-gray-200 leading-snug bg-noonBlack/70 p-2.5 rounded-xl border border-white/10">
+                الأرقام الموسومة بـ <strong>«مثال توضيحي»</strong> أو <strong>«قيم افتراضية»</strong> هي افتراضات للشرح الأكاديمي وليست بيانات منشورة من نون.
+              </p>
+              <p class="text-base text-techBlue font-bold leading-snug bg-techBlue/10 p-2.5 rounded-xl border border-techBlue/30">
+                المراجع [6] و[7] و[10] مصادر صحفية وليست وثائق رسمية من الشركة.
+              </p>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-white/10">
+              <span class="text-xs text-gray-300">
+                <strong class="text-noonYellow">أحمد صلاح</strong> | <span dir="ltr">BIS</span>
+              </span>
+              <button onclick="goToSlide(0)" class="bg-noonYellow hover:bg-yellow-300 text-noonBlack text-xs font-extrabold px-3 py-1.5 rounded-xl transition-all cursor-pointer">
+                العودة للغلاف ↺
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- شريط التنقل السفلي العائم -->
+  <footer class="fixed bottom-3 right-0 left-0 z-40 px-3 flex items-center justify-center pointer-events-none">
+    <div class="pointer-events-auto bg-noonSlate/90 backdrop-blur-xl border border-white/15 px-2.5 sm:px-3.5 py-2 rounded-2xl shadow-2xl flex items-center gap-2 sm:gap-3">
+      <button id="btn-prev" onclick="prevSlide()" class="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/15 disabled:opacity-35 disabled:pointer-events-none text-white text-xs sm:text-sm font-bold flex items-center gap-1 transition-all cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+        <span>السابق</span>
+      </button>
+
+      <!-- زر ملاحظات المتحدث -->
+      <button id="btn-notes" onclick="toggleNotes()" class="px-3 py-2 rounded-xl bg-techBlue/20 hover:bg-techBlue hover:text-noonBlack border border-techBlue/40 text-techBlue text-xs sm:text-sm font-extrabold flex items-center gap-1.5 transition-all cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h6m-6 4h8M5 4h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" />
+        </svg>
+        <span>ملاحظات المتحدث</span>
+      </button>
+
+      <!-- مؤشرات النقاط السريعة للشرائح الإحدى عشرة -->
+      <div id="dots-container" class="hidden md:flex items-center gap-1.5 px-1"></div>
+
+      <button id="btn-next" onclick="nextSlide()" class="px-3.5 py-2 rounded-xl bg-noonYellow hover:bg-yellow-300 disabled:opacity-35 disabled:pointer-events-none text-noonBlack text-xs sm:text-sm font-extrabold flex items-center gap-1 transition-all shadow-md shadow-noonYellow/20 cursor-pointer">
+        <span>التالي</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+    </div>
+  </footer>
+
+  <!-- منطق العرض التفاعلي، الرسوم البيانية، وملاحظات المتحدث -->
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const totalSlides = slides.length;
+    let currentSlideIndex = 0;
+    let barChartInstance = null;
+    let doughnutChartInstance = null;
+
+    // ملاحظات المتحدث التفصيلية لكل شريحة (1 إلى 11)
+    const speakerNotesData = [
+      {
+        title: "1. الغلاف الرئيسي",
+        text: "مرحباً بالحضور، أنا أحمد صلاح، طالب بتخصص نظم معلومات الأعمال (BIS). يتناول عرضي اليوم دراسة تحليلية لمنظومة اللوجستيات الذكية وإدارة التغليف والمخازن في شركة نون، مع التمييز بين noon Express (منتجات منفذة من نون بخيارات توصيل سريع للمنتجات المؤهلة) وخدمة التجارة السريعة noon Minutes."
+      },
+      {
+        title: "2. أهداف الدراسة والسؤال البحثي",
+        text: "تنطلق هذه الدراسة من سؤال بحثي محوري: كيف يمكن تفسير دور نظم المعلومات الإدارية في دعم كفاءة وسرعة المنظومة اللوجستية للتجارة الإلكترونية، بتطبيق الإطار النظري على ممارسات نون الموثقة؟ ونهدف إلى توثيق نماذج التنفيذ في نون، وتفسير العمليات بإطار نظم المعلومات (Laudon & Laudon, 2025) [11]، وتقييم التحديات بنظرة نقدية."
+      },
+      {
+        title: "3. نظرة عامة على منظومة نون اللوجستية",
+        text: "بناءً على المصادر الموثقة: تعمل نون في الإمارات والسعودية ومصر (انطلاقة الإمارات 2017، ومصر 2019) [8][9]، وتضم ملايين المنتجات بشارة noon Express [5]. وتعتمد الشركة ثلاثة نماذج تنفيذ: FBN، وFBP، وDirectship Express [2][3]، مع توصيل المنتجات المنفذة من نون عبر ناقل داخلي [4]، وتوصيل نفس اليوم أو اليوم التالي لمنتجات ومدن مؤهلة فقط [1]."
+      },
+      {
+        title: "4. رحلة الطلب داخل مركز التوزيع",
+        text: "نستعرض هنا النموذج العام لأنظمة إدارة المستودعات (WMS): الاستلام ومسح الوارد، التسكين وفق تصنيف ABC لتقليل مسافة الالتقاط، التغليف وطباعة الملصق، ثم الفرز الجغرافي. كل حركة مسح تمثل معاملة في نظم معالجة المعاملات (TPS) [11]."
+      },
+      {
+        title: "5. تقنيات التغليف الذكي وتقليل الهدر",
+        text: "التغليف الذكي (Right-Sizing) ممارسة شائعة في القطاع لتقليل الفراغ الداخلي. ولتوضيح الأثر بالأرقام، صممنا مثالاً توضيحياً بأبعاد افتراضية: منتج 30×20×12 سم (7,200 سم³) داخل كرتونة قياسية 40×30×25 سم يترك فراغاً 22,800 سم³، بينما داخل كرتونة مطابقة 32×24×16 سم ينخفض الفراغ إلى 5,088 سم³ بنسبة تقليل 77.7%، وهو تطبيق لنظم دعم القرار (DSS) [11]."
+      },
+      {
+        title: "6. تتبع الشحنات بالباركود و RFID",
+        text: "يوضح هذا النموذج التوضيحي تكامل الباركود للتحقق الفردي مع تقنية RFID للقراءة الجماعية لتغذية أنظمة تخطيط موارد المؤسسة (ERP) [11]. الأهداف الرقمية المعروضة (99.9% دقة توجيه و0.01% فقد) هي أهداف افتراضية للشرح الأكاديمي مع توضيح معادلة قياس كل مؤشر."
+      },
+      {
+        title: "7. لوحة المؤشرات التحليلية (محاكاة توضيحية)",
+        text: "تُظهر هذه المحاكاة التوضيحية مقارنة زمن التوصيل على مقياس لوغاريتمي بتدرجات 10 و100 و1000 ليظهر عمود noon Minutes (15 دقيقة كما أُعلن في دبي 2022 بمناطق محددة [6]) بوضوح أمام القيم الافتراضية للتوصيل التقليدي وnoon Express. أما الرسم الدائري (45%/30%/25%) فهو توزيع افتراضي من الباحث لبيان دور ذكاء الأعمال (BI) [11]."
+      },
+      {
+        title: "8. خدمة noon Minutes والتجارة السريعة",
+        text: "نفصل هنا بدقة بين ما هو موثق وبين النموذج العام: أُعلن عن وعد الـ 15 دقيقة عند إطلاق الخدمة في دبي (مايو 2022) في مناطق محددة مع إعفاء رسوم التوصيل عند التأخير [6]، كما تعمل الخدمة في مصر [7]. أما نموذج المستودعات المصغرة (Dark Stores) ونطاق 3 كم فهو نموذج عام في التجارة السريعة وافتراض توضيحي غير موثق خاصة بنون."
+      },
+      {
+        title: "9. التحديات والتحليل النقدي",
+        text: "وفق تحليل الباحث، تواجه نماذج التجارة السريعة تحديات تشمل ارتفاع التكلفة العقارية للمستودعات المصغرة، وضغط العمالة في مواسم الذروة، وتكلفة المرتجعات مع الدفع عند الاستلام، ومخاطر الاعتماد المفرط على الأتمتة، إضافة للمنافسة مع أمازون (معلومة عامة بدون مرجع) وتطبيقات التوصيل السريع مثل طلبات مارت التي أطلقت توصيل البقالة في أقل من 30 دقيقة في مصر [10]."
+      },
+      {
+        title: "10. الخلاصة والرؤية المستقبلية",
+        text: "نجيب هنا صراحة على السؤال البحثي: يمكن تفسير دور نظم المعلومات الإدارية وفق الإطار النظري [11] من خلال تكامل TPS وERP وDSS وBI، مع التنويه بأن نون لا تنشر تفاصيل أنظمتها الداخلية. كما نوضح أن التعلم الآلي والروبوتات المتنقلة والتغليف المستدام تمثل اتجاهات عامة في القطاع وليست خطة معلنة لنون."
+      },
+      {
+        title: "11. قائمة المراجع ومنهجية البيانات",
+        text: "تضم هذه الشريحة المراجع الإحدى عشرة كاملة بصيغة APA مع توضيح أن الأرقام الموسومة بمثال توضيحي هي افتراضات أكاديمية للشرح وليست منشورة من نون، وأن المراجع [6] و[7] و[10] مصادر صحفية وليست وثائق رسمية من الشركة. شكراً لاستماعكم."
+      }
+    ];
+
+    // تهيئة عناصر التنقل والفهرس
+    function initNavigation() {
+      const dotsContainer = document.getElementById('dots-container');
+      const drawerList = document.getElementById('drawer-list');
+
+      slides.forEach((slide, idx) => {
+        const title = slide.getAttribute('data-title') || `الشريحة ${idx + 1}`;
+        const numFormatted = idx + 1 < 10 ? `0${idx + 1}` : `${idx + 1}`;
+
+        // إنشاء نقاط التنقل السفلية
+        const dot = document.createElement('button');
+        dot.setAttribute('aria-label', title);
+        dot.className = `h-2 rounded-full transition-all cursor-pointer ${idx === 0 ? 'w-6 bg-noonYellow' : 'w-2 bg-white/25 hover:bg-white/50'}`;
+        dot.onclick = () => goToSlide(idx);
+        dotsContainer.appendChild(dot);
+
+        // إنشاء عناصر الفهرس الجانبي
+        const item = document.createElement('button');
+        item.className = `w-full text-right px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-between transition-all cursor-pointer ${idx === 0 ? 'bg-noonYellow text-noonBlack' : 'bg-white/5 text-gray-200 hover:bg-white/10'}`;
+        item.innerHTML = `
+          <span class="truncate">${idx + 1}. ${title}</span>
+          <span class="text-xs opacity-75 kpi-number">${numFormatted}</span>
+        `;
+        item.onclick = () => {
+          goToSlide(idx);
+          toggleDrawer(false);
+        };
+        drawerList.appendChild(item);
+      });
+
+      updateUI();
+    }
+
+    // الانتقال إلى شريحة محددة
+    function goToSlide(index) {
+      if (index < 0 || index >= totalSlides || index === currentSlideIndex) return;
+
+      slides.forEach((s, i) => {
+        s.classList.remove('active', 'prev');
+        if (i < index) {
+          s.classList.add('prev');
+        }
+      });
+
+      currentSlideIndex = index;
+      slides[currentSlideIndex].classList.add('active');
+      updateUI();
+
+      // تشغيل الرسوم البيانية التوضيحية عند الوصول للشريحة السابعة (index 6)
+      if (currentSlideIndex === 6) {
+        setTimeout(() => renderCharts(false), 180);
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlideIndex < totalSlides - 1) {
+        goToSlide(currentSlideIndex + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlideIndex > 0) {
+        goToSlide(currentSlideIndex - 1);
+      }
+    }
+
+    // تحديث شريط التقدم والعداد والأزرار وملاحظات المتحدث
+    function updateUI() {
+      const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+      document.getElementById('top-progress-bar').style.width = `${progress}%`;
+      document.getElementById('slide-counter').textContent = `${currentSlideIndex + 1} / ${totalSlides}`;
+
+      const currentTitle = slides[currentSlideIndex].getAttribute('data-title');
+      document.getElementById('current-slide-label').textContent = currentTitle;
+
+      document.getElementById('btn-prev').disabled = currentSlideIndex === 0;
+      document.getElementById('btn-next').disabled = currentSlideIndex === totalSlides - 1;
+
+      // تحديث النقاط السفلية
+      const dots = document.getElementById('dots-container').children;
+      Array.from(dots).forEach((dot, idx) => {
+        dot.className = `h-2 rounded-full transition-all cursor-pointer ${idx === currentSlideIndex ? 'w-6 bg-noonYellow' : 'w-2 bg-white/25 hover:bg-white/50'}`;
+      });
+
+      // تحديث الفهرس الجانبي
+      const drawerItems = document.getElementById('drawer-list').children;
+      Array.from(drawerItems).forEach((item, idx) => {
+        item.className = `w-full text-right px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-between transition-all cursor-pointer ${idx === currentSlideIndex ? 'bg-noonYellow text-noonBlack' : 'bg-white/5 text-gray-200 hover:bg-white/10'}`;
+      });
+
+      // تحديث ملاحظات المتحدث للشريحة الحالية
+      const note = speakerNotesData[currentSlideIndex];
+      if (note) {
+        document.getElementById('notes-slide-badge').textContent = `الشريحة ${currentSlideIndex + 1} من ${totalSlides}`;
+        document.getElementById('notes-slide-title').textContent = note.title;
+        document.getElementById('notes-slide-content').textContent = note.text;
+      }
+    }
+
+    // فتح/إغلاق قائمة الفهرس
+    function toggleDrawer(forceState) {
+      const drawer = document.getElementById('slide-drawer');
+      const isOpen = !drawer.classList.contains('-translate-x-full');
+      const nextState = typeof forceState === 'boolean' ? forceState : !isOpen;
+
+      if (nextState) {
+        toggleNotes(false);
+        drawer.classList.remove('-translate-x-full', 'opacity-0', 'pointer-events-none');
+      } else {
+        drawer.classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none');
+      }
+    }
+
+    // فتح/إغلاق لوحة ملاحظات المتحدث
+    function toggleNotes(forceState) {
+      const notesDrawer = document.getElementById('notes-drawer');
+      const isOpen = !notesDrawer.classList.contains('translate-x-full');
+      const nextState = typeof forceState === 'boolean' ? forceState : !isOpen;
+
+      if (nextState) {
+        toggleDrawer(false);
+        notesDrawer.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+      } else {
+        notesDrawer.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+      }
+    }
+
+    // تصدير / طباعة PDF بتنسيق صفحة لكل شريحة
+    function exportPDF() {
+      toggleDrawer(false);
+      toggleNotes(false);
+      renderCharts(false);
+      setTimeout(() => {
+        window.print();
+      }, 1400);
+    }
+
+    // تفعيل/إلغاء ملء الشاشة
+    function toggleFullscreen() {
+      const enterIcon = document.getElementById('icon-fs-enter');
+      const exitIcon = document.getElementById('icon-fs-exit');
+
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(() => {
+          enterIcon.classList.add('hidden');
+          exitIcon.classList.remove('hidden');
+        }).catch(() => {});
+      } else {
+        document.exitFullscreen().then(() => {
+          exitIcon.classList.add('hidden');
+          enterIcon.classList.remove('hidden');
+        }).catch(() => {});
+      }
+    }
+
+    // التفاعل مع مراحل رحلة الطلب في الشريحة 4
+    const stepDetails = {
+      1: {
+        badge: '01: مسح الباركود',
+        text: '<strong class="text-noonYellow">دور النظام:</strong> تسجيل كل حركة مسح كمعاملة فورية تمنع تضارب المخزون.'
+      },
+      2: {
+        badge: '02: التسكين والالتقاط',
+        text: '<strong class="text-noonYellow">ممارسة شائعة في القطاع:</strong> تسكين المنتجات سريعة الدوران قرب محطات التغليف لتقليل زمن الالتقاط.'
+      },
+      3: {
+        badge: '03: التغليف والتأمين',
+        text: '<strong class="text-noonYellow">تأمين الطرد:</strong> إغلاق العبوة بالشريط اللاصق وربط ملصق الشحن بسجل العميل في النظام.'
+      },
+      4: {
+        badge: '04: التوجيه للشحن',
+        text: '<strong class="text-noonYellow">الميل الأخير:</strong> تصنيف الطرود حسب المناطق الجغرافية لتسليمها لمركبات التوزيع.'
+      }
+    };
+
+    function selectStep(stepNum) {
+      for (let i = 1; i <= 4; i++) {
+        const card = document.getElementById(`step-card-${i}`);
+        const badge = card.querySelector('span');
+        if (i === stepNum) {
+          card.classList.remove('border', 'border-white/10');
+          card.classList.add('border-2', 'border-noonYellow');
+          badge.classList.remove('bg-white/10', 'text-noonYellow');
+          badge.classList.add('bg-noonYellow', 'text-noonBlack');
+        } else {
+          card.classList.remove('border-2', 'border-noonYellow');
+          card.classList.add('border', 'border-white/10');
+          badge.classList.remove('bg-noonYellow', 'text-noonBlack');
+          badge.classList.add('bg-white/10', 'text-noonYellow');
+        }
+      }
+      document.getElementById('step-status-badge').textContent = stepDetails[stepNum].badge;
+      document.getElementById('step-detail-box').innerHTML = stepDetails[stepNum].text;
+    }
+
+    // إضافة مكون لعرض القيمة فوق كل عمود في مخطط الأعمدة
+    const barValueLabelsPlugin = {
+      id: 'barValueLabels',
+      afterDatasetsDraw(chart) {
+        if (chart.config.type !== 'bar') return;
+        const { ctx } = chart;
+        ctx.save();
+        chart.getDatasetMeta(0).data.forEach((bar, index) => {
+          const val = chart.data.datasets[0].data[index];
+          ctx.fillStyle = index === 2 ? '#FEEE00' : '#FFFFFF';
+          ctx.font = 'bold 15px Cairo, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(`${val} د`, bar.x, bar.y - 7);
+        });
+        ctx.restore();
+      }
+    };
+
+    // رسم وتحديث المخططات البيانية التوضيحية (Chart.js) في الشريحة 7
+    function renderCharts(instant = false) {
+      const barCanvas = document.getElementById('deliveryBarChart');
+      const doughnutCanvas = document.getElementById('warehouseDoughnutChart');
+      if (!barCanvas || !doughnutCanvas || typeof Chart === 'undefined') return;
+
+      if (barChartInstance) barChartInstance.destroy();
+      if (doughnutChartInstance) doughnutChartInstance.destroy();
+
+      Chart.defaults.color = '#E5E7EB';
+      Chart.defaults.font.family = "'IBM Plex Sans Arabic', 'Tajawal', sans-serif";
+
+      // 1. مخطط الأعمدة بمقياس لوغاريتمي وتدرجات 10 و 100 و 1000
+      barChartInstance = new Chart(barCanvas.getContext('2d'), {
+        type: 'bar',
+        plugins: [barValueLabelsPlugin],
+        data: {
+          labels: [
+            'توصيل تقليدي*',
+            'noon Express*',
+            'noon Minutes [6]'
+          ],
+          datasets: [{
+            label: 'الزمن بالدقائق',
+            data: [1440, 180, 15],
+            backgroundColor: [
+              'rgba(255, 255, 255, 0.28)',
+              '#00A8E8',
+              '#FEEE00'
+            ],
+            borderColor: [
+              'rgba(255, 255, 255, 0.55)',
+              '#00A8E8',
+              '#FEEE00'
+            ],
+            borderWidth: 2,
+            borderRadius: 10,
+            barPercentage: 0.45
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: { top: 28 }
+          },
+          animation: instant ? false : {
+            duration: 950,
+            easing: 'easeOutQuart'
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              rtl: true,
+              backgroundColor: '#111111',
+              titleColor: '#FEEE00',
+              bodyColor: '#FFFFFF',
+              borderColor: '#33333D',
+              borderWidth: 1,
+              padding: 10,
+              callbacks: {
+                label: (ctx) => ctx.dataIndex === 2
+                  ? ` الزمن المعلن في دبي 2022: ${ctx.raw} دقيقة [6]`
+                  : ` قيمة افتراضية للمقارنة: ${ctx.raw} دقيقة`
+              }
+            }
+          },
+          scales: {
+            y: {
+              type: 'logarithmic',
+              min: 5,
+              max: 2500,
+              grid: { color: 'rgba(255, 255, 255, 0.08)' },
+              ticks: {
+                font: { size: 13, family: 'Cairo, sans-serif' },
+                callback: (val) => [10, 100, 1000].includes(val) ? `${val} د` : ''
+              }
+            },
+            x: {
+              grid: { display: false },
+              ticks: {
+                font: { weight: '700', size: 14 }
+              }
+            }
+          }
+        }
+      });
+
+      // 2. مخطط دائري: توزيع عمليات المستودع (افتراضات الباحث 45% / 30% / 25%)
+      doughnutChartInstance = new Chart(doughnutCanvas.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['الفرز والتجهيز (45%)', 'التغليف (30%)', 'الفحص والجودة (25%)'],
+          datasets: [{
+            data: [45, 30, 25],
+            backgroundColor: ['#FEEE00', '#00A8E8', '#FFFFFF'],
+            borderColor: '#1E1E24',
+            borderWidth: 4,
+            hoverOffset: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '62%',
+          animation: instant ? false : {
+            animateRotate: true,
+            animateScale: true,
+            duration: 1000
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              rtl: true,
+              labels: {
+                padding: 12,
+                usePointStyle: true,
+                pointStyle: 'circle',
+                font: { size: 14, weight: '700' }
+              }
+            },
+            tooltip: {
+              rtl: true,
+              backgroundColor: '#111111',
+              titleColor: '#FEEE00',
+              bodyColor: '#FFFFFF',
+              borderColor: '#33333D',
+              borderWidth: 1,
+              callbacks: {
+                label: (ctx) => ` نسبة افتراضية للشرح: ${ctx.raw}%`
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // التحكم عبر لوحة المفاتيح (مع مراعاة اتجاه العربية RTL)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowRight' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        goToSlide(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        goToSlide(totalSlides - 1);
+      } else if (e.key === 'Escape') {
+        toggleDrawer(false);
+        toggleNotes(false);
+      }
+    });
+
+    // دعم السحب باللمس للهواتف والأجهزة اللوحية
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 55) {
+        if (diff > 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      }
+    }, { passive: true });
+
+    // تأثير إمالة ثلاثية الأبعاد خفيفة على البطاقات عند تمرير المؤشر (Desktop)
+    document.querySelectorAll('.glass-card').forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        if (window.innerWidth < 1024) return;
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `perspective(900px) rotateY(${x * 4}deg) rotateX(${-y * 4}deg) translateY(-2px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+
+    // تهيئة العرض عند تحميل الصفحة
+    window.addEventListener('DOMContentLoaded', () => {
+      initNavigation();
+      renderCharts(true);
+    });
+
+    // إعادة رسم المخططات بشكل فوري بدون حركة قبل الطباعة المباشرة (Ctrl+P)
+    window.addEventListener('beforeprint', () => renderCharts(true));
+  </script>
+</body>
+</html>

@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شركة سوني (Sony) — رحلة الابتكار والتطور التكنولوجي</title>
+    
+    <!-- Google Fonts: Full Arabic Typography System -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800&family=Cairo:wght@700;800;900&family=Changa:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Kufi+Arabic:wght@400;600;700&family=Readex+Pro:wght@600;700&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 Vector Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Chart.js & Three.js CDNs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #0A0A0C;
+            --bg-light: #FFFFFF;
+            --ps-blue-dark: #00439C;
+            --ps-blue-electric: #0070D1;
+            --ps-cyan: #00D2FF;
+            --silver: #C0C0C0;
+            --gold: #D4AF37;
+            --text-light: #F8FAFC;
+            --text-muted-dark: #94A3B8;
+            --text-dark: #0F172A;
+            --text-muted-light: #475569;
+            --glass-dark: rgba(16, 19, 28, 0.75);
+            --glass-border-dark: rgba(255, 255, 255, 0.12);
+            --glass-light: rgba(255, 255, 255, 0.88);
+            --glass-border-light: rgba(0, 67, 156, 0.14);
+            --transition-speed: 0.7s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            direction: rtl;
+            font-family: 'IBM Plex Sans Arabic', 'Noto Kufi Arabic', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        /* =========================================================
+           TYPOGRAPHY SYSTEM
+        ========================================================== */
+        h1, .hero-title {
+            font-family: 'Cairo', sans-serif;
+            font-weight: 900;
+            line-height: 1.2;
+        }
+
+        .display-tech {
+            font-family: 'Changa', 'Cairo', sans-serif;
+            font-weight: 800;
+        }
+
+        h2, h3, .sub-title {
+            font-family: 'Tajawal', 'Alexandria', sans-serif;
+            font-weight: 800;
+        }
+
+        .card-title {
+            font-family: 'Alexandria', 'Tajawal', sans-serif;
+            font-weight: 700;
+        }
+
+        p, .body-text {
+            font-family: 'IBM Plex Sans Arabic', 'Noto Kufi Arabic', sans-serif;
+        }
+
+        .kpi-num {
+            font-family: 'Readex Pro', 'Cairo', sans-serif;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .ltr-inline {
+            direction: ltr;
+            unicode-bidi: isolate;
+            display: inline-block;
+        }
+
+        /* =========================================================
+           TOP PROGRESS BAR & SLIDE ENGINE
+        ========================================================== */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 10%;
+            background: linear-gradient(90deg, var(--ps-blue-dark), var(--ps-blue-electric), var(--gold));
+            transition: width 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 0 14px var(--ps-blue-electric);
+        }
+
+        .deck-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            perspective: 1400px;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            padding: 3rem 4.5rem 5rem 4.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95) translateY(25px);
+            transition: opacity var(--transition-speed) cubic-bezier(0.22, 1, 0.36, 1),
+                        transform var(--transition-speed) cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility var(--transition-speed);
+            overflow: hidden;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+            z-index: 10;
+        }
+
+        /* Alternating Themes */
+        .theme-dark {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(0, 112, 209, 0.2) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 42%);
+        }
+
+        .theme-light {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            background-image: 
+                radial-gradient(circle at 85% 15%, rgba(0, 112, 209, 0.07) 0%, transparent 45%),
+                radial-gradient(circle at 10% 85%, rgba(0, 67, 156, 0.05) 0%, transparent 40%);
+        }
+
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(85px);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseOrb 8s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseOrb {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.45; }
+            100% { transform: scale(1.2) translate(20px, -20px); opacity: 0.85; }
+        }
+
+        /* Staggered Entrance */
+        .slide.active .stagger-1 { animation: slideUpFade 0.6s 0.12s both cubic-bezier(0.22, 1, 0.36, 1); }
+        .slide.active .stagger-2 { animation: slideUpFade 0.6s 0.26s both cubic-bezier(0.22, 1, 0.36, 1); }
+        .slide.active .stagger-3 { animation: slideUpFade 0.6s 0.4s both cubic-bezier(0.22, 1, 0.36, 1); }
+        .slide.active .stagger-4 { animation: slideUpFade 0.6s 0.54s both cubic-bezier(0.22, 1, 0.36, 1); }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================================
+           CSS 3D TRANSFORMS, THREE.JS & STUDIO RENDER SHOWCASES
+        ========================================================== */
+        @keyframes float3D {
+            0%, 100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+            50% { transform: translateY(-13px) rotateX(2deg) rotateY(-2deg); }
+        }
+
+        .iso-stage {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            perspective: 1200px;
+        }
+
+        .floating-3d {
+            animation: float3D 6s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        .render-frame-3d {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            height: 350px;
+            border-radius: 24px;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            box-shadow: 0 28px 60px rgba(0, 0, 0, 0.65), 0 0 38px rgba(0, 112, 209, 0.28);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: #07090E;
+        }
+
+        .theme-light .render-frame-3d {
+            background: #F8FAFC;
+            border: 1px solid rgba(0, 67, 156, 0.15);
+            box-shadow: 0 24px 50px rgba(15, 23, 42, 0.14), 0 0 25px rgba(0, 112, 209, 0.1);
+        }
+
+        .render-frame-3d img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+        }
+
+        .render-frame-3d:hover img {
+            transform: scale(1.04);
+        }
+
+        .render-frame-3d::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.14) 0%, transparent 45%, rgba(212, 175, 55, 0.12) 100%);
+            pointer-events: none;
+        }
+
+        /* WebGL Three.js Hero Overlay */
+        #hero3dCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            cursor: grab;
+        }
+
+        #hero3dCanvas:active {
+            cursor: grabbing;
+        }
+
+        .webgl-badge {
+            position: absolute;
+            bottom: 14px;
+            left: 14px;
+            z-index: 3;
+            background: rgba(10, 10, 12, 0.78);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            color: #00D2FF;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-family: 'Alexandria', sans-serif;
+            pointer-events: none;
+        }
+
+        /* Seamless White Studio Render Integration (DualSense on Light Slide) */
+        .seamless-3d-object {
+            width: 100%;
+            max-width: 470px;
+            height: auto;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+            filter: drop-shadow(0 30px 28px rgba(0, 67, 156, 0.22));
+            transition: transform 0.25s ease-out;
+        }
+
+        /* =========================================================
+           3D GLASSMORPHISM TILT CARDS WITH SPECULAR MOUSE GLARE
+        ========================================================== */
+        .tilt-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            transform-style: preserve-3d;
+            transition: transform 0.22s cubic-bezier(0.03, 0.98, 0.52, 0.99), box-shadow 0.3s ease;
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        .tilt-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(480px circle at var(--mouse-x) var(--mouse-y), rgba(0, 112, 209, 0.22), transparent 45%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .tilt-card:hover::before {
+            opacity: 1;
+        }
+
+        .theme-dark .glass-card {
+            background: var(--glass-dark);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border-dark);
+            box-shadow: 0 22px 45px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-light .glass-card {
+            background: var(--glass-light);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border-light);
+            box-shadow: 0 18px 38px rgba(0, 67, 156, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+        }
+
+        .card-inner-3d {
+            position: relative;
+            z-index: 2;
+            transform: translateZ(16px);
+        }
+
+        /* =========================================================
+           HEADER, BADGES & LAYOUT GRIDS
+        ========================================================== */
+        .slide-header {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            font-family: 'Alexandria', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+
+        .theme-dark .badge {
+            background: rgba(0, 112, 209, 0.18);
+            border: 1px solid rgba(0, 112, 209, 0.45);
+            color: #60A5FA;
+        }
+
+        .theme-light .badge {
+            background: rgba(0, 67, 156, 0.07);
+            border: 1px solid rgba(0, 67, 156, 0.22);
+            color: var(--ps-blue-dark);
+        }
+
+        .sony-wordmark {
+            font-family: 'Changa', sans-serif;
+            font-weight: 800;
+            letter-spacing: 5px;
+            font-size: 1.25rem;
+            opacity: 0.85;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1.12fr 0.88fr;
+            gap: 2.5rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Slide 5 Responsive 3-Column to 2-Column Grid */
+        .slide5-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 0.85fr;
+            gap: 1.5rem;
+            align-items: stretch;
+            position: relative;
+            z-index: 2;
+        }
+
+        @media (max-width: 1200px) {
+            .slide5-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .slide5-grid .headphones-showcase {
+                grid-column: span 2;
+            }
+            .slide5-grid .headphones-showcase .render-frame-3d {
+                max-width: 100%;
+                height: 220px;
+            }
+        }
+
+        .geo-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.15rem;
+            box-shadow: 0 10px 24px rgba(0, 67, 156, 0.22);
+        }
+
+        /* =========================================================
+           INTERACTIVE TIMELINE (SLIDE 3)
+        ========================================================== */
+        .timeline-wrapper {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+        }
+
+        .timeline-nodes {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 0.75rem 0;
+        }
+
+        .timeline-nodes::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            left: 5%;
+            height: 2px;
+            background: linear-gradient(270deg, var(--ps-blue-electric), var(--gold));
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+
+        .t-node {
+            position: relative;
+            z-index: 2;
+            background: #10131C;
+            border: 1.5px solid rgba(0, 112, 209, 0.55);
+            color: #fff;
+            padding: 0.7rem 1.15rem;
+            border-radius: 14px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            min-width: 136px;
+        }
+
+        .t-node.active, .t-node:hover {
+            background: linear-gradient(135deg, var(--ps-blue-dark), var(--ps-blue-electric));
+            border-color: var(--gold);
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 12px 28px rgba(0, 112, 209, 0.45);
+        }
+
+        .timeline-detail-box {
+            padding: 1.75rem 2.2rem;
+            display: grid;
+            grid-template-columns: 1.25fr 0.75fr;
+            align-items: center;
+            gap: 2rem;
+            min-height: 255px;
+        }
+
+        .timeline-render-box {
+            position: relative;
+            width: 100%;
+            height: 225px;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            background: #07090F;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 112, 209, 0.22);
+            transform-style: preserve-3d;
+        }
+
+        .timeline-render-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease, transform 0.45s ease;
+        }
+
+        /* =========================================================
+           CHART CONTAINERS (SLIDE 7)
+        ========================================================== */
+        .chart-box {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            padding: 0.75rem;
+        }
+
+        /* =========================================================
+           FLOATING CONTROLS & DRAWER
+        ========================================================== */
+        .controls-bar {
+            position: fixed;
+            bottom: 1.2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            padding: 0.55rem 1.25rem;
+            background: rgba(12, 15, 22, 0.88);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 999px;
+            z-index: 1000;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+            color: #fff;
+        }
+
+        .ctrl-btn {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .ctrl-btn:hover {
+            background: var(--ps-blue-electric);
+            border-color: var(--ps-cyan);
+            transform: scale(1.08);
+        }
+
+        .slide-counter {
+            font-family: 'Readex Pro', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 0 0.7rem;
+            color: var(--silver);
+        }
+
+        .slide-drawer {
+            position: fixed;
+            top: 0;
+            right: -340px;
+            width: 320px;
+            height: 100vh;
+            background: rgba(10, 10, 14, 0.96);
+            backdrop-filter: blur(22px);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            z-index: 2000;
+            padding: 2rem 1.5rem;
+            transition: right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            overflow-y: auto;
+            color: #fff;
+        }
+
+        .slide-drawer.open {
+            right: 0;
+        }
+
+        .drawer-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            font-size: 0.94rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .drawer-item:hover, .drawer-item.active {
+            background: var(--ps-blue-electric);
+            color: #fff;
+        }
+
+        .text-electric { color: var(--ps-blue-electric); }
+        .text-gold { color: var(--gold); }
+        .text-silver { color: var(--silver); }
+
+        .stat-pill {
+            font-family: 'Alexandria', sans-serif;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 8px;
+            background: rgba(212, 175, 55, 0.14);
+            border: 1px solid rgba(212, 175, 55, 0.38);
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 0.84rem;
+        }
+
+        @media (max-width: 1024px) {
+            .slide { padding: 2rem 2rem 5rem 2rem; overflow-y: auto; }
+            .grid-2, .grid-3, .grid-4, .slide5-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .slide5-grid .headphones-showcase { grid-column: span 1; }
+            h1 { font-size: 2rem !important; }
+            .timeline-nodes { flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+            .timeline-nodes::before { display: none; }
+            .timeline-detail-box { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Slide Index Drawer -->
+    <div class="slide-drawer" id="slideDrawer">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+            <h3 style="color:var(--gold);">فهرس الشرائح</h3>
+            <button class="ctrl-btn" onclick="toggleDrawer()" aria-label="إغلاق">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div id="drawerList"></div>
+    </div>
+
+    <!-- Main Presentation Deck -->
+    <main class="deck-container" id="deck">
+
+        <!-- =========================================================
+             SLIDE 1: COVER (DARK THEME - REAL 3D STUDIO RENDER + THREE.JS 360°)
+        ========================================================== -->
+        <section class="slide theme-dark active" data-title="الغلاف: إمبراطورية سوني">
+            <div class="ambient-orb" style="width:480px; height:480px; background:rgba(0,112,209,0.22); top:-120px; left:-100px;"></div>
+            <div class="ambient-orb" style="width:360px; height:360px; background:rgba(212,175,55,0.12); bottom:-90px; right:8%;"></div>
+
+            <div class="grid-2">
+                <div>
+                    <div class="badge stagger-1" style="margin-bottom:1.2rem;">
+                        <i class="fa-solid fa-microchip"></i>
+                        <span>ملف الابتكار والتكنولوجيا الفاخرة</span>
+                    </div>
+                    <h1 class="hero-title stagger-2" style="font-size: 3.4rem; margin-bottom: 1.15rem;">
+                        شركة سوني <span class="text-electric ltr-inline display-tech">(SONY)</span><br>
+                        <span style="background: linear-gradient(90deg, #FFFFFF, #C0C0C0, #0070D1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            هندسة المستقبل والترفيه
+                        </span>
+                    </h1>
+                    <p class="stagger-3" style="font-size: 1.16rem; color: var(--text-muted-dark); line-height: 1.85; margin-bottom: 1.9rem; max-width: 620px;">
+                        رحلة استكشافية شاملة في تطور العملاق الياباني: من أجهزة الصوت المحمولة إلى قيادة صناعة الألعاب، السينما، مستشعرات التصوير، والسيارات الكهربائية الذكية.
+                    </p>
+                    <div class="glass-card tilt-card stagger-4" style="padding: 1.1rem 1.6rem; display: inline-flex; align-items: center; gap: 1.5rem;">
+                        <div class="card-inner-3d" style="display:flex; align-items:center; gap:1.5rem;">
+                            <div>
+                                <span style="font-size: 0.84rem; color: var(--silver); display: block;">تأسيس الشركة</span>
+                                <strong class="kpi-num text-gold" style="font-size: 1.28rem;">1946 طوكيو</strong>
+                            </div>
+                            <div style="width:1px; height:36px; background:rgba(255,255,255,0.15);"></div>
+                            <div>
+                                <span style="font-size: 0.84rem; color: var(--silver); display: block;">الشعار المؤسسي</span>
+                                <strong class="card-title" style="font-size: 1.05rem; color: #fff;">ملء العالم بالعاطفة والإبداع</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real High-Resolution 3D Studio Render + Interactive Three.js 360° WebGL Overlay -->
+                <div class="iso-stage stagger-3">
+                    <div class="render-frame-3d floating-3d tilt-card" id="heroVisualFrame">
+                        <img src="https://cdn.mos.cms.futurecdn.net/Vh6eSp4siwggK7RUys72nP.jpg" alt="Sony PlayStation 5 & DualSense 3D Studio Render" onerror="this.onerror=null;this.src='https://placehold.co/800x600/0A0A0C/0070D1?text=SONY+PlayStation+5';">
+                        <canvas id="hero3dCanvas"></canvas>
+                       
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 2: VISION & OVERVIEW (LIGHT THEME - KANDO PHILOSOPHY)
+        ========================================================== -->
+        <section class="slide theme-light" data-title="نظرة عامة: فلسفة Kando والرؤية">
+            <div class="slide-header stagger-1">
+                <span class="badge">02 / الرؤية الاستراتيجية</span>
+                <span class="sony-wordmark text-electric">SONY</span>
+            </div>
+
+            <div class="stagger-2" style="margin-bottom: 1.7rem;">
+                <h1 style="font-size: 2.6rem; color: var(--text-dark);">
+                    دمج <span class="text-electric">الإبداع الفني</span> بقوة <span style="color: var(--ps-blue-dark);">التكنولوجيا المتقدمة</span>
+                </h1>
+                <p style="font-size: 1.12rem; color: var(--text-muted-light); max-width: 840px; margin-top: 0.55rem; line-height: 1.75;">
+                    تتبنى مجموعة سوني فلسفة <strong class="ltr-inline" style="color:var(--ps-blue-dark);">"Kando"</strong> اليابانية — أي إثارة الدهشة والانبهار العاطفي العميق لدى المستخدم عبر تكامل الأجهزة، البرمجيات، والمحتوى الترفيهي.
+                </p>
+            </div>
+
+            <div class="grid-3 stagger-3">
+                <div class="glass-card tilt-card" style="padding: 1.85rem;">
+                    <div class="card-inner-3d">
+                        <div class="geo-icon" style="background:linear-gradient(135deg, var(--ps-blue-dark), var(--ps-blue-electric)); color:#fff; font-size:1.35rem;">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <h3 class="card-title" style="font-size: 1.3rem; margin-bottom: 0.7rem; color: var(--ps-blue-dark);">الابتكار الهندسي الدقيق</h3>
+                        <p style="color: var(--text-muted-light); line-height: 1.75; font-size:0.97rem;">
+                            تطوير تقنيات استشعار الصورة، المعالجات الصوتية فائقة الدقة، ومنصات الألعاب الأسرع عالمياً.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass-card tilt-card" style="padding: 1.85rem; border-top: 4px solid var(--gold);">
+                    <div class="card-inner-3d">
+                        <div class="geo-icon" style="background:linear-gradient(135deg, #92400E, var(--gold)); color:#fff; font-size:1.35rem;">
+                            <i class="fa-solid fa-film"></i>
+                        </div>
+                        <h3 class="card-title" style="font-size: 1.3rem; margin-bottom: 0.7rem; color: var(--text-dark);">صناعة المحتوى والترفيه</h3>
+                        <p style="color: var(--text-muted-light); line-height: 1.75; font-size:0.97rem;">
+                            امتلاك منظومة متكاملة تشمل استوديوهات السينما، شركات الإنتاج الموسيقي، وأكبر مكتبة ألعاب حصرية.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass-card tilt-card" style="padding: 1.85rem;">
+                    <div class="card-inner-3d">
+                        <div class="geo-icon" style="background:linear-gradient(135deg, #0F172A, #334155); color:#fff; font-size:1.35rem;">
+                            <i class="fa-solid fa-globe"></i>
+                        </div>
+                        <h3 class="card-title" style="font-size: 1.3rem; margin-bottom: 0.7rem; color: var(--ps-blue-dark);">التقارب الرقمي والذكاء</h3>
+                        <p style="color: var(--text-muted-light); line-height: 1.75; font-size:0.97rem;">
+                            الربط بين الواقع الافتراضي، التنقل الذكي المستقل، وحلول الذكاء الاصطناعي لدعم المبدعين حول العالم.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-4 stagger-4" style="margin-top: 1.5rem;">
+                <div class="glass-card tilt-card" style="padding: 1.1rem; text-align:center;">
+                    <div class="card-inner-3d">
+                        <div class="kpi-num text-electric" style="font-size: 1.8rem;">+113,000</div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted-light);">موظف ومبتكر عالمياً</div>
+                    </div>
+                </div>
+                <div class="glass-card tilt-card" style="padding: 1.1rem; text-align:center;">
+                    <div class="card-inner-3d">
+                        <div class="kpi-num text-gold" style="font-size: 1.8rem;">89.8 مليار$</div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted-light);">إيرادات سنوية متكاملة</div>
+                    </div>
+                </div>
+                <div class="glass-card tilt-card" style="padding: 1.1rem; text-align:center;">
+                    <div class="card-inner-3d">
+                        <div class="kpi-num text-electric" style="font-size: 1.8rem;">6 قطاعات</div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted-light);">تكنولوجية وترفيهية كبرى</div>
+                    </div>
+                </div>
+                <div class="glass-card tilt-card" style="padding: 1.1rem; text-align:center;">
+                    <div class="card-inner-3d">
+                        <div class="kpi-num" style="font-size: 1.8rem; color: var(--ps-blue-dark);">80 عاماً</div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted-light);">من الريادة منذ 1946</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 3: INTERACTIVE TIMELINE WITH DYNAMIC REAL 3D RENDERS
+        ========================================================== -->
+        <section class="slide theme-dark" data-title="المحطات التاريخية للابتكار">
+            <div class="slide-header stagger-1">
+                <span class="badge">03 / الخط الزمني التفاعلي</span>
+                <span class="sony-wordmark text-silver">SONY HISTORY</span>
+            </div>
+
+            <div class="stagger-2" style="margin-bottom: 1.3rem;">
+                <h1 style="font-size: 2.45rem;">محطات صنعت تاريخ التكنولوجيا الحديثة</h1>
+                <p style="color: var(--text-muted-dark);">انقر على أي حقبة زمنية لاستعراض الجهاز الحقيقي وتأثيره العالمي:</p>
+            </div>
+
+            <div class="timeline-wrapper stagger-3">
+                <div class="timeline-nodes" id="timelineNodes">
+                    <div class="t-node active" onclick="selectTimeline(0)">
+                        <div class="kpi-num text-gold">1979</div>
+                        <div class="card-title" style="font-size:0.86rem;">Walkman</div>
+                    </div>
+                    <div class="t-node" onclick="selectTimeline(1)">
+                        <div class="kpi-num text-gold">1982</div>
+                        <div class="card-title" style="font-size:0.86rem;">القرص المدمج CD</div>
+                    </div>
+                    <div class="t-node" onclick="selectTimeline(2)">
+                        <div class="kpi-num text-gold">1994</div>
+                        <div class="card-title" style="font-size:0.86rem;">PlayStation 1</div>
+                    </div>
+                    <div class="t-node" onclick="selectTimeline(3)">
+                        <div class="kpi-num text-gold">2013</div>
+                        <div class="card-title" style="font-size:0.86rem;">كاميرات Alpha</div>
+                    </div>
+                    <div class="t-node" onclick="selectTimeline(4)">
+                        <div class="kpi-num text-gold">2020</div>
+                        <div class="card-title" style="font-size:0.86rem;">PlayStation 5</div>
+                    </div>
+                    <div class="t-node" onclick="selectTimeline(5)">
+                        <div class="kpi-num text-gold">2026</div>
+                        <div class="card-title" style="font-size:0.86rem;">سيارة Afeela</div>
+                    </div>
+                </div>
+
+                <div class="glass-card timeline-detail-box" id="timelineDetail">
+                    <div>
+                        <span class="stat-pill" id="tBadge">ثورة الصوت الشخصي</span>
+                        <h2 id="tTitle" style="font-size: 1.95rem; margin: 0.75rem 0; color: #fff;">جهاز والكمـان (<span class="ltr-inline">Sony Walkman TPS-L2</span>)</h2>
+                        <p id="tDesc" style="color: var(--silver); font-size: 1.06rem; line-height: 1.85;">
+                            غيّر Walkman ثقافة الاستماع للموسيقى إلى الأبد، محولاً الموسيقى من تجربة منزلية ثابتة إلى رفيق شخصي متنقل، محققاً مبيعات تجاوزت 400 مليون وحدة عالمياً.
+                        </p>
+                    </div>
+                    <div class="iso-stage">
+                        <div class="timeline-render-box floating-3d tilt-card">
+                            <img id="tDeviceImg" src="https://retrospekt.com/cdn/shop/files/PC-VR-1476-6.11_2.jpg?v=1749738857&width=3000" alt="Sony Walkman TPS-L2" onerror="this.onerror=null;this.src='https://placehold.co/600x400/0A0A0C/0070D1?text=SONY+Innovation';">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 4: PLAYSTATION EMPIRE (LIGHT THEME - SEAMLESS 3D DUALSENSE RENDER)
+        ========================================================== -->
+        <section class="slide theme-light" data-title="إمبراطورية الألعاب: PlayStation">
+            <div class="slide-header stagger-1">
+                <span class="badge">04 / الألعاب وخدمات الشبكة</span>
+                <span class="sony-wordmark text-electric">PLAYSTATION</span>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h1 class="stagger-1" style="font-size: 2.55rem; margin-bottom: 1rem;">
+                        إمبراطورية <span class="text-electric ltr-inline display-tech">PlayStation</span> بالأرقام
+                    </h1>
+                    <p class="stagger-2" style="color: var(--text-muted-light); font-size: 1.08rem; line-height: 1.8; margin-bottom: 1.4rem;">
+                        يمثل قطاع الألعاب المحرك الأكبر لإيرادات سوني، مدفوعاً بالنجاح القياسي لمنصة <span class="ltr-inline">PS5</span>، وحدة التحكم الثورية <span class="ltr-inline">DualSense</span>، واستوديوهات <span class="ltr-inline">PlayStation Studios</span> الحائزة على الجوائز.
+                    </p>
+
+                    <div class="grid-3 stagger-3" style="margin-bottom: 1.4rem;">
+                        <div class="glass-card tilt-card" style="padding: 1.15rem; border-right: 4px solid var(--ps-blue-electric);">
+                            <div class="card-inner-3d">
+                                <div class="kpi-num text-electric" style="font-size: 1.85rem;">+65M</div>
+                                <div style="font-size: 0.88rem; color: var(--text-muted-light);">وحدة PS5 مباعة عالمياً</div>
+                            </div>
+                        </div>
+                        <div class="glass-card tilt-card" style="padding: 1.15rem; border-right: 4px solid var(--gold);">
+                            <div class="card-inner-3d">
+                                <div class="kpi-num text-gold" style="font-size: 1.85rem;">118M</div>
+                                <div style="font-size: 0.88rem; color: var(--text-muted-light);">مستخدم نشط شهرياً PSN</div>
+                            </div>
+                        </div>
+                        <div class="glass-card tilt-card" style="padding: 1.15rem; border-right: 4px solid #0F172A;">
+                            <div class="card-inner-3d">
+                                <div class="kpi-num" style="font-size: 1.85rem; color:#0F172A;">+500M</div>
+                                <div style="font-size: 0.88rem; color: var(--text-muted-light);">إجمالي أجهزة PS التاريخية</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card tilt-card stagger-4" style="padding: 1.2rem 1.45rem;">
+                        <div class="card-inner-3d" style="display:flex; align-items:center; gap:1rem;">
+                            <div class="geo-icon" style="margin-bottom:0; width:46px; height:46px; background:rgba(0,112,209,0.1); color:var(--ps-blue-electric); box-shadow:none; font-size:1.3rem;">
+                                <i class="fa-solid fa-gamepad"></i>
+                            </div>
+                            <div>
+                                <strong class="card-title" style="color: var(--ps-blue-dark); display:block;">تقنية <span class="ltr-inline">Haptic Feedback & Adaptive Triggers</span></strong>
+                                <span style="font-size: 0.94rem; color: var(--text-muted-light);">نقلت ذراع DualSense تجربة اللعب من التفاعل البصري إلى المحاكاة الحسية الدقيقة.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real 3D Studio Render of DualSense Controller seamlessly melted onto pure white slide -->
+                <div class="iso-stage stagger-3">
+                    <img class="seamless-3d-object floating-3d" id="dualsense3d" src="https://img-new.cgtrader.com/items/3640054/484b3b4d1f/sony-playstation-5-dualsense-controller-white-3d-model-484b3b4d1f.webp" alt="Sony DualSense" onerror="this.onerror=null;this.src='https://placehold.co/600x500/FFFFFF/00439C?text=DualSense+3D';">
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 5: ENTERTAINMENT - PICTURES & MUSIC (DARK THEME + WH-1000XM5)
+        ========================================================== -->
+        <section class="slide theme-dark" data-title="الترفيه: السينما والموسيقى">
+            <div class="slide-header stagger-1">
+                <span class="badge">05 / منظومة الترفيه العالمية</span>
+                <span class="sony-wordmark text-gold">SONY ENTERTAINMENT</span>
+            </div>
+
+            <div class="stagger-2" style="margin-bottom: 1.5rem;">
+                <h1 style="font-size: 2.5rem;">السيطرة على صناعة <span class="text-gold">السينما</span> و<span class="text-electric">الموسيقى</span></h1>
+                <p style="color: var(--text-muted-dark); font-size: 1.08rem;">تتفرد سوني بكونها الشركة الوحيدة التي تجمع بين تصنيع معدات الصوت والتصوير الاحترافية وإنتاج أضخم الأعمال السينمائية والموسيقية.</p>
+            </div>
+
+            <div class="slide5-grid stagger-3">
+                <!-- Sony Pictures Card -->
+                <div class="glass-card tilt-card" style="padding: 1.75rem; border-top: 3px solid var(--ps-blue-electric); display:flex; flex-direction:column; justify-content:space-between;">
+                    <div class="card-inner-3d">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                            <h2 class="card-title" style="font-size: 1.55rem; color: #fff;"><span class="ltr-inline">Sony Pictures</span></h2>
+                            <span class="stat-pill">هوليوود والأنمي</span>
+                        </div>
+                        <p style="color: var(--silver); line-height: 1.8; margin-bottom: 1.4rem; font-size:0.95rem;">
+                            تشمل استوديوهات <span class="ltr-inline">Columbia Pictures</span> و <span class="ltr-inline">TriStar</span> ومنصة <span class="ltr-inline">Crunchyroll</span> الرائدة عالمياً في بث الأنمي بأكثر من 15 مليون مشترك مدفوع.
+                        </p>
+                    </div>
+                    <div class="card-inner-3d" style="display:grid; grid-template-columns:1fr 1fr; gap:0.9rem;">
+                        <div style="background:rgba(255,255,255,0.05); padding:0.9rem; border-radius:12px;">
+                            <div class="kpi-num text-electric" style="font-size:1.4rem;">+10 مليار$</div>
+                            <div style="font-size:0.82rem; color:var(--text-muted-dark);">إيرادات سنوية للقطاع</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.05); padding:0.9rem; border-radius:12px;">
+                            <div class="kpi-num text-gold" style="font-size:1.3rem;">Spider-Man</div>
+                            <div style="font-size:0.82rem; color:var(--text-muted-dark);">أنجح الامتيازات السينمائية</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sony Music Card -->
+                <div class="glass-card tilt-card" style="padding: 1.75rem; border-top: 3px solid var(--gold); display:flex; flex-direction:column; justify-content:space-between;">
+                    <div class="card-inner-3d">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                            <h2 class="card-title" style="font-size: 1.55rem; color: #fff;"><span class="ltr-inline">Sony Music Group</span></h2>
+                            <span class="stat-pill">أكبر ناشر موسيقي</span>
+                        </div>
+                        <p style="color: var(--silver); line-height: 1.8; margin-bottom: 1.4rem; font-size:0.95rem;">
+                            تحتل المرتبة الأولى عالمياً في حقوق النشر الموسيقي، وتدير كتالوجات لأهم النجوم العالميين، مع نمو متسارع عبر منصات البث الرقمي وتقنية <span class="ltr-inline">360 Reality Audio</span>.
+                        </p>
+                    </div>
+                    <div class="card-inner-3d" style="display:grid; grid-template-columns:1fr 1fr; gap:0.9rem;">
+                        <div style="background:rgba(255,255,255,0.05); padding:0.9rem; border-radius:12px;">
+                            <div class="kpi-num text-gold" style="font-size:1.4rem;">+5 مليون</div>
+                            <div style="font-size:0.82rem; color:var(--text-muted-dark);">حقوق ملكية وأغنية مسجلة</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.05); padding:0.9rem; border-radius:12px;">
+                            <div class="kpi-num text-electric" style="font-size:1.4rem;">+11 مليار$</div>
+                            <div style="font-size:0.82rem; color:var(--text-muted-dark);">عوائد الموسيقى والنشر</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real Studio Render: Sony WH-1000XM5 Spatial Audio Headphones -->
+                <div class="iso-stage headphones-showcase">
+                    <div class="render-frame-3d floating-3d tilt-card" style="height:100%; max-height:335px;">
+                        <img src="https://www.soundguys.com/wp-content/uploads/2023/10/Sony-WXM5-Headphones-Featured-Image-1-scaled.jpg" alt="Sony WH-1000XM5 Spatial Audio Headphones" onerror="this.onerror=null;this.src='https://placehold.co/600x600/0A0A0C/D4AF37?text=WH-1000XM5';">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 6: IMAGING & SENSORS (LIGHT THEME - REAL SONY ALPHA CAMERAS)
+        ========================================================== -->
+        <section class="slide theme-light" data-title="التصوير وأجهزة الاستشعار">
+            <div class="slide-header stagger-1">
+                <span class="badge">06 / حلول التصوير والاستشعار (<span class="ltr-inline">I&SS</span>)</span>
+                <span class="sony-wordmark text-electric">SONY ALPHA</span>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h1 class="stagger-1" style="font-size: 2.55rem; margin-bottom: 1rem;">
+                        العين التي ترى بها <span class="text-electric">هواتف وكاميرات العالم</span>
+                    </h1>
+                    <p class="stagger-2" style="color: var(--text-muted-light); font-size: 1.08rem; line-height: 1.8; margin-bottom: 1.35rem;">
+                        تسيطر سوني على أكثر من <strong>53% من السوق العالمي</strong> لمستشعرات الصور (<span class="ltr-inline">CMOS Image Sensors</span>)، حيث تزود كبرى شركات الهواتف الذكية وكاميرات السينما الاحترافية.
+                    </p>
+
+                    <div class="glass-card tilt-card stagger-3" style="padding: 1.35rem; margin-bottom: 1.15rem;">
+                        <div class="card-inner-3d">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.55rem;">
+                                <strong class="card-title" style="color: var(--ps-blue-dark); font-size:1.05rem;">الحصة السوقية العالمية لمستشعرات الصور</strong>
+                                <span class="kpi-num text-electric" style="font-size:1.35rem;">53%</span>
+                            </div>
+                            <div style="width:100%; height:12px; background:#E2E8F0; border-radius:999px; overflow:hidden;">
+                                <div style="width:53%; height:100%; background:linear-gradient(90deg, var(--ps-blue-dark), var(--ps-blue-electric)); border-radius:999px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2 stagger-4" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="glass-card tilt-card" style="padding: 1.15rem;">
+                            <div class="card-inner-3d">
+                                <h3 class="card-title" style="color: var(--ps-blue-dark); font-size: 1.08rem; margin-bottom:0.4rem;">كاميرات <span class="ltr-inline">Sony Alpha</span></h3>
+                                <p style="font-size: 0.91rem; color: var(--text-muted-light); line-height:1.65;">الرائدة في الكاميرات عديمة المرآة (<span class="ltr-inline">Full-Frame Mirrorless</span>) مع تركيز تلقائي بالذكاء الاصطناعي.</p>
+                            </div>
+                        </div>
+                        <div class="glass-card tilt-card" style="padding: 1.15rem;">
+                            <div class="card-inner-3d">
+                                <h3 class="card-title" style="color: var(--gold); font-size: 1.08rem; margin-bottom:0.4rem;">مستشعرات <span class="ltr-inline">LiDAR</span></h3>
+                                <p style="font-size: 0.91rem; color: var(--text-muted-light); line-height:1.65;">رؤية ثلاثية الأبعاد فائقة الدقة للسيارات ذاتية القيادة والروبوتات الصناعية.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real Studio Product Render of Sony Alpha Mirrorless Cameras -->
+                <div class="iso-stage stagger-3">
+                    <div class="render-frame-3d floating-3d tilt-card">
+                        <img src="https://www.mczdirect.com/img/cms/blog/guides/sony-aps-c-plein-format/sony-aps-c-ou-plein-format-1500x844.jpg" alt="Sony Alpha Full-Frame Mirrorless Cameras" onerror="this.onerror=null;this.src='https://placehold.co/800x500/FFFFFF/00439C?text=SONY+Alpha';">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 7: FINANCIAL ANALYSIS & CHARTS (DARK THEME - CHART.JS)
+        ========================================================== -->
+        <section class="slide theme-dark" data-title="التحليل المالي والنمو">
+            <div class="slide-header stagger-1">
+                <span class="badge">07 / الأداء المالي وتوزيع الإيرادات</span>
+                <span class="sony-wordmark text-gold">FINANCIALS</span>
+            </div>
+
+            <div class="stagger-2" style="margin-bottom: 1.1rem;">
+                <h1 style="font-size: 2.4rem;">القوة الاقتصادية وتنوع مصادر الدخل</h1>
+                <p style="color: var(--text-muted-dark);">نمو مستدام في الإيرادات العالمية خلال آخر 5 سنوات (بالمليار دولار أمريكي) مدفوعاً بالخدمات الرقمية والألعاب.</p>
+            </div>
+
+            <div class="grid-2 stagger-3" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.8rem; align-items: stretch;">
+                <!-- Line Chart: 5-Year Revenue Growth -->
+                <div class="glass-card tilt-card" style="padding: 1.45rem;">
+                    <div class="card-inner-3d">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                            <h3 class="card-title" style="color:#fff; font-size:1.12rem;">نمو الإيرادات العالمية (<span class="ltr-inline">2021 - 2025</span>)</h3>
+                            <span class="stat-pill">+24% نمو تراكمي</span>
+                        </div>
+                        <div class="chart-box">
+                            <canvas id="revenueLineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donut Chart: Revenue Breakdown by Sector -->
+                <div class="glass-card tilt-card" style="padding: 1.45rem;">
+                    <div class="card-inner-3d">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                            <h3 class="card-title" style="color:#fff; font-size:1.12rem;">توزيع الإيرادات حسب القطاعات</h3>
+                            <span class="badge">2025</span>
+                        </div>
+                        <div class="chart-box">
+                            <canvas id="sectorDonutChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 8: FUTURE & INNOVATION - AFEELA & PS VR2 (LIGHT THEME)
+        ========================================================== -->
+        <section class="slide theme-light" data-title="المستقبل: Afeela والواقع الافتراضي">
+            <div class="slide-header stagger-1">
+                <span class="badge">08 / آفاق المستقبل والابتكار</span>
+                <span class="sony-wordmark text-electric">NEXT-GEN SONY</span>
+            </div>
+
+            <div class="grid-2">
+                <div>
+                    <h1 class="stagger-1" style="font-size: 2.45rem; margin-bottom: 0.95rem;">
+                        إعادة تعريف التنقل الذكي مع <span class="text-electric ltr-inline display-tech">AFEELA</span> والواقع الافتراضي
+                    </h1>
+                    <p class="stagger-2" style="color: var(--text-muted-light); font-size: 1.06rem; line-height: 1.8; margin-bottom: 1.35rem;">
+                        تتجاوز سوني حدود الإلكترونيات التقليدية عبر التحالف الاستراتيجي <span class="ltr-inline">Sony Honda Mobility</span> لإطلاق سيارات كهربائية ذكية مدعومة بالذكاء الاصطناعي وأكثر من 45 مستشعراً متطوراً.
+                    </p>
+
+                    <div class="glass-card tilt-card stagger-3" style="padding: 1.3rem; margin-bottom: 1.05rem; border-right: 4px solid var(--ps-blue-electric);">
+                        <div class="card-inner-3d">
+                            <h3 class="card-title" style="color: var(--ps-blue-dark); font-size: 1.15rem; margin-bottom: 0.35rem;">
+                                <i class="fa-solid fa-car-side text-electric" style="margin-left:8px;"></i>
+                                سيارة <span class="ltr-inline">AFEELA EV</span> الذكية
+                            </h3>
+                            <p style="color: var(--text-muted-light); font-size: 0.95rem; line-height:1.65;">
+                                مقصورة ترفيهية متكاملة بشاشات بانورامية، تكامل مع ألعاب <span class="ltr-inline">PlayStation</span>، وقيادة ذاتية من المستوى الثالث مدعومة بالذكاء الاصطناعي.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card tilt-card stagger-4" style="padding: 1.3rem; border-right: 4px solid var(--gold);">
+                        <div class="card-inner-3d">
+                            <h3 class="card-title" style="color: var(--text-dark); font-size: 1.15rem; margin-bottom: 0.35rem;">
+                                <i class="fa-solid fa-vr-cardboard text-gold" style="margin-left:8px;"></i>
+                                نظارة <span class="ltr-inline">PlayStation VR2</span>
+                            </h3>
+                            <p style="color: var(--text-muted-light); font-size: 0.95rem; line-height:1.65;">
+                                شاشات <span class="ltr-inline">4K HDR OLED</span> مع تقنية تتبع حركة العين (<span class="ltr-inline">Eye Tracking</span>) واهتزازات حسية داخل الخوذة لانغماس كامل.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dual Real Studio Renders: Sony Honda Afeela EV & PlayStation VR2 -->
+                <div class="iso-stage stagger-3" style="flex-direction:column; gap:1rem;">
+                    <div class="render-frame-3d floating-3d tilt-card" style="height:215px;">
+                        <img src="https://headlight.news/wp-content/uploads/2025/04/Afeela-Hero-Shot-1.jpg" alt="Sony Honda Afeela Electric Vehicle" style="width:100%; height:100%; object-fit:cover; border-radius:18px;" onerror="if(this.dataset.triedFallback!=='1'){this.dataset.triedFallback='1';this.src='https://ca-times.brightspotcdn.com/dims4/default/d8c64e3/2147483647/strip/false/crop/6000x4000+0+0/resize/1486x991!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F94%2F19%2Fbc65f2024f38b39a295dae2af9a3%2F1544325-fi-afeela-electric-vehicles-304-rb.jpg';}else{this.onerror=null;this.src='https://placehold.co/800x450/0A0A0C/0070D1?text=SONY+AFEELA+EV';}">
+                    </div>
+                    <div class="render-frame-3d tilt-card" style="height:155px;">
+                        <img src="https://helios-i.mashable.com/imagery/articles/07F24ZLgVjr4q2TQeT9dMSk/hero-image.fill.size_1248x702.v1645540373.webp" alt="PlayStation VR2 Headset" style="width:100%; height:100%; object-fit:cover; border-radius:18px;" onerror="this.onerror=null;this.src='https://placehold.co/800x400/0A0A0C/00D2FF?text=PlayStation+VR2';">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 9: SUSTAINABILITY - ROAD TO ZERO (DARK THEME)
+        ========================================================== -->
+        <section class="slide theme-dark" data-title="الاستدامة: خطة Road to Zero">
+            <div class="slide-header stagger-1">
+                <span class="badge">09 / الاستدامة والمسؤولية البيئية</span>
+                <span class="sony-wordmark text-silver">ROAD TO ZERO</span>
+            </div>
+
+            <div class="stagger-2" style="margin-bottom: 1.9rem;">
+                <h1 style="font-size: 2.55rem;">خطة <span class="ltr-inline text-electric display-tech">Road to Zero</span>: بصمة بيئية صفرية</h1>
+                <p style="color: var(--text-muted-dark); font-size: 1.1rem; max-width: 820px; line-height:1.75;">
+                    تلتزم سوني بتحقيق الحياد الكربوني الكامل عبر جميع عملياتها وسلاسل الإمداد بحلول عام 2040، مع الاعتماد الكلي على الطاقة المتجددة.
+                </p>
+            </div>
+
+            <div class="grid-3 stagger-3">
+                <div class="glass-card tilt-card" style="padding: 1.95rem; border-bottom: 4px solid #10B981;">
+                    <div class="card-inner-3d">
+                        <div class="kpi-num" style="font-size: 2.55rem; color: #34D399; margin-bottom: 0.5rem;">100%</div>
+                        <h3 class="card-title" style="font-size: 1.25rem; color: #fff; margin-bottom: 0.65rem;">طاقة كهربائية متجددة</h3>
+                        <p style="color: var(--silver); font-size: 0.97rem; line-height: 1.75;">
+                            الانتقال الكامل لتشغيل جميع مصانع ومكاتب سوني العالمية بالطاقة النظيفة بحلول عام 2030.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass-card tilt-card" style="padding: 1.95rem; border-bottom: 4px solid var(--ps-blue-electric);">
+                    <div class="card-inner-3d">
+                        <div class="kpi-num text-electric" style="font-size: 2.55rem; margin-bottom: 0.5rem;">0%</div>
+                        <h3 class="card-title" style="font-size: 1.25rem; color: #fff; margin-bottom: 0.65rem;">بلاستيك في التغليف</h3>
+                        <p style="color: var(--silver); font-size: 0.97rem; line-height: 1.75;">
+                            ابتكار مادة <span class="ltr-inline">Original Blended Material</span> المصنوعة من الخيزران وقصب السكر لتغليف أجهزة <span class="ltr-inline">PlayStation</span> والكاميرات.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass-card tilt-card" style="padding: 1.95rem; border-bottom: 4px solid var(--gold);">
+                    <div class="card-inner-3d">
+                        <div class="kpi-num text-gold" style="font-size: 2.45rem; margin-bottom: 0.5rem;"><span class="ltr-inline">SORPLAS™</span></div>
+                        <h3 class="card-title" style="font-size: 1.25rem; color: #fff; margin-bottom: 0.65rem;">بلاستيك معاد تدويره</h3>
+                        <p style="color: var(--silver); font-size: 0.97rem; line-height: 1.75;">
+                            تطوير بلاستيك مستدام يحتوي على نسبة تصل إلى 99% من المواد المعاد تدويرها لاستخدامه في الشاشات والكاميرات.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 10: CONCLUSION (LIGHT THEME)
+        ========================================================== -->
+        <section class="slide theme-light" data-title="الخاتمة: رسالة المستقبل">
+            <div style="text-align: center; max-width: 860px; margin: 0 auto; position: relative; z-index: 2;">
+                <div class="badge stagger-1" style="margin-bottom: 1.45rem;">10 / الخاتمة والرؤية المستقبلية</div>
+                
+                <h1 class="stagger-2" style="font-size: 3.1rem; color: var(--text-dark); margin-bottom: 1.15rem;">
+                    "نحن لا نصنع التكنولوجيا فحسب،<br>
+                    <span class="text-electric">بل نصنع المشاعر التي تدوم</span>"
+                </h1>
+
+                <p class="stagger-3" style="font-size: 1.16rem; color: var(--text-muted-light); line-height: 1.85; margin-bottom: 2.3rem;">
+                    تواصل شركة سوني مسيرتها كجسر يربط بين خيال المبدعين وتجارب الملايين حول العالم، مؤكدةً أن المستقبل يُبنى حيث تلتقي الهندسة الدقيقة بالشغف الإنساني.
+                </p>
+
+                <div class="glass-card tilt-card stagger-4" style="padding: 1.75rem 2.4rem; display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem; align-items: center;">
+                    <div class="card-inner-3d" style="display:flex; flex-wrap:wrap; justify-content:center; gap:2.5rem; align-items:center;">
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted-light);">المقر الرئيسي</div>
+                            <strong class="card-title" style="color: var(--ps-blue-dark); font-size: 1.05rem;">ميناتو، طوكيو - اليابان</strong>
+                        </div>
+                        <div style="width:1px; height:40px; background:rgba(0,0,0,0.1);"></div>
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted-light);">البوابة الرسمية</div>
+                            <strong class="ltr-inline text-electric" style="font-size: 1.1rem;">www.sony.com</strong>
+                        </div>
+                        <div style="width:1px; height:40px; background:rgba(0,0,0,0.1);"></div>
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted-light);">شكراً لحسن استماعكم</div>
+                            <strong class="card-title text-gold" style="font-size: 1.05rem;">أسئلة ومناقشة</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Floating Navigation Bar -->
+    <div class="controls-bar">
+        <button class="ctrl-btn" onclick="prevSlide()" title="الشريحة السابقة (السهم الأيمن)">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <span class="slide-counter" id="slideCounter">1 / 10</span>
+        <button class="ctrl-btn" onclick="nextSlide()" title="الشريحة التالية (السهم الأيسر)">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div style="width:1px; height:20px; background:rgba(255,255,255,0.2);"></div>
+        <button class="ctrl-btn" onclick="toggleDrawer()" title="فهرس الشرائح">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <button class="ctrl-btn" onclick="toggleFullscreen()" title="ملء الشاشة">
+            <i class="fa-solid fa-expand"></i>
+        </button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+        const drawerList = document.getElementById('drawerList');
+        const slideDrawer = document.getElementById('slideDrawer');
+        let currentSlide = 0;
+
+        // Build Slide Index Drawer
+        slides.forEach((slide, idx) => {
+            const item = document.createElement('div');
+            item.className = 'drawer-item' + (idx === 0 ? ' active' : '');
+            item.innerHTML = `<span class="kpi-num" style="color:var(--gold);">${String(idx + 1).padStart(2, '0')}</span> <span>${slide.dataset.title}</span>`;
+            item.onclick = () => {
+                goToSlide(idx);
+                toggleDrawer();
+            };
+            drawerList.appendChild(item);
+        });
+
+        function updateUI() {
+            slides.forEach((s, i) => {
+                s.classList.toggle('active', i === currentSlide);
+            });
+
+            document.querySelectorAll('.drawer-item').forEach((item, i) => {
+                item.classList.toggle('active', i === currentSlide);
+            });
+
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            slideCounter.textContent = `${currentSlide + 1} / ${slides.length}`;
+
+            if (currentSlide === 6) {
+                renderFinancialCharts();
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateUI();
+        }
+
+        function toggleDrawer() {
+            slideDrawer.classList.toggle('open');
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Keyboard Navigation (RTL Aware: Left Arrow = Next, Right Arrow = Prev)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowRight' || e.key === 'PageUp') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'Escape' && slideDrawer.classList.contains('open')) {
+                toggleDrawer();
+            }
+        });
+
+        // RTL Touch Swipe Support
+        let touchStartX = 0;
+        document.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
+        document.addEventListener('touchend', e => {
+            const diff = e.changedTouches[0].screenX - touchStartX;
+            if (diff < -60) nextSlide();
+            if (diff > 60) prevSlide();
+        });
+
+        // Interactive 3D Tilt Cards with Dynamic Cursor Lighting Glare
+        document.querySelectorAll('.tilt-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const relX = e.clientX - rect.left;
+                const relY = e.clientY - rect.top;
+                const x = relX / rect.width - 0.5;
+                const y = relY / rect.height - 0.5;
+                card.style.setProperty('--mouse-x', `${relX}px`);
+                card.style.setProperty('--mouse-y', `${relY}px`);
+                card.style.transform = `perspective(1000px) rotateY(${x * 13}deg) rotateX(${-y * 13}deg) translateY(-5px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(0)';
+            });
+        });
+
+        // Interactive 3D Mouse Parallax for Seamless DualSense Render (Slide 4)
+        const ds3d = document.getElementById('dualsense3d');
+        if (ds3d) {
+            ds3d.addEventListener('mousemove', (e) => {
+                const rect = ds3d.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                ds3d.style.transform = `perspective(900px) rotateY(${x * 22}deg) rotateX(${-y * 22}deg) scale(1.04)`;
+            });
+            ds3d.addEventListener('mouseleave', () => {
+                ds3d.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg) scale(1)';
+            });
+        }
+
+        // =========================================================
+        // SLIDE 1: THREE.JS 360° INTERACTIVE WEBGL HERO VISUAL
+        // =========================================================
+        function initHeroThreeJS() {
+            const canvas = document.getElementById('hero3dCanvas');
+            const container = document.getElementById('heroVisualFrame');
+            if (!canvas || !container || typeof THREE === 'undefined') return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.z = 6.2;
+
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            const blueLight = new THREE.PointLight(0x0070D1, 2.5, 20);
+            blueLight.position.set(4, 3, 5);
+            scene.add(blueLight);
+            const goldLight = new THREE.PointLight(0xD4AF37, 2.0, 20);
+            goldLight.position.set(-4, -3, 4);
+            scene.add(goldLight);
+
+            // 3D Tech Core & Orbital PlayStation Rings
+            const group = new THREE.Group();
+            scene.add(group);
+
+            const coreGeo = new THREE.OctahedronGeometry(1.15, 0);
+            const coreMat = new THREE.MeshStandardMaterial({
+                color: 0x0070D1,
+                metalness: 0.85,
+                roughness: 0.15,
+                transparent: true,
+                opacity: 0.82
+            });
+            const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+            group.add(coreMesh);
+
+            const wireGeo = new THREE.IcosahedronGeometry(1.55, 1);
+            const wireMat = new THREE.MeshBasicMaterial({
+                color: 0x00D2FF,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.35
+            });
+            const wireMesh = new THREE.Mesh(wireGeo, wireMat);
+            group.add(wireMesh);
+
+            const ringGeo = new THREE.TorusGeometry(2.15, 0.035, 16, 100);
+            const ringMat = new THREE.MeshStandardMaterial({
+                color: 0xD4AF37,
+                metalness: 0.9,
+                roughness: 0.2
+            });
+            const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+            ringMesh.rotation.x = Math.PI / 3;
+            group.add(ringMesh);
+
+            // 360 Drag Rotation
+            let isDragging = false;
+            let prevX = 0, prevY = 0;
+
+            canvas.addEventListener('mousedown', (e) => { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
+            window.addEventListener('mouseup', () => { isDragging = false; });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                group.rotation.y += (e.clientX - prevX) * 0.012;
+                group.rotation.x += (e.clientY - prevY) * 0.012;
+                prevX = e.clientX;
+                prevY = e.clientY;
+            });
+
+            window.addEventListener('resize', () => {
+                if (!container.clientWidth || !container.clientHeight) return;
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+
+            function animateHero3D() {
+                requestAnimationFrame(animateHero3D);
+                if (!isDragging) {
+                    group.rotation.y += 0.008;
+                    wireMesh.rotation.x -= 0.004;
+                    ringMesh.rotation.z += 0.006;
+                }
+                renderer.render(scene, camera);
+            }
+            animateHero3D();
+        }
+
+        // =========================================================
+        // SLIDE 3: DYNAMIC REAL STUDIO PRODUCT RENDERS FOR TIMELINE
+        // =========================================================
+        const timelineDevices = [
+            {
+                badge: "ثورة الصوت الشخصي",
+                title: 'جهاز والكمـان (<span class="ltr-inline">Sony Walkman TPS-L2</span>)',
+                desc: "غيّر Walkman ثقافة الاستماع للموسيقى إلى الأبد، محولاً الموسيقى من تجربة منزلية ثابتة إلى رفيق شخصي متنقل، محققاً مبيعات تجاوزت 400 مليون وحدة عالمياً.",
+                img: "https://retrospekt.com/cdn/shop/files/PC-VR-1476-6.11_2.jpg?v=1749738857&width=3000",
+                alt: "Sony Walkman TPS-L2"
+            },
+            {
+                badge: "عصر الصوت الرقمي",
+                title: 'إطلاق القرص المدمج (<span class="ltr-inline">Sony CDP-101</span>)',
+                desc: "بالتعاون مع فيليبس، أطلقت سوني أول مشغل أقراص مدمجة CDP-101، معلنةً نهاية عصر الأشرطة التناظرية وبداية التخزين الرقمي عالي النقاء.",
+                img: "https://www.stereolifemagazine.com/media/k2/items/cache/fbe5093c383685a2c635f66e6581a2d1_XL.jpg",
+                alt: "Sony CDP-101 CD Player"
+            },
+            {
+                badge: "ميلاد أسطورة الألعاب",
+                title: 'إطلاق <span class="ltr-inline">PlayStation</span> الأول',
+                desc: "دخول تاريخي لعالم ألعاب الفيديو ثلاثية الأبعاد، ليصبح أول جهاز ألعاب منزلي في التاريخ تتجاوز مبيعاته حاجز 100 مليون وحدة.",
+                img: "https://i.ebayimg.com/images/g/tEEAAeSwBf9prRla/s-l1200.jpg",
+                alt: "Sony PlayStation 1 Console"
+            },
+            {
+                badge: "ثورة التصوير الاحترافي",
+                title: 'سلسلة كاميرات <span class="ltr-inline">Sony Alpha Full-Frame</span>',
+                desc: "إطلاق الكاميرات عديمة المرآة بإطار كامل، مما أعاد تشكيل معايير التصوير الفوتوغرافي والسينمائي عالمياً بفضل التركيز التلقائي الفائق.",
+                img: "https://www.mczdirect.com/img/cms/blog/guides/sony-aps-c-plein-format/sony-aps-c-ou-plein-format-1500x844.jpg",
+                alt: "Sony Alpha Mirrorless Camera"
+            },
+            {
+                badge: "الجيل الجديد فائق السرعة",
+                title: 'منصة <span class="ltr-inline">PlayStation 5</span> وذراع <span class="ltr-inline">DualSense</span>',
+                desc: "قفزة نوعية بفضل أقراص SSD فائقة السرعة وتقنيات الاستجابة اللمسية التكيفية التي وضعت معياراً جديداً للانغماس التفاعلي.",
+                img: "https://cdn.mos.cms.futurecdn.net/Vh6eSp4siwggK7RUys72nP.jpg",
+                alt: "Sony PlayStation 5 Console"
+            },
+            {
+                badge: "الذكاء الاصطناعي والتنقل",
+                title: 'السيارة الكهربائية الذكية <span class="ltr-inline">AFEELA</span>',
+                desc: "اندماج الذكاء الاصطناعي، 45 مستشعراً للقيادة الذاتية، ومنظومة سوني الترفيهية داخل سيارة كهربائية مستقبلية بالتعاون مع هوندا.",
+                img: "https://headlight.news/wp-content/uploads/2025/04/Afeela-Hero-Shot-1.jpg",
+                fallbackImg: "https://ca-times.brightspotcdn.com/dims4/default/d8c64e3/2147483647/strip/false/crop/6000x4000+0+0/resize/1486x991!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F94%2F19%2Fbc65f2024f38b39a295dae2af9a3%2F1544325-fi-afeela-electric-vehicles-304-rb.jpg",
+                alt: "Sony Honda Afeela EV"
+            }
+        ];
+
+        function selectTimeline(index) {
+            document.querySelectorAll('.t-node').forEach((n, i) => n.classList.toggle('active', i === index));
+            const item = timelineDevices[index];
+            const imgEl = document.getElementById('tDeviceImg');
+            
+            document.getElementById('tBadge').textContent = item.badge;
+            document.getElementById('tTitle').innerHTML = item.title;
+            document.getElementById('tDesc').textContent = item.desc;
+            
+            imgEl.style.opacity = '0.15';
+            imgEl.style.transform = 'scale(0.95)';
+            imgEl.dataset.triedFallback = '0';
+            imgEl.onerror = function() {
+                if (item.fallbackImg && this.dataset.triedFallback !== '1') {
+                    this.dataset.triedFallback = '1';
+                    this.src = item.fallbackImg;
+                } else {
+                    this.onerror = null;
+                    this.src = 'https://placehold.co/600x400/0A0A0C/0070D1?text=SONY+Innovation';
+                }
+            };
+            setTimeout(() => {
+                imgEl.src = item.img;
+                imgEl.alt = item.alt;
+                imgEl.style.opacity = '1';
+                imgEl.style.transform = 'scale(1)';
+            }, 160);
+        }
+
+        // =========================================================
+        // SLIDE 7: CHART.JS FINANCIAL VISUALIZATIONS
+        // =========================================================
+        let lineChartInstance = null;
+        let donutChartInstance = null;
+
+        function renderFinancialCharts() {
+            if (typeof Chart === 'undefined') return;
+            Chart.defaults.font.family = "'IBM Plex Sans Arabic', sans-serif";
+            Chart.defaults.color = "#CBD5E1";
+
+            if (lineChartInstance) lineChartInstance.destroy();
+            if (donutChartInstance) donutChartInstance.destroy();
+
+            const ctxLine = document.getElementById('revenueLineChart').getContext('2d');
+            const gradientFill = ctxLine.createLinearGradient(0, 0, 0, 260);
+            gradientFill.addColorStop(0, 'rgba(0, 112, 209, 0.48)');
+            gradientFill.addColorStop(1, 'rgba(0, 112, 209, 0.0)');
+
+            lineChartInstance = new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: ['2021', '2022', '2023', '2024', '2025'],
+                    datasets: [{
+                        label: 'الإيرادات العالمية (مليار دولار)',
+                        data: [72.5, 76.8, 81.2, 85.4, 89.8],
+                        borderColor: '#00D2FF',
+                        backgroundColor: gradientFill,
+                        borderWidth: 3.5,
+                        pointBackgroundColor: '#D4AF37',
+                        pointBorderColor: '#FFFFFF',
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        fill: true,
+                        tension: 0.38
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 1200, easing: 'easeOutQuart' },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(10, 10, 12, 0.92)',
+                            borderColor: '#0070D1',
+                            borderWidth: 1,
+                            padding: 10
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 65,
+                            grid: { color: 'rgba(255,255,255,0.08)' },
+                            ticks: { font: { family: "'Readex Pro', sans-serif" } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: "'Readex Pro', sans-serif" } }
+                        }
+                    }
+                }
+            });
+
+            const ctxDonut = document.getElementById('sectorDonutChart').getContext('2d');
+            donutChartInstance = new Chart(ctxDonut, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        'الألعاب (PlayStation)',
+                        'الإلكترونيات والترفيه',
+                        'أجهزة الاستشعار والصور',
+                        'الموسيقى (Sony Music)',
+                        'السينما (Sony Pictures)'
+                    ],
+                    datasets: [{
+                        data: [32, 21, 16, 16, 15],
+                        backgroundColor: [
+                            '#0070D1',
+                            '#00439C',
+                            '#00D2FF',
+                            '#D4AF37',
+                            '#C0C0C0'
+                        ],
+                        borderColor: '#0A0A0C',
+                        borderWidth: 3,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '64%',
+                    animation: { duration: 1200, easing: 'easeOutQuart' },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 12,
+                                font: { size: 11, family: "'IBM Plex Sans Arabic', sans-serif" }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        window.onload = function() {
+            initHeroThreeJS();
+        };
+    </script>
+</body>
+</html>
