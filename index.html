@@ -73,6 +73,10 @@ audio{width:100%;height:44px;border-radius:999px}
 .zimg img{width:100%;height:100%;object-fit:cover;display:block}
 .zimg span{position:absolute;bottom:8px;left:8px;padding:2px 12px;border-radius:999px;font:400 .75rem 'Readex Pro';color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(8px)}
 .sub{font-size:1.15rem;margin:22px 6px 12px}
+.note{display:flex;gap:10px;align-items:flex-start;margin:0 0 14px;padding:12px 16px;border-radius:18px;background:rgba(143,163,58,.14);border:1px solid rgba(143,163,58,.4);font-size:.88rem;line-height:1.7;color:#e6eccc}
+.note b{color:var(--olive);font-weight:600}
+.spin{width:18px;height:18px;flex:none;margin-top:3px;border-radius:50%;border:2.5px solid rgba(143,163,58,.3);border-top-color:var(--olive);animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
 .svc{padding:16px;display:flex;gap:12px;align-items:flex-start}.svc svg{margin-top:4px;color:var(--hot)}
 .svc h3{font-size:1.1rem}.svc p{font-size:.86rem;color:#cfcfcf;font-weight:300;line-height:1.7}
 .step{display:flex;gap:14px;align-items:center;padding:14px 18px}.step em{font:400 1.6rem 'Lalezar';color:var(--hot);font-style:normal;width:28px;text-align:center}
@@ -145,7 +149,6 @@ noscript .ns a{color:var(--wa)}
 
 <header class="top glass">
   <a href="#" class="brand" style="color:inherit;text-decoration:none"><b>Abo_salah</b><small>خدمات للطلاب</small></a>
-  <button class="sq" id="mute" aria-label="خلّي زيتونة تتكلم" title="صوت زيتونة"><svg class="ico"><use href="#i-vol"/></svg></button>
 </header>
 
 <noscript>
@@ -217,6 +220,7 @@ noscript .ns a{color:var(--wa)}
 
   <section id="visual-slides">
     <div class="sh"><h2>سلايدات مرسومة وورق الزتونة</h2><p>مراجعة بالصور بتثبّت المعلومة بعد المذاكرة</p></div>
+    <div class="note" role="note"><span class="spin" aria-hidden="true"></span><span><b>استنى شوية بعد ما تدوس.</b> ملفات السلايدات تقيلة عشان كلها رسوم، فممكن تاخد من 10 لـ 30 ثانية لحد ما تفتح حسب النت عندك. هي شغالة، بس اصبر عليها.</span></div>
     <div class="grid c2" id="g-slides"></div>
     <h3 class="sub">نماذج ورق الزتونة (دوس على الصورة تكبّرها)</h3>
     <div class="grid c3" id="g-zat"></div>
@@ -266,7 +270,7 @@ noscript .ns a{color:var(--wa)}
 </nav>
 
 <div id="bub" class="glass" role="status" aria-live="polite"><b>زيتونة</b><span id="bt"></span>
-  <div class="row"><button id="snd">اسمعني</button><button id="hide">اقفل</button></div></div>
+  <div class="row"><button id="hide">تمام</button></div></div>
 
 <div id="zat">
   <button id="zbot" aria-label="زيتونة، مرشد الموقع">
@@ -353,8 +357,7 @@ const lb=$('#lb');document.addEventListener('click',e=>{const z=e.target.closest
 addEventListener('keydown',e=>e.key==='Escape'&&lb.classList.remove('on'));
 
 /* Zatoona */
-const Z={on:false,side:0,t:null,d:null},bub=$('#bub'),zat=$('#zat'),G=()=>window.gsap;
-try{Z.on=localStorage.getItem('zv')==='1'}catch(e){}
+const Z={side:0,t:null,d:null},bub=$('#bub'),zat=$('#zat'),G=()=>window.gsap;
 const lines={
  top:'أهلاً! أنا زيتونة. هلف معاك في الصفحة وأقولك إيه الحكاية. اسحب لتحت.',
  about:'ده Abo_salah، طالب زيك. بيعمل الشغل ده لزمايله.',
@@ -368,8 +371,7 @@ const lines={
  media:'ودي للمواصلات: سمّع الملخص أو اتفرج على الشرح.',
  platforms:'أهم حاجة! افتح المنصة وجرّب الامتحان بنفسك.'
 };
-function speak(t){if(!Z.on||!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t),v=speechSynthesis.getVoices();u.voice=v.find(x=>x.lang==='ar-EG')||v.find(x=>x.lang.startsWith('ar'))||null;u.lang=u.voice?u.voice.lang:'ar-EG';u.pitch=1.35;u.rate=1;speechSynthesis.speak(u)}
-function say(t,keep){clearTimeout(Z.t);const el=$('#bt');el.textContent='';bub.classList.add('show');let i=0;const type=()=>{el.textContent=t.slice(0,++i);if(i<t.length)setTimeout(type,22)};type();speak(t);if(!keep)Z.t=setTimeout(()=>bub.classList.remove('show'),5500+t.length*30)}
+function say(t,keep){clearTimeout(Z.t);const el=$('#bt');el.textContent='';bub.classList.add('show');let i=0;const k=Z.k=(Z.k||0)+1;const type=()=>{if(k!==Z.k)return;el.textContent=t.slice(0,++i);if(i<t.length)setTimeout(type,22)};type();if(!keep)Z.t=setTimeout(()=>bub.classList.remove('show'),5500+t.length*30)}
 function move(){if(!G())return;Z.side^=1;const x=Z.side?-(innerWidth-96):0;bub.classList.toggle('l',!!Z.side);G().timeline().to(zat,{y:-70,rotation:Z.side?-14:14,duration:.28,ease:'power2.out'}).to(zat,{x,duration:.5,ease:'power1.inOut'},'<').to(zat,{y:0,rotation:0,duration:.45,ease:'bounce.out'}).fromTo('#zbot',{scaleY:.85,transformOrigin:'50% 100%'},{scaleY:1,duration:.3,ease:'elastic.out(1,.4)'},'-=.2')}
 let cur='top';
 const visited=new Set(['top']); /* زيتونة بتتكلم أول مرة بس في كل سكشن */
@@ -382,9 +384,9 @@ const tabs=[...document.querySelectorAll('#tabs a')],io=new IntersectionObserver
 }),{rootMargin:'-45% 0px -50% 0px'});
 document.querySelectorAll('section').forEach(s=>io.observe(s));
 $('#zbot').onclick=()=>{const k=Object.keys(lines);say(lines[cur]||lines[k[Math.floor(Math.random()*k.length)]],true);if(G())G().fromTo('#zbot',{rotation:-12},{rotation:0,duration:.8,ease:'elastic.out(1,.3)'})};
-$('#snd').onclick=()=>{Z.on=true;try{localStorage.setItem('zv','1')}catch(e){}say(bub.querySelector('#bt').textContent,true)};
-$('#mute').onclick=()=>{Z.on=!Z.on;try{localStorage.setItem('zv',Z.on?'1':'0')}catch(e){}if(!Z.on&&window.speechSynthesis)speechSynthesis.cancel();say(Z.on?'تمام، هتكلم معاك بصوتي.':'خلاص، هسكت وأكتب بس.',true)};
-$('#hide').onclick=()=>{bub.classList.remove('show');if(window.speechSynthesis)speechSynthesis.cancel()};
+$('#hide').onclick=()=>bub.classList.remove('show');
+/* لما الطالب يفتح ملف سلايدات، زيتونة تطمّنه إن الملف بيحمّل */
+document.addEventListener('click',e=>{if(e.target.closest('#g-slides a[href$=".pdf"]'))say('استنى ثواني، الملف بيحمّل. السلايدات تقيلة شوية عشان كلها رسوم.')});
 addEventListener('load',()=>{if(G()){G().from('.hero h1,.hero p,.hero .btns',{y:24,opacity:0,duration:.8,stagger:.14,ease:'power3.out'});G().to('#zleaf',{rotation:10,transformOrigin:'40px 16px',repeat:-1,yoyo:true,duration:1.2,ease:'sine.inOut'});G().to('#zeyes',{scaleY:.1,svgOrigin:'40 43',repeat:-1,repeatDelay:3,yoyo:true,duration:.09});G().to('#zbot',{y:-5,repeat:-1,yoyo:true,duration:1.4,ease:'sine.inOut'})}setTimeout(()=>say(lines.top),900)});
 </script>
 </body>
